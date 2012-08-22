@@ -1,0 +1,271 @@
+#!/bin/bash
+
+# Convert RPM Fusion packages from CVS to Git.
+
+# This script will convert the packages in the "free" and "nonfree" CVS
+# repositories to Git. It downloads the owners.list file, and then cycles
+# through each package in the list.
+
+# The script converts each package to Git using the "git cvsimport" command.
+# After "cvsimport", the branches are not usable, so we have to transform each
+# subdirectory in CVS into a proper Git branch.
+
+# The script also does some miscellaneous cleanups like moving .cvsignore to
+# .gitignore and removing stray CVS files.
+
+# Lastly the script automatically merges any branches that are identical to
+# master. This allows git's fast-forward merges to work between branches.
+
+# RPM Fusion Settings
+USERNAME=ktdreyer
+
+# This setting is used for the conversion commit.
+#AUTHOR="RPM Fusion Sysadmins <rpmfusion-sysadmin@lists.rpmfusion.org>"
+AUTHOR="Ken Dreyer <ktdreyer@ktdreyer.com>"
+
+
+# CVS-to-Git dist name translations.
+declare -A BRANCHES
+BRANCHES=(
+['devel']='master'
+['F-19']='f19'
+['F-18']='f18'
+['F-17']='f17'
+['F-16']='f16'
+['F-15']='f15'
+['F-14']='f14'
+['F-13']='f13'
+['F-12']='f12'
+['F-11']='f11'
+['F-10']='f10'
+['F-9']='f9'
+['F-8']='f8'
+['F-7']='f7'
+['F-6']='f6'
+['F-5']='f5'
+['F-4']='f4'
+['EL-6']='el6'
+['EL-5']='el5'
+['EL-4']='el4'
+)
+
+# Import a remote RPM Fusion CVS repo into a local git repo, using
+# the git-cvsimport command.
+# Arguments:
+#    - RPM Fusion repo (free or nonfree)
+#    - RPM Fusion package (eg ffmpeg or openafs)
+git_cvsimport() {
+	if [ -z "$1" ]; then
+		echo "Error: specify a repository (free or nonfree)"
+		exit 1
+	fi
+	repo=$1
+	if [ -z "$2" ]; then
+		echo "Error: specify a package (eg. ffmpeg)"
+		exit 1
+	fi
+	package=$2
+
+	# Error if we already have downloaded this repo.
+	if [[ -d $package ]]; then
+		echo "Error: $package directory already exists."
+		exit 1
+	fi
+
+	# Import from CVS into a Git repository.
+	# TODO: use "-A <author-conv-file>" to convert authors' Unix account
+	# names to Git author emails.
+
+	git cvsimport -a \
+		-d :ext:$USERNAME@cvs.rpmfusion.org:/cvs/$repo \
+		$package \
+		-C $package || exit 1
+}
+
+
+# This function takes a raw "git-cvsimport" git repository with subdirectories,
+# such as:
+#    openafs/
+#         F-12/
+#         F-13/
+#         F-14/
+# and moves each subdirectory into unique Git branches, following the branch
+# naming mappings in the $BRANCHES array.
+# Arguments:
+#    - location to a git directory on disk.
+convert_branches() {
+	if [ -z "$1" ]; then
+		echo "Error: specify a git repository directory"
+		exit 1
+	fi
+	pushd $1
+	# http://stackoverflow.com/questions/359424/detach-subdirectory-into-separate-git-repository
+	for cvsbranch in "${!BRANCHES[@]}"; do
+		# cvs branch name is $cvsbranch
+		# git branch name is ${BRANCHES["$branch"]}
+		gitbranch=${BRANCHES[$cvsbranch]}
+
+		# Only operate on branches that exist
+		if [[ ! -d $cvsbranch ]]; then
+			# This branch does not exist in CVS; skip it.
+			continue;
+		fi
+
+		# Debugging
+		echo "Converting $cvsbranch to $gitbranch"
+
+		# git-cvsimport creates an "origin" branch, and we'll use that
+		# as our "base" as we create our other branches.
+
+		# Create a new Git branch.
+		# (We can skip creating a "master" branch, because cvsimport
+		# already has already created one for us.
+		if [[ $gitbranch != 'master' ]]; then
+			git branch $gitbranch origin
+		fi
+		# Switch to our new branch.
+		git checkout $gitbranch
+		# Rewrite this branch, isolating the changes from this one
+		# directory in CVS.
+		git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter $cvsbranch HEAD
+		# Cleanup after filter-branch.
+		git reset --hard
+		git for-each-ref --format="%(refname)" refs/original/ | xargs -n 1 git update-ref -d
+		# Maybe we could do these two at the end of the loop, rather than
+		# running after each branch?
+		git reflog expire --expire=now --all
+		git gc --aggressive --prune=now
+
+		# Additional conversion:
+		# FIXME: Some branches appear to be missing these files?
+		if [[ ! -f "Makefile" ]]; then
+			echo "no Makefile found in branch ${gitbranch}"
+		fi
+		rm Makefile
+		rm branch
+		mv .cvsignore .gitignore
+		git add .gitignore
+		git commit -a -m "dist-git conversion" --author="$AUTHOR"
+		git checkout origin
+	done
+	popd
+}
+
+# This function takes a git repository with branches, and checks each branch
+# against master, and attempts to merge any identical branches into master.
+# Arguments:
+#    - location to a git directory on disk.
+merge_branches() {
+	if [ -z "$1" ]; then
+		echo "Error: specify a git repository directory"
+		exit 1
+	fi
+	pushd $1
+
+	# If the contents of a branch are identical to master, merge them
+	# together. For example:
+	# git checkout master
+	# git merge f17
+	# git checkout f17
+	# git merge master
+
+	# First part: merge any eligible $gitbranch into master.
+	declare -a gitbranches
+	declare -a mergedbranches
+	gitbranches=$(git branch | cut -c 3-)
+	for gitbranch in $gitbranches; do
+		# Skip these two $gitbranch's:
+		case $gitbranch in
+		'master')
+			# We won't be merging master with itself. Skip this one.
+			continue
+			;;
+		'origin')
+			# Don't bother the origin branch
+			continue
+			;;
+		esac
+
+		# Compare this $gitbranch to master.
+		diffs=$(git diff master..${gitbranch})
+		if [[ $diffs == '' ]]; then
+			# This $gitbranch is identical to master; merge them
+			# together.
+			git checkout master
+			git merge $gitbranch -m "Merge branch '$gitbranch'"
+			# Record this $gitbranch for later, so we can go back
+			# and merge master into it.
+			mergedbranches+=( $gitbranch )
+		fi
+	done
+
+	# Debugging
+	echo
+	echo "Found the following total branches in Git:"
+	echo ${gitbranches[@]}
+	echo "I have merged the following Git branches:"
+	echo ${mergedbranches[@]}
+	echo
+
+	# Second part: Now ff-merge master into all our $mergedbranches.
+	for gitbranch in ${mergedbranches[@]}; do
+		git checkout $gitbranch
+		# This should be a fast-forward merge.
+		git merge master $gitbranch
+	done
+
+	# We're done using the "origin" branch, so remove it.
+	git checkout master
+	git branch -D origin
+
+	popd
+}
+
+
+
+# Convert an entire RPM Fusion CVS repo tree to git modules.
+# This function will write everything into a directory "$repo".
+# Arguments:
+#    - RPM Fusion repo (free or nonfree)
+do_repotree() {
+	if [ -z "$1" ]; then
+		echo "Error: specify a repository (free or nonfree)"
+		exit 1
+	fi
+	repo=$1
+
+	if [[ ! -d $repo ]]; then
+		mkdir $repo || exit 1
+	fi
+	pushd $repo
+
+	# Grab the owners.list for this repo
+	if [[ ! -d 'owners' ]]; then
+		cvs -d ":ext:$USERNAME@cvs.rpmfusion.org:/cvs/$repo" co owners
+	fi
+
+	# Cycle through each package.
+	packages=$(grep -v "^#"  owners/owners.list | cut -d \| -f 2)
+	for package in $packages; do
+		rm -rf $package
+		# Check for a cached "cvsimport" directory.
+		if [[ -d "$package.cvsimport" ]]; then
+			cp -r "$package.cvsimport" $package
+		else
+			# Pull the package down over the network, and convert it to git.
+			git_cvsimport $repo $package
+			# Save this raw cvsimport directory, so that we can avoid hitting
+			# the network next time.
+			cp -r $package "$package.cvsimport"
+		fi
+		# Do the rest of the conversion steps.
+		convert_branches $package
+		merge_branches $package
+	done
+	popd
+}
+
+do_repotree 'free'
+do_repotree 'nonfree'
+
+# vim: tabstop=2 shiftwidth=2
