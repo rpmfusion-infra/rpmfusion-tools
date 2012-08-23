@@ -251,6 +251,10 @@ do_repotree() {
 			# Listed in owners.list, but does not exist in CVS.
 			continue
 			;;
+		'proas')
+			# Listed in owners.list, but does not exist in CVS.
+			continue
+			;;
 		esac
 
 		git_cvsimport $repo $package
