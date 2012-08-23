@@ -49,8 +49,10 @@ BRANCHES=(
 ['EL-4']='el4'
 )
 
-# Import a remote RPM Fusion CVS repo into a local git repo, using
-# the git-cvsimport command.
+# Import a remote RPM Fusion CVS repo into a local git repo, using the
+# git-cvsimport command, and writing into a "$package.cvsimport" directory. If
+# the directory already exists, cvsimport will pull in any updates from the
+# remote repo into the local Git version.
 # Arguments:
 #    - RPM Fusion repo (free or nonfree)
 #    - RPM Fusion package (eg ffmpeg or openafs)
@@ -66,12 +68,6 @@ git_cvsimport() {
 	fi
 	package=$2
 
-	# Error if we already have downloaded this repo.
-	if [[ -d $package ]]; then
-		echo "Error: $package directory already exists."
-		exit 1
-	fi
-
 	# Import from CVS into a Git repository.
 	# TODO: use "-A <author-conv-file>" to convert authors' Unix account
 	# names to Git author emails.
@@ -79,7 +75,7 @@ git_cvsimport() {
 	git cvsimport -a \
 		-d :ext:$USERNAME@cvs.rpmfusion.org:/cvs/$repo \
 		$package \
-		-C $package || exit 1
+		-C "$package.cvsimport" || exit 1
 }
 
 
@@ -247,17 +243,9 @@ do_repotree() {
 	# Cycle through each package.
 	packages=$(grep -v "^#"  owners/owners.list | cut -d \| -f 2)
 	for package in $packages; do
+		git_cvsimport $repo $package
 		rm -rf $package
-		# Check for a cached "cvsimport" directory.
-		if [[ -d "$package.cvsimport" ]]; then
-			cp -r "$package.cvsimport" $package
-		else
-			# Pull the package down over the network, and convert it to git.
-			git_cvsimport $repo $package
-			# Save this raw cvsimport directory, so that we can avoid hitting
-			# the network next time.
-			cp -r $package "$package.cvsimport"
-		fi
+		cp -r "$package.cvsimport" $package
 		# Do the rest of the conversion steps.
 		convert_branches $package
 		merge_branches $package
