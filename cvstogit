@@ -16,9 +16,6 @@
 # Lastly the script automatically merges any branches that are identical to
 # master. This allows git's fast-forward merges to work between branches.
 
-# RPM Fusion Settings
-USERNAME=ktdreyer
-
 # This setting is used for the conversion commit.
 #AUTHOR="RPM Fusion Sysadmins <rpmfusion-sysadmin@lists.rpmfusion.org>"
 AUTHOR="Ken Dreyer <ktdreyer@ktdreyer.com>"
@@ -73,7 +70,7 @@ git_cvsimport() {
 	# names to Git author emails.
 
 	git cvsimport -a \
-		-d :ext:$USERNAME@cvs.rpmfusion.org:/cvs/$repo \
+		-d :pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo \
 		$package \
 		-C "$package.cvsimport" || exit 1
 }
@@ -237,7 +234,7 @@ do_repotree() {
 
 	# Grab the owners.list for this repo
 	if [[ ! -d 'owners' ]]; then
-		cvs -d ":ext:$USERNAME@cvs.rpmfusion.org:/cvs/$repo" co owners
+		cvs -d ":pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo" co owners
 	fi
 
 	# Cycle through each package.
