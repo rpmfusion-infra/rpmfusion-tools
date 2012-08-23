@@ -243,6 +243,15 @@ do_repotree() {
 	# Cycle through each package.
 	packages=$(grep -v "^#"  owners/owners.list | cut -d \| -f 2)
 	for package in $packages; do
+
+		# Skip these packages.
+		case $package in
+		'gsview')
+			# Listed in owners.list, but does not exist in CVS.
+			continue
+			;;
+		esac
+
 		git_cvsimport $repo $package
 		rm -rf $package
 		cp -r "$package.cvsimport" $package
