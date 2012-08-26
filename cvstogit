@@ -319,6 +319,7 @@ do_repotree() {
 			;;
 		esac
 
+		echo "Importing $repo $package"
 		git_cvsimport $repo $package
 		rm -rf $package
 		cp -r "$package.cvsimport" $package
