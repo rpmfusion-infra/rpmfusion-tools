@@ -238,7 +238,13 @@ do_repotree() {
 	pushd $repo
 
 	# Grab the owners.list for this repo
-	if [[ ! -d 'owners' ]]; then
+	if [[ -d 'owners' ]]; then
+		# We already downloaded an owners.list. Just update it.
+		pushd owners
+		cvs up
+		popd
+	else
+		# Do a fresh owners.list checkout.
 		cvs -d ":pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo" co owners
 	fi
 
