@@ -244,16 +244,78 @@ do_repotree() {
 		# Skip these packages.
 		case $package in
 		'gsview')
-			# Listed in owners.list, but does not exist in CVS.
-			continue
+			# Listed in free owners.list, but exists in nonfree CVS.
+			# https://bugzilla.rpmfusion.org/2456
+			if [[ $repo == 'free' ]]; then
+				continue
+			fi
 			;;
 		'plus4emu')
-			# Listed in owners.list, but does not exist in CVS.
-			continue
+			# Listed in both free and nonfree owners.list.
+			# Needs to be removed from free owners.list.
+			# https://bugzilla.rpmfusion.org/2457
+			if [[ $repo == 'free' ]]; then
+				continue
+			fi
 			;;
 		'proas')
-			# Listed in owners.list, but does not exist in CVS.
+			# Listed in both free and nonfree owners.list.
+			# Needs to be removed from free owners.list.
+			# https://bugzilla.rpmfusion.org/2458
+			if [[ $repo == 'free' ]]; then
+				continue
+			fi
+			;;
+		'roadfighter')
+			# Listed in free owners.list, but exists in nonfree CVS.
+			# Needs to be removed from free owners.list, and added to nonfree list.
+			# https://bugzilla.rpmfusion.org/2459
+			if [[ $repo == 'free' ]]; then
+				continue
+			fi
+			;;
+		'spek')
+			# Present in CVS, but cannot do a checkout.
+			# https://lists.rpmfusion.org/pipermail/rpmfusion-developers/2012-August/013389.html
 			continue
+			;;
+		'vlc-phonon-backend')
+			# Invalid CVS module. "phonon-backend-vlc" is the correct one.
+			#https://bugzilla.rpmfusion.org/show_bug.cgi?id=1309#c20
+			continue
+			;;
+		'xmms-aac')
+			# Listed in free owners.list, but does not exist in CVS.
+			# I emailed Orcan, and he said he cannot remember this one.
+			# Perhaps it was orphaned and retired long ago.
+			continue
+			;;
+		'xvid4conf')
+			# Present in CVS, but cannot do a checkout.
+			# (Similar symptoms to "spek".)
+			continue
+			;;
+		'xvidcore')
+			# Present in CVS, but cannot do a checkout.
+			# (Similar symptoms to "spek".)
+			continue
+			;;
+		'slmodem')
+			# Present in nonfree CVS, but cannot do a checkout.
+			# (Similar symptoms to "spek".)
+			continue
+			;;
+		'slmodem-kmod')
+			# Present in nonfree CVS, but cannot do a checkout.
+			# (Similar symptoms to "spek".)
+			continue
+			;;
+		'vboxgtk')
+			# Listed in nonfree owners.list, but does not exist in nonfree CVS.
+			# Need to remove this from nonfree owners.list, and add to free list.
+			if [[ $repo == 'nonfree' ]]; then
+				continue
+			fi
 			;;
 		esac
 
