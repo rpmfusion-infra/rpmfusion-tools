@@ -201,7 +201,7 @@ merge_branches() {
 	echo
 	echo "Found the following total branches in Git:"
 	echo ${gitbranches[@]}
-	echo "I have merged the following Git branches:"
+	echo "I have merged the following Git branches with master:"
 	echo ${mergedbranches[@]}
 	echo
 
