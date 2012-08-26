@@ -16,6 +16,11 @@
 # Lastly the script automatically merges any branches that are identical to
 # master. This allows git's fast-forward merges to work between branches.
 
+# To skip a git-cvsimport bug triggered by a tag in the RPM Fusion dosemu
+# package CVS repo, you will need the following patch to git-cvsimport:
+# https://bugzilla.redhat.com/850640
+
+
 # This setting is used for the conversion commit.
 #AUTHOR="RPM Fusion Sysadmins <rpmfusion-sysadmin@lists.rpmfusion.org>"
 AUTHOR="Ken Dreyer <ktdreyer@ktdreyer.com>"
