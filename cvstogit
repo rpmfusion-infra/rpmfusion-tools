@@ -331,6 +331,9 @@ do_repotree() {
 		esac
 
 		echo "Importing $repo $package"
+		# TODO: if git-cvsimport says "Already up-to-date.", then we don't need to
+		# rewrite the whole git repo again, and we can skip over the package at
+		# that point to save time.
 		git_cvsimport $repo $package
 		rm -rf $package
 		cp -r "$package.cvsimport" $package
