@@ -30,6 +30,8 @@ AUTHOR="Ken Dreyer <ktdreyer@ktdreyer.com>"
 declare -A BRANCHES
 BRANCHES=(
 ['devel']='master'
+['F-21']='f21'
+['F-20']='f20'
 ['F-19']='f19'
 ['F-18']='f18'
 ['F-17']='f17'
