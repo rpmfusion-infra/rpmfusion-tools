@@ -288,6 +288,7 @@ do_repotree() {
 		'vboxgtk')
 			# Listed in nonfree owners.list, but does not exist in nonfree CVS.
 			# Need to remove this from nonfree owners.list, and add to free list.
+			# https://bugzilla.rpmfusion.org/2948
 			if [[ $repo == 'nonfree' ]]; then
 				continue
 			fi
