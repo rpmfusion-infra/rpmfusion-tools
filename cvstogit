@@ -272,16 +272,6 @@ do_repotree() {
 			# Perhaps it was orphaned and retired long ago.
 			continue
 			;;
-		'xvid4conf')
-			# Present in CVS, but cannot do a checkout.
-			# (Similar symptoms to "spek".)
-			continue
-			;;
-		'xvidcore')
-			# Present in CVS, but cannot do a checkout.
-			# (Similar symptoms to "spek".)
-			continue
-			;;
 		'slmodem')
 			# Present in nonfree CVS, but cannot do a checkout.
 			# (Similar symptoms to "spek".)
