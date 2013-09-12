@@ -263,7 +263,8 @@ do_repotree() {
 			;;
 		'vlc-phonon-backend')
 			# Invalid CVS module. "phonon-backend-vlc" is the correct one.
-			#https://bugzilla.rpmfusion.org/show_bug.cgi?id=1309#c20
+			# https://bugzilla.rpmfusion.org/1309#c20
+			# https://bugzilla.rpmfusion.org/2949
 			continue
 			;;
 		'xmms-aac')
