@@ -258,7 +258,7 @@ do_repotree() {
 		case $package in
 		'spek')
 			# Present in CVS, but cannot do a checkout.
-			# https://lists.rpmfusion.org/pipermail/rpmfusion-developers/2012-August/013389.html
+			# https://bugzilla.rpmfusion.org/2946
 			continue
 			;;
 		'vlc-phonon-backend')
@@ -275,11 +275,13 @@ do_repotree() {
 		'slmodem')
 			# Present in nonfree CVS, but cannot do a checkout.
 			# (Similar symptoms to "spek".)
+			# https://bugzilla.rpmfusion.org/2946
 			continue
 			;;
 		'slmodem-kmod')
 			# Present in nonfree CVS, but cannot do a checkout.
 			# (Similar symptoms to "spek".)
+			# https://bugzilla.rpmfusion.org/2946
 			continue
 			;;
 		'vboxgtk')
