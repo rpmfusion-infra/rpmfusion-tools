@@ -270,6 +270,7 @@ do_repotree() {
 			# Listed in free owners.list, but does not exist in CVS.
 			# I emailed Orcan, and he said he cannot remember this one.
 			# Perhaps it was orphaned and retired long ago.
+			# https://bugzilla.rpmfusion.org/2947
 			continue
 			;;
 		'slmodem')
