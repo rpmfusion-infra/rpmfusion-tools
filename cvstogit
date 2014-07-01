@@ -23,7 +23,7 @@
 
 # This setting is used for the conversion commit.
 #AUTHOR="RPM Fusion Sysadmins <rpmfusion-sysadmin@lists.rpmfusion.org>"
-AUTHOR="Ken Dreyer <ktdreyer@ktdreyer.com>"
+AUTHOR="Nicolas Chauvet <kwizart@gmail.com>"
 
 
 # CVS-to-Git dist name translations.
@@ -78,6 +78,8 @@ git_cvsimport() {
 
 	git cvsimport -a \
 		-d :pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo \
+    -A ~/rpmfusion-cvs-users.txt \
+		-S 'branch' \
 		$package \
 		-C "$package.cvsimport" || exit 1
 }
