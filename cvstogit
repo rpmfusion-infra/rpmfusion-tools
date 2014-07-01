@@ -125,9 +125,13 @@ convert_branches() {
 		fi
 		# Switch to our new branch.
 		git checkout $gitbranch
+		# Remove Makefile and branch along with moving .cvsignore to .gitignore
 		# Rewrite this branch, isolating the changes from this one
 		# directory in CVS.
-		git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter $cvsbranch HEAD
+		git filter-branch \
+			--tag-name-filter cat --prune-empty --subdirectory-filter $cvsbranch \
+			--tree-filter 'rm -f branch Makefile ; if [ -f .cvsignore ] ; then  git mv .cvsignore .gitignore ; fi' \
+       HEAD
 		# Cleanup after filter-branch.
 		git reset --hard
 		git for-each-ref --format="%(refname)" refs/original/ | xargs -n 1 git update-ref -d
@@ -136,16 +140,6 @@ convert_branches() {
 		git reflog expire --expire=now --all
 		git gc --aggressive --prune=now
 
-		# Additional conversion:
-		# FIXME: Some branches appear to be missing these files?
-		if [[ ! -f "Makefile" ]]; then
-			echo "no Makefile found in branch ${gitbranch}"
-		fi
-		rm Makefile
-		rm branch
-		mv .cvsignore .gitignore
-		git add .gitignore
-		git commit -a -m "dist-git conversion" --author="$AUTHOR"
 		git checkout origin
 	done
 	popd
