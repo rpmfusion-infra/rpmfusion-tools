@@ -302,15 +302,6 @@ do_repotree() {
 		# Do the rest of the conversion steps.
 		convert_branches $package
 		merge_branches $package
-		# turn into a bare repository
-		rm $package/*
-		mv $package/.git/* $package/
-		echo "	sharedrepository = 1
-[receive]
-	denyNonFastforwards = true" >> $package/config
-		packagedescription=$(grep "|$package|" owners/owners.list | cut -d \| -f 3)
-		echo $packagedescription > $package/description
-		mv $package $package.git
 	done
 	popd
 }
