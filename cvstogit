@@ -290,6 +290,12 @@ do_repotree() {
 				continue
 			fi
 			;;
+     '*')
+       # Test if the directory already exists, in which case we do not convert again
+      if [[ -d $package ]] ; then
+        continue
+      fi
+      ;;
 		esac
 
 		echo "Importing $repo $package"
