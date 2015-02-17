@@ -78,7 +78,7 @@ git_cvsimport() {
 
 	git cvsimport -a \
 		-d :pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo \
-    -A ~/rpmfusion-cvs-users.txt \
+    -A rpmfusion-cvs-users.txt \
 		-S 'branch' \
 		$package \
 		-C "$package.cvsimport" || exit 1
