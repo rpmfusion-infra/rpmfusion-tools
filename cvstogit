@@ -25,6 +25,8 @@
 #AUTHOR="RPM Fusion Sysadmins <rpmfusion-sysadmin@lists.rpmfusion.org>"
 AUTHOR="Nicolas Chauvet <kwizart@gmail.com>"
 
+RF_CVSROOT=":pserver:anonymous@cvs.rpmfusion.org:/cvs"
+
 
 # CVS-to-Git dist name translations.
 declare -A BRANCHES
@@ -77,8 +79,8 @@ git_cvsimport() {
 	# names to Git author emails.
 
 	git cvsimport -a \
-		-d :pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo \
-    -A ~/rpmfusion/rpmfusion-cvs-users.txt \
+		-d "$RF_CVSROOT/$repo" \
+		-A ~/rpmfusion/rpmfusion-cvs-users.txt \
 		-S 'branch' \
 		$package \
 		-C "$package.cvsimport" || exit 1
@@ -243,7 +245,7 @@ do_repotree() {
 		popd
 	else
 		# Do a fresh owners.list checkout.
-		cvs -d ":pserver:anonymous@cvs.rpmfusion.org:/cvs/$repo" co owners
+		cvs -d "$RF_CVSROOT/$repo" co owners
 	fi
 
 	# Cycle through each package.
@@ -308,6 +310,15 @@ do_repotree() {
 		# Do the rest of the conversion steps.
 		convert_branches $package
 		merge_branches $package
+		# turn into a bare repository
+		rm $package/*
+		mv $package/.git/* $package/
+		echo "	sharedrepository = 1
+[receive]
+	denyNonFastforwards = true" >> $package/config
+		packagedescription=$(grep "|$package|" owners/owners.list | cut -d \| -f 3)
+		echo $packagedescription > $package/description
+		mv $package $package.git
 	done
 	popd
 }
