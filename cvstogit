@@ -80,7 +80,7 @@ git_cvsimport() {
 
 	git cvsimport -a \
 		-d "$RF_CVSROOT/$repo" \
-		-A ~/rpmfusion/rpmfusion-cvs-users.txt \
+    -A ../rpmfusion-cvs-users.txt \
 		-S 'branch' \
 		$package \
 		-C "$package.cvsimport" || exit 1
@@ -254,6 +254,10 @@ do_repotree() {
 
 		# Skip these packages.
 		case $package in
+    'rpmfusion-package-config-smart')
+      #fatal: refs/heads/origin: not a valid SHA1
+      continue
+      ;;
 		'spek')
 			# Present in CVS, but cannot do a checkout.
 			# https://bugzilla.rpmfusion.org/2946
@@ -288,13 +292,18 @@ do_repotree() {
 			# Listed in nonfree owners.list, but does not exist in nonfree CVS.
 			# Need to remove this from nonfree owners.list, and add to free list.
 			# https://bugzilla.rpmfusion.org/2948
-			if [[ $repo == 'nonfree' ]]; then
-				continue
-			fi
+			continue
 			;;
-     '*')
+    'bsnes')
+      continue
+     ;;
+    'xmris')
+     # Cannot write branch origin for update
+     continue
+     ;;
+     *)
        # Test if the directory already exists, in which case we do not convert again
-      if [[ -d $package ]] ; then
+      if [ -d $package ] ; then
         continue
       fi
       ;;
