@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# create github repos from a list
+
+if [ -f project.source ] ; then
+  source project.source
+fi
+
+if ! [ -f $1 ] ; then
+  echo "Error, missing $1 file"
+  exit 2
+fi
+
+if ! [ $2 == free -o $2 == nonfree ] ; then
+  echo "Error, need to be in free or nonfree section"
+  exit 2
+else
+  section=$2
+fi
+
+for package in $(cat $1) ; do
+  cp -p create2github.post create2github.${package}
+  sed -i -e "s/@project@/${project}/g" create2github.${package}
+  sed -i -e "s/@package@/${package}/g" create2github.${package}
+  sed -i -e "s/@section@/${section}/g" create2github.${package}
+  sed -i -e "s/@githubuser@/${githubuser}/g" create2github.${package}
+  sed -i -e "s/@githubpassword@/${githubpassword}/g" create2github.${package}
+  sed -i -e "s/@githubhomepage@/${githubhomepage}/g" create2github.${package}
+  bash create2github.${package}
+  sleep 3
+  rm -f create2github.${package}
+done
