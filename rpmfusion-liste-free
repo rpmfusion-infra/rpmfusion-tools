@@ -199,6 +199,7 @@ qmmp-plugin-pack-freeworld
 qmmp-plugins-freeworld
 qtractor
 qtractor-freeworld
+rpmfusion-free-appstream-data
 rpmfusion-free-package-config-smart
 rpmfusion-free-release
 rpmfusion-free-remix-kickstarts
@@ -221,6 +222,7 @@ smplayer
 snowballz
 sonic-visualiser-freeworld
 sox-plugins-freeworld
+spek
 staging-kmod-addons
 staging-kmod
 stella
