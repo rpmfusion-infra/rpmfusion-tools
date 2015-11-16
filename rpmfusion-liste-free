@@ -51,10 +51,10 @@ faad2
 fakenes
 fceultra
 fceux
+ffmpeg
 ffmpeg2dirac
 ffmpeg2theora
 ffmpeg-compat
-ffmpeg
 ffmpegthumbnailer
 ffmpegthumbs
 flvtool2
@@ -119,8 +119,8 @@ libmimic
 libmms
 libmpeg2
 libmpeg3
-libopenshot-audio
 libopenshot
+libopenshot-audio
 libquicktime
 libshairport
 libtunepimp-extras-freeworld
@@ -223,8 +223,8 @@ snowballz
 sonic-visualiser-freeworld
 sox-plugins-freeworld
 spek
-staging-kmod-addons
 staging-kmod
+staging-kmod-addons
 stella
 streamdvd
 streamripper
