@@ -11,7 +11,7 @@ if ! [ -f $1 ] ; then
   exit 2
 fi
 
-if ! [ $2 == free -o $2 == nonfree ] ; then
+if ! [ x$2 == "xfree"  -o  x$2 == "nonfree" ] ; then
   echo "Error, need to be in free or nonfree section"
   exit 2
 else
