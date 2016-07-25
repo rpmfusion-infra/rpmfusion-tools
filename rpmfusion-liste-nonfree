@@ -16,7 +16,6 @@ d1x
 dega-sdl
 dgen-sdl
 doc
-dolphin-emu
 doom-shareware
 ec2-api-tools
 edgar
@@ -24,6 +23,7 @@ e-uae
 faac
 fglrx-kmod
 freecad
+frobtads
 Frodo
 frogatto
 fuse-emulator-roms
@@ -31,9 +31,11 @@ gens
 gens-gs
 gmameui
 gnome-video-arcade
+gstreamer1-plugins-bad-nonfree
 gstreamer-plugins-bad-nonfree
 gsview
 jad
+kisslicer
 larabie-fonts
 lha
 libcapsimage
@@ -89,6 +91,7 @@ psb-kmod
 pushover
 pyskool
 qmc2
+qtads
 r5u87x-firmware
 raine
 realcrypt
@@ -98,13 +101,15 @@ rpmfusion-nonfree-package-config-smart
 rpmfusion-nonfree-release
 rpmfusion-nonfree-remix-kickstarts
 sdlmame
-sdlmame-data-artwork
 sdlmame-data
+sdlmame-data-artwork
 sdlmame-data-roms
 sdlmame-data-samples
 sdlmess
 sidplay
 sidplay-libs
+slmodem
+slmodem-kmod
 smesh
 snes9x
 sox-plugins-nonfree
@@ -130,12 +135,12 @@ xmms2-nonfree
 xorg-x11-drv-catalyst
 xorg-x11-drv-catalyst-legacy
 xorg-x11-drv-fglrx
+xorg-x11-drv-nvidia
 xorg-x11-drv-nvidia-173xx
 xorg-x11-drv-nvidia-304xx
 xorg-x11-drv-nvidia-340xx
 xorg-x11-drv-nvidia-96xx
 xorg-x11-drv-nvidia-beta
-xorg-x11-drv-nvidia
 xorg-x11-drv-nvidia-newest
 xorg-x11-drv-psb
 xpsb-glx
