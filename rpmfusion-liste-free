@@ -59,6 +59,7 @@ ffmpeg2theora
 ffmpeg-compat
 ffmpegthumbnailer
 ffmpegthumbs
+ffmulticonverter
 flowblade
 flvtool2
 foo2zjs
@@ -253,6 +254,7 @@ tivodecode
 torrentzip
 transcode
 traverso
+tvheadend
 twolame
 ultrastardx
 ushare-freeworld
@@ -267,6 +269,7 @@ vdr-markad
 vdr-mp3
 vdr-mpv
 vdr-muggle
+vdr-plex
 vdr-remote
 vdr-skindesigner
 vdr-softhddevice
