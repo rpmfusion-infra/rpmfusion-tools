@@ -13,6 +13,7 @@ autopano-sift-C
 avbin
 avidemux
 BasiliskII
+bcg729
 bino
 blcr
 blcr-kmod
@@ -159,6 +160,7 @@ miro
 mixxx
 mjpegtools
 mlt
+mlt-freeworld
 mmsrip
 moc
 mock-rpmfusion-free
@@ -182,6 +184,8 @@ ndiswrapper-kmod
 Nestopia
 normalize
 npapi-vlc
+nvidia-video-codec-sdk
+obs-studio
 ogmrip
 omnibook
 omnibook-kmod
@@ -210,6 +214,8 @@ qc-usb
 qc-usb-kmod
 qmmp-plugin-pack-freeworld
 qmmp-plugins-freeworld
+qmplay2
+qtav
 qtractor
 qtractor-freeworld
 rfpkg

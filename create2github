@@ -25,7 +25,7 @@ for package in $(cat $1) ; do
   sed -i -e "s/@section@/${section}/g" create2github.${package}
   sed -i -e "s/@githubuser@/${githubuser}/g" create2github.${package}
   sed -i -e "s/@githubpassword@/${githubpassword}/g" create2github.${package}
-  sed -i -e "s/@githubhomepage@/${githubhomepage}/g" create2github.${package}
+  sed -i -e 's/@githubhomepage@/${githubhomepage}/g' create2github.${package}
   bash create2github.${package}
   sleep 3
   rm -f create2github.${package}
