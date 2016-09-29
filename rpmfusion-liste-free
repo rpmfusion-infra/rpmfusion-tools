@@ -122,6 +122,7 @@ libbdplus
 libdca
 libde265
 libdlna
+libdvbcsa
 libdvbpsi
 libfame
 libmad
@@ -152,6 +153,7 @@ madplay
 mamory
 mate-applet-streamer
 megamario
+miam-player
 mimms
 mingw-libmad
 minidlna
