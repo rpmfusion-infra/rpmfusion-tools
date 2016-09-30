@@ -2,7 +2,7 @@ curl --user "@githubuser@:@githubpassword@" --request POST --data '
 {
   "name": "@package@",
   "description": "@package@ - @section@",
-  "homepage": "@githubhomepage",
+  "homepage": "http://rpmfusion.org/Package/@package@",
   "private": false,
   "has_issues": false,
   "has_wiki": false,
