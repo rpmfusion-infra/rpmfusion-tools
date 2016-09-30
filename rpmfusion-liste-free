@@ -23,6 +23,7 @@ bubbros
 buildsys-build-rpmfusion
 cairo-dock
 cairo-dock-freeworld
+cAudio-freeworld
 chromaprint-tools
 cmus
 compat-plone
@@ -237,6 +238,7 @@ rt3070-kmod
 rtmpdump
 scottfree
 SheepShaver
+simplescreenrecorder
 sinthgunt
 smc
 smc-music
