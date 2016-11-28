@@ -81,6 +81,7 @@ gltron
 gmediafinder
 gmtk
 gnome-mplayer
+gnome-mpv
 gnome-shell-extension-weather
 gnuboy
 gpac
@@ -169,6 +170,7 @@ moc
 mock-rpmfusion-free
 motion
 mp3diags
+mp3fs
 mp3gain
 mp3splt
 mp3splt-gtk
@@ -319,6 +321,7 @@ xmms-wma
 xmris
 xpra-codecs-freeworld
 xroar
+xt7-player-mpv
 xtables-addons
 xtables-addons-kmod
 xvid4conf
