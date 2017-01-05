@@ -1,7 +1,7 @@
 #!/bin/bash
 # configuration
-LISTOFPKGS="audacious audacity kernel libgpod libmicrohttpd gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free picard qmmp xine-lib libbluray"
-LISTOFDISTS="f19 f19-updates f19-updates-testing f20 f20-updates f20-updates-testing f21 f21-updates f21-updates-testing"
+LISTOFPKGS="audacious audacity kernel libmicrohttpd libva libcec platform gstreamer gstreamer-plugins-base gstreamer-plugins-good gstreamer-plugins-bad-free qmmp libbluray"
+LISTOFDISTS="f24-updates f24-updates-testing f25-updates f25-updates-testing"
 
 # basics
 THISSCRIPTSNAME=$(basename ${0})
