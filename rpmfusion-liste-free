@@ -1,5 +1,6 @@
 a52dec
 acoustid-fingerprinter
+aegisub
 akmods
 akode-extras
 alsa-plugins-freeworld
@@ -61,6 +62,7 @@ ffmpeg2theora
 ffmpeg-compat
 ffmpegthumbnailer
 ffmpegthumbs
+ffms2
 ffmulticonverter
 flowblade
 flvtool2
