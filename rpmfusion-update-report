@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# rpmfusion-updates-report
+
+
+echo "RPM Fusion update report"
+echo "------------------------"
+echo ""
+for f in free nonfree ; do
+echo "Section $f:"
+echo "-------------"
+  for r in 24 25 26 ; do
+    echo "Fedora $r"
+    echo "-------------"
+    echo "Pushed to testing: "
+    koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}'
+    echo ""
+    echo "Pushed to stable: "
+    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}'
+    echo ""
+  done
+  echo ""
+  for r in 6 7 ; do
+    echo "EL $r"
+    echo "-------------"
+    echo "Pushed to testing: "
+    koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}'
+    echo ""
+    echo "Pushed to stable: "
+    koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}'
+    echo ""
+  done
+done
+echo ""
+echo "Theses packages will be available in main mirror in few minutes. Wait for local mirrors to sync"
+echo "Please report any issue to https://bugzilla.rpmfusion.org"
+echo ""
+
