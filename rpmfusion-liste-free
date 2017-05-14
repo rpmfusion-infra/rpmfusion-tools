@@ -116,6 +116,10 @@ kmodtool
 kodi
 kodi-platform
 kodi-pvr-addons
+kodi-pvr-hts
+kodi-pvr-iptvsimple
+kodi-pvr-mythtv
+kodi-pvr-vdr-vnsi
 kplayer
 kqemu
 kqemu-kmod
