@@ -26,6 +26,7 @@ cairo-dock
 cairo-dock-freeworld
 cAudio-freeworld
 chromaprint-tools
+chromium-libs-media-freeworld
 cmus
 compat-plone
 compat-python24
@@ -215,6 +216,7 @@ pangzero
 pcsxr
 perl-Crypt-IDEA
 phonon-backend-vlc
+pianobar
 picard-freeworld
 pithos
 pragha
