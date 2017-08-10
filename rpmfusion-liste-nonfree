@@ -68,6 +68,7 @@ nvidia-340xx-kmod
 nvidia-96xx-kmod
 nvidia-beta-kmod
 nvidia-kmod
+nvidia-modprobe
 nvidia-newest-kmod
 nvidia-settings
 nvidia-xconfig

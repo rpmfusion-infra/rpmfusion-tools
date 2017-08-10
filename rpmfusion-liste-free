@@ -145,6 +145,7 @@ libopenshot
 libopenshot-audio
 libquicktime
 libshairport
+libtgvoip
 libtunepimp-extras-freeworld
 libtxc_dxtn
 libva-freeworld
@@ -274,6 +275,7 @@ telegram-desktop
 terminatorX
 thoggen
 thunderbird-enigmail
+tilem
 tivodecode
 torrentzip
 transcode
@@ -301,6 +303,7 @@ vdrsync
 vdr-tvguideng
 vdr-weatherforecast
 vdr-xineliboutput
+vidcutter
 VirtualBox
 VirtualBox-kmod
 vlc
@@ -342,5 +345,6 @@ y4mscaler
 yabause
 yle-dl
 zboy
+zoneminder
 z-push
 zsnes
