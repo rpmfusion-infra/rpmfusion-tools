@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# move build into arched repos
+
+arches="x86_64 i386 ppc64le ppc64 aarch64 armhfp"
+
+rm -f *s390x.rpm
+
+for arch in $arches ; do
+
+# Dispatch
+  case $arch in 
+    i386)
+      for f in *i?86.rpm; do
+        mv ${f} i386
+      done
+      for f in *noarch.rpm ; do
+        ln ${f} i386
+      done
+      ;;
+    armhfp)
+      for f in *.armv7h{,n}l.rpm ; do
+        mv ${f} armhfp
+      done
+      for f in *noarch.rpm ; do
+        ln ${f} armhfp
+      done
+      ;;
+    *)
+      for f in *${arch}.rpm ; do
+        mv ${f} ${arch}
+      done
+      for f in *noarch.rpm ; do
+        ln ${f} ${arch}
+      done
+      ;;
+  esac
+
+# Createrepo
+pushd ${arch}
+  createrepo .
+popd &>/dev/null
+
+done
