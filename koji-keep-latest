@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# keep latest build from a koji-tag
+
+_tag=$1
+koji-rpmfusion taginfo ${_tag} &>/dev/null
+_ret=$?
+if [ ! $_ret == 0 ] ; then
+  echo "Wrong koji tag : ${_tag}"
+  exit ${_ret}
+fi
+
+koji-rpmfusion list-tagged ${_tag}| awk '{print $1}' > /tmp/${_tag}.txt
+koji-rpmfusion list-tagged ${_tag} --latest | awk '{print $1}' > /tmp/${_tag}-latest.txt
+diff -u /tmp/${_tag}.txt /tmp/${_tag}-latest.txt | grep  "^-" |sed -e '1d' |  sed -e 's/^-//g' > /tmp/${_tag}-diff.txt
+if [ $(cat /tmp/${_tag}-diff.txt | wc -l) == 0 ] ; then
+  echo "No duplicate packages for the tag ${tag}"
+  exit 0
+fi
+
+sleep 3
+echo "Untagging packages for $_tag"
+cat /tmp/${_tag}-diff.txt | xargs koji-rpmfusion untag-build ${_tag}
+echo "Packages untagged for $_tag"
+
