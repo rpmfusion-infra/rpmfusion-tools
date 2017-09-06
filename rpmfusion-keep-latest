@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# rpmfusion-keep-latest - deprecated
+
+for f in free nonfree ; do
+  for r in 25 26 27; do
+    koji-keep-latest f${r}-${f}-updates-candidate
+    koji-keep-latest f${r}-${f}-updates-testing
+    koji-keep-latest f${r}-${f}-updates
+  done
+  for r in 6 7 ; do
+   koji-keep-latest el${r}-${f}-candidate
+   koji-keep-latest el${r}-${f}-testing
+   koji-keep-latest el${r}-${f}
+  done
+    koji-keep-latest rawhide-${f}
+    koji-keep-latest f28-${f}
+done
