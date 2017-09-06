@@ -168,6 +168,7 @@ libva-freeworld
 libva-intel-driver
 libva-vdpau-driver
 libvdpau-va-gl
+libvlcpp
 lightspark
 live555
 lives
