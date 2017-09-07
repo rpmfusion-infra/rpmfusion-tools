@@ -1,0 +1,16 @@
+*-devel
+dega-sdl
+gens
+gens-gs
+gens-gs-doc
+gstreamer-.*
+jad
+libCg
+lpf-skype
+pcsx2
+steam
+steam-noruntime
+unace
+-xorg-x11-drv-nvidia-304xx-kmodsrc
+-xorg-x11-drv-nvidia-340xx-kmodsrc
+-xorg-x11-drv-nvidia-kmodsrc
