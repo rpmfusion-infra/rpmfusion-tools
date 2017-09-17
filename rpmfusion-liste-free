@@ -317,6 +317,7 @@ vdr-plex
 vdr-remote
 vdr-skindesigner
 vdr-softhddevice
+vdr-softhddevice-openglosd
 vdrsync
 vdr-tvguideng
 vdr-weatherforecast
