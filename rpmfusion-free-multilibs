@@ -1,10 +1,16 @@
-*-devel
-gstreamer-ffmpeg
-gstreamer-plugins-*
-gstreamer1-libav
-gstreamer1-plugins-*
-alsa-plugins-freeworld-*
-libtxc_dxtn
-libva-intel-driver
-xine-lib
-zsnes
+[runtime]
+white = gstreamer-ffmpeg
+    gstreamer-plugins-*
+    gstreamer1-libav
+    gstreamer1-plugins-*
+    alsa-plugins-freeworld-*
+    libtxc_dxtn
+    libva-intel-driver
+    xine-lib
+    zsnes
+
+black = 
+
+[devel]
+white =
+black = 
