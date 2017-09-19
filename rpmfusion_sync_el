@@ -1,0 +1,17 @@
+#/bin/bash
+#
+# rpmfusion_sync_el
+#
+if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
+        echo "Wrong host: run on bodhi-backend01" && exit 1
+fi
+
+umask 002
+
+for i in free nonfree ; do
+  for j in 6 7 ; do
+    mkdir -p /pub/${i}/el/updates/testing/${j}
+    sg sysadmin-build "rsync -avH -O /mnt/koji/mash/${i}/el${j}-testing/* /pub/${i}/el/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
+    sg sysadmin-build "rsync -avH -O /mnt/koji/mash/${i}/el${j}/* /pub/${i}/el/updates/${j}/ --delete | grep -v -e repodata -e repoview"
+  done
+done
