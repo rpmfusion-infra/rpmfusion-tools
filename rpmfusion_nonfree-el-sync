@@ -1,0 +1,12 @@
+#!/bin/bash
+
+outputdir=/pub/nonfree/el/
+targetdir=rpmfusion@phoenix.crazyfrogs.org:nonfree/el/
+exclude=""
+opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
+
+echo "Test sync"
+rsync -n $opts $outputdir/* $targetdir | grep -v -e repodata -e repoview | less
+echo "Real Sync; hit Ctrl-C or kill to exit"
+sleep 3
+rsync $opts $outputdir/* $targetdir

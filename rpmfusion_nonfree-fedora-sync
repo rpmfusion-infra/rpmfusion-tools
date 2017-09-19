@@ -1,0 +1,14 @@
+#!/bin/bash
+
+outputdir=/pub/nonfree/fedora/
+targetdir=rpmfusion@phoenix.crazyfrogs.org:nonfree/fedora/
+#targetdir=rpmfusion@download1.rpmfusion.org:nonfree/fedora/
+exclude=""
+#opts="-avH --progress --delete-after --delay-updates -e ssh -p 22 $exclude"
+opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
+
+echo "Test sync"
+rsync -n $opts $outputdir/* $targetdir | grep -v -e repodata -e repoview
+echo "Real Sync; hit Ctrl-C or kill to exit"
+sleep 3
+rsync $opts $outputdir/* $targetdir

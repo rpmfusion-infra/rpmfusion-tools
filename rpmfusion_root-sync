@@ -1,0 +1,15 @@
+#!/bin/bash
+
+outputdir=/pub/DIRECTORY_SIZES.txt
+targetdir=rpmfusion@phoenix.crazyfrogs.org:
+#targetdir=rpmfusion@download1.rpmfusion.org:free/fedora/
+exclude=""
+#ssh_opts="ssh -p 1433"
+#opts="-avH --progress --delete-after --delay-updates -e ssh -p 22 $exclude"
+opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
+
+echo "Test sync"
+rsync -n $opts $outputdir $targetdir | grep -v -e repodata -e repoview
+echo "Real Sync; hit Ctrl-C or kill to exit"
+sleep 3
+rsync $opts $outputdir $targetdir
