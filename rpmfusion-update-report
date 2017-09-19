@@ -16,7 +16,7 @@ echo "-------------"
     koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}'
     echo ""
     echo "Pushed to stable: "
-    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}'
+    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | grep -v nvidia | awk '{print $1}'
     echo ""
   done
   echo ""
