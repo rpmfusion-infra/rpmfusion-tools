@@ -13,7 +13,7 @@ for f in free nonfree ; do
 done
 
 #Create report
-./rpmfusion-update-report | mail -r noreply@rpmfusion.org -s "RPM Fusion update report $(date -I)" rpmfusion-developers@lists.rpmfusion.org,rpmfusion-users@lists.rpmfusion.org
+rpmfusion-update-report | mail -r noreply@rpmfusion.org -s "RPM Fusion update report $(date -I)" rpmfusion-developers@lists.rpmfusion.org,rpmfusion-users@lists.rpmfusion.org
 
 for f in free nonfree ; do
   for r in 25 26 ; do
