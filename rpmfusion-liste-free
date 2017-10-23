@@ -73,6 +73,7 @@ freeguide
 freetype-freeworld
 freshplayerplugin
 fs-uae
+fs-uae-launcher
 fuse-exfat
 gambatte
 game-data-packager
@@ -118,6 +119,7 @@ kmediafactory
 kmodtool
 kodi
 kodi-inputstream-adaptive
+kodi-peripheral-joystick
 kodi-platform
 kodi-pvr-addons
 kodi-pvr-argustv
@@ -201,6 +203,7 @@ mp3fs
 mp3gain
 mp3splt
 mp3splt-gtk
+mp4tools
 mpd
 mpg123
 mpg321

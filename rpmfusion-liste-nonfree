@@ -76,6 +76,7 @@ nvidia-beta-kmod
 nvidia-kmod
 nvidia-modprobe
 nvidia-newest-kmod
+nvidia-persistenced
 nvidia-settings
 nvidia-xconfig
 OCE
