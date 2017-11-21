@@ -7,6 +7,10 @@ if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
         echo "Wrong host: run on bodhi-backend01" && exit 1
 fi
 
+if [ ! $(id -ng) == "sysadmin-build" ] ; then
+  exec sg sysadmin-build $0
+fi
+
 # fix for rfbz#2142
 export LANG=en_US.UTF-8
 #DEBUG=1>/dev/null
@@ -30,12 +34,12 @@ else
 fi
  for r in 25 26 27 ; do
     #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-candidate $DEBUG
-    sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
-    sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
+    mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+    mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
   done
   #r=28
-  #sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
-  #sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
-  sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  rawhide -f /var/tmp/rpmfusion-${n}-comps/comps-devel.xml $DEBUG"
+  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  rawhide -f /var/tmp/rpmfusion-${n}-comps/comps-devel.xml $DEBUG
 
 done
