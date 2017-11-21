@@ -28,14 +28,14 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
- for r in 25 26 ; do
+ for r in 25 26 27 ; do
     #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-candidate $DEBUG
     sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
     sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
   done
-  r=27
-  sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
-  sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
+  #r=28
+  #sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
+  #sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG"
   sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  rawhide -f /var/tmp/rpmfusion-${n}-comps/comps-devel.xml $DEBUG"
 
 done
