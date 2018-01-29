@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# RPM Fusion Update drivers repos
+
+ELS="6 7"
+FEDORAS="26 27"
+#BRANCHED="28"
+RAWHIDE="28"
+
+
+# free drivers
+_update_free_drivers() {
+koji-rpmfusion list-tagged ${1} --quiet --latest | \
+  awk '$1 ~ /libva-intel-driver/ {print $1}' | \
+  xargs -rx koji-rpmfusion tag-build ${2}
+}
+
+# nonfree drivers
+_update_nonfree_drivers() {
+koji-rpmfusion list-tagged ${1} --quiet --latest | \
+  awk '$1 ~ /nvidia/ && $1 !~ /340xx/ && $1 !~ /304xx/ {print $1}' | \
+  xargs -rx koji-rpmfusion tag-build ${2}
+}
+
+for f in ${FEDORAS} ; do
+ _update_free_drivers( f${f}-free-updates f${f}-free-drivers )
+ _update_nonfree_drivers( f${f}-nofree-updates f${f}-nonfree-drivers )
+done
+
+for f in ${RAWHIDE} ${BRANCHED} ; do
+ _update_free_drivers( f${f}-free f${f}-free-drivers )
+ _update_nonfree_drivers( f${f}-nonfree f${f}-nonfree-drivers )
+done
+
+for e in ${ELS} ; do
+ _update_free_drivers( el${e}-free el${e}-free-drivers )
+ _update_nonfree_drivers( el${e}-nofree el${e}-nonfree-drivers )
+done
+
+# TODO mashism
