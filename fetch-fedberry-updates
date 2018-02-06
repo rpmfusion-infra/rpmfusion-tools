@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# dnf reposync fedberry packages relevant
+
+if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
+        echo "Wrong host: run on bodhi-backend01" && exit 1
+fi
+
+if [ ! $(id -ng) == "sysadmin-build" ] ; then
+  exec sg sysadmin-build $0
+fi
+
+# fix for rfbz#2142
+export LANG=en_US.UTF-8
+
+FEDORAS="27 28"
+
+for i in ${FEDORAS} ; do
+  pushd /mnt/rpmfusion_koji/koji/buildsys-override/f${i}-free/armhfp
+
+  dnf download \
+    --repofrompath fedberry,http://download.fedberry.org/releases/27/packages/armhfp/stable/ \
+    --disablerepo=* --enablerepo=fedberry \
+    raspberrypi-vc-libs raspberrypi-vc-libs-devel raspberrypi-vc-static raspberrypi-vc-utils
+
+  createrepo_c . &>/dev/null
+
+  popd &>/dev/null
+done
