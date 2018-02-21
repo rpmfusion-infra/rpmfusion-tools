@@ -29,6 +29,7 @@ chromaprint-tools
 chromium-freeworld
 chromium-libs-media-freeworld
 cmus
+compat-ffmpeg28
 compat-plone
 compat-python24
 compat-python24-elementtree
@@ -73,6 +74,7 @@ freeguide
 freetype-freeworld
 freshplayerplugin
 fs-uae
+fs-uae-arcade
 fs-uae-launcher
 fuse-exfat
 gambatte
@@ -152,6 +154,7 @@ libde265
 libdlna
 libdvbcsa
 libdvbpsi
+libdvdcss
 libfame
 libmad
 libmimic
@@ -256,9 +259,11 @@ qt5-qtwebengine-freeworld
 qtav
 qtractor
 qtractor-freeworld
+qwinff
 rfpkg
 rfpkg-minimal
 rpmfusion-free-appstream-data
+rpmfusion-free-obsolete-packages
 rpmfusion-free-package-config-smart
 rpmfusion-free-release
 rpmfusion-free-remix-kickstarts
@@ -273,6 +278,7 @@ rt3070-kmod
 rtmpdump
 scottfree
 SheepShaver
+shotcut
 simplescreenrecorder
 sinthgunt
 smc
