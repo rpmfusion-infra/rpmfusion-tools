@@ -39,6 +39,9 @@ compat-python24-libxml2
 compat-python24-lxml
 compat-python24-setuptools
 compat-zope
+comskip
+crystalhd
+crystalhd-kmod
 desmume
 devede
 devedeng
