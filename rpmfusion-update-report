@@ -9,7 +9,7 @@ echo ""
 for f in free nonfree ; do
 echo "Section $f:"
 echo "-------------"
-  for r in 25 26 27 ; do
+  for r in 26 27 28 ; do
     echo "Fedora $r"
     echo "-------------"
     echo "Pushed to testing: "
