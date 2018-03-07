@@ -7,10 +7,6 @@ if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
         echo "Wrong host: run on bodhi-backend01" && exit 1
 fi
 
-if [ getent group sysadmin-build $(id -nu) &>/dev/null ] ; then
-        echo "$0: You need to be in the sysadmin-build group to run this" && exit 4
-fi
-
 if [ ! $(id -ng) == "sysadmin-build" ] ; then
   exec sg sysadmin-build $0
 fi
