@@ -4,8 +4,8 @@
 
 ELS="6 7"
 FEDORAS="26 27"
-#BRANCHED="28"
-RAWHIDE="28"
+BRANCHED="28"
+RAWHIDE="29"
 
 
 # free drivers
@@ -22,14 +22,9 @@ koji-rpmfusion list-tagged ${1} --quiet --latest | \
   xargs -rx koji-rpmfusion tag-build ${2}
 }
 
-for f in ${FEDORAS} ; do
+for f in ${FEDORAS} ${RAWHIDE} ${BRANCHED} ; do
  _update_free_drivers( f${f}-free-updates f${f}-free-drivers )
  _update_nonfree_drivers( f${f}-nofree-updates f${f}-nonfree-drivers )
-done
-
-for f in ${RAWHIDE} ${BRANCHED} ; do
- _update_free_drivers( f${f}-free f${f}-free-drivers )
- _update_nonfree_drivers( f${f}-nonfree f${f}-nonfree-drivers )
 done
 
 for e in ${ELS} ; do
