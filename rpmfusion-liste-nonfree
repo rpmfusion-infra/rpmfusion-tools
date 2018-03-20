@@ -4,6 +4,7 @@ amrnb
 amrwb
 assaultcube
 audacious-plugins-nonfree
+broadcom-bt-firmware
 broadcom-wl
 bsnes
 caja-dropbox
@@ -20,6 +21,7 @@ dgen-sdl
 discord
 doc
 doom-shareware
+dvb-firmware
 dwarffortress
 dwarftherapist
 ec2-api-tools
@@ -71,6 +73,7 @@ Mosaic
 nautilus-dropbox
 nemo-dropbox
 netfabb-basic
+nouveau-firmware
 nrdp
 nvidia-173xx-kmod
 nvidia-304xx-kmod
@@ -111,6 +114,7 @@ raine
 realcrypt
 roadfighter
 rpmfusion-nonfree-appstream-data
+rpmfusion-nonfree-obsolete-packages
 rpmfusion-nonfree-package-config-smart
 rpmfusion-nonfree-release
 rpmfusion-nonfree-remix-kickstarts
@@ -137,6 +141,7 @@ uade
 ufoai
 ufoai-data
 unace
+unifi
 unrar
 vice
 warsow
