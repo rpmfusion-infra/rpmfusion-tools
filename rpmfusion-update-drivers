@@ -27,9 +27,14 @@ for f in ${FEDORAS} ${RAWHIDE} ${BRANCHED} ; do
  _update_nonfree_drivers f${f}-nonfree-updates f${f}-nonfree-drivers
 done
 
+for f in ${RAWHIDE} ${BRANCHED} ; do
+ _update_free_drivers f${f}-free f${f}-free-drivers
+ _update_nonfree_drivers f${f}-nonfree f${f}-nonfree-drivers
+done
+
 for e in ${ELS} ; do
  _update_free_drivers el${e}-free el${e}-free-drivers
- _update_nonfree_drivers el${e}-nofree el${e}-nonfree-drivers
+ _update_nonfree_drivers el${e}-nonfree el${e}-nonfree-drivers
 done
 
 # TODO mashism
