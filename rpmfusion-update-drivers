@@ -23,13 +23,13 @@ koji-rpmfusion list-tagged ${1} --quiet --latest | \
 }
 
 for f in ${FEDORAS} ${RAWHIDE} ${BRANCHED} ; do
- _update_free_drivers( f${f}-free-updates f${f}-free-drivers )
- _update_nonfree_drivers( f${f}-nofree-updates f${f}-nonfree-drivers )
+ _update_free_drivers f${f}-free-updates f${f}-free-drivers
+ _update_nonfree_drivers f${f}-nonfree-updates f${f}-nonfree-drivers
 done
 
 for e in ${ELS} ; do
- _update_free_drivers( el${e}-free el${e}-free-drivers )
- _update_nonfree_drivers( el${e}-nofree el${e}-nonfree-drivers )
+ _update_free_drivers el${e}-free el${e}-free-drivers
+ _update_nonfree_drivers el${e}-nofree el${e}-nonfree-drivers
 done
 
 # TODO mashism
