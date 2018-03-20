@@ -150,6 +150,7 @@ kqemu-kmod
 kwave
 lame
 lastfm
+ldoce5viewer
 libaacs
 libbdplus
 libdca
@@ -189,6 +190,7 @@ m2vrequantiser
 madplay
 mamory
 mate-applet-streamer
+medialibrary
 megamario
 miam-player
 mimms
@@ -242,6 +244,7 @@ osmose
 oxine
 pangzero
 pcsxr
+performous
 perl-Crypt-IDEA
 phonon-backend-vlc
 pianobar
@@ -260,6 +263,7 @@ qmmp-plugins-freeworld
 qmplay2
 qt5-qtwebengine-freeworld
 qtav
+qtox
 qtractor
 qtractor-freeworld
 qwinff
@@ -318,6 +322,7 @@ vagalume
 vbam
 vboxgtk
 vcdimager
+vcmi
 vdpau-video-freeworld
 vdr-burn
 vdr-dxr3
