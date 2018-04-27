@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# mashism
+#
+
+if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
+        echo "Wrong host: run on bodhi-backend01" && exit 1
+fi
+
+if [ ! $(id -ng) == "sysadmin-build" ] ; then
+  exec sg sysadmin-build $0
+fi
+
+# fix for rfbz#2142
+export LANG=en_US.UTF-8
+#DEBUG=1>/dev/null
+
+umask 002
+
+for n in nonfree ; do
+if [ -d /var/tmp/rpmfusion-${n}-comps ] ; then
+  pushd /var/tmp/rpmfusion-${n}-comps &>/dev/null
+    git remote update
+    git reset origin/master --hard
+    make
+  popd &>/dev/null
+else
+  pushd /var/tmp &>/dev/null
+    git clone https://github.com/rpmfusion-infra/rpmfusion-${n}-comps
+    pushd rpmfusion-${n}-comps &>/dev/null
+      make
+    popd &>/dev/null
+  popd &>/dev/null
+fi
+ for r in 26 27 28 29; do
+    mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-nvidia-driver $DEBUG
+ done
+done
