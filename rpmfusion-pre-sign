@@ -4,6 +4,10 @@
 
 umask 002
 
+
+# call rpmfusion-keep-latest to avoid any older build
+rpmfusion-keep-latest
+
 # bodhi01
 for f in free nonfree ; do
   for r in 26 27 28 ; do
