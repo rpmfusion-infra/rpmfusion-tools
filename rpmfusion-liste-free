@@ -42,6 +42,7 @@ compat-zope
 comskip
 crystalhd
 crystalhd-kmod
+deadbeef
 desmume
 devede
 devedeng
@@ -145,6 +146,7 @@ kodi-pvr-vbox
 kodi-pvr-vdr-vnsi
 kodi-pvr-vuplus
 kodi-pvr-wmc
+kodi-visualization-spectrum
 kplayer
 kqemu
 kqemu-kmod
@@ -338,6 +340,7 @@ vdr-softhddevice
 vdr-softhddevice-openglosd
 vdrsync
 vdr-tvguideng
+vdr-vaapidevice
 vdr-weatherforecast
 vdr-xineliboutput
 vidcutter
