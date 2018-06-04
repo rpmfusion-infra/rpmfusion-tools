@@ -3,7 +3,7 @@
 # rpmfusion-post-sign
 # 
 
-FEDORA_STABLES="26 27 28"
+FEDORA_STABLES="27 28"
 FEDORA_BRANCH=""
 EL_STABLES="6 7"
 

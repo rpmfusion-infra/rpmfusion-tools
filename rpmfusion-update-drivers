@@ -3,8 +3,8 @@
 # RPM Fusion Update drivers repos
 
 ELS="6 7"
-FEDORAS="26 27"
-BRANCHED="28"
+FEDORAS="27 28"
+BRANCHED=""
 RAWHIDE="29"
 
 
