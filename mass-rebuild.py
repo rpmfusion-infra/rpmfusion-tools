@@ -22,13 +22,16 @@ flavor = 'nonfree'
 buildtag = 'f29-nonfree-build' # tag to build from
 targets = ['f29-nonfree-candidate', 'rawhide-nonfree', 'f29-nonfree'] # tag to build from
 epoch = '2018-07-24 06:00:00.000000' # rebuild anything not built after this date
-user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
+user = 'RPM Fusion Release Engineering <sergio@serjux.com>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild'
-workdir = os.path.expanduser('~/massbuild')
+workdir = os.path.expanduser('~/rpmfusion/new/nonfree/massrebuild')
 enviro = os.environ
-target = 'f29-free'
+target = 'f29-nonfree'
 
-pkg_skip_list = ['fedora-release', 'fedora-repos', 'generic-release', 'redhat-rpm-config', 'shim', 'shim-signed', 'kernel', 'linux-firmware', 'grub2', 'openh264', 'rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion', 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data', 'rfpkg-minimal', 'rfpkg']
+pkg_skip_list = ['fedora-release', 'fedora-repos', 'generic-release', 'redhat-rpm-config', 'shim', 'shim-signed',
+'kernel', 'linux-firmware', 'grub2', 'openh264', 'rpmfusion-free-release', 'rpmfusion-nonfree-release',
+'buildsys-build-rpmfusion', 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
+'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts', 'lpf-spotify-client']
 
 # Define functions
 
@@ -72,17 +75,23 @@ kojisession = koji.ClientSession('http://koji.rpmfusion.org/kojihub')
 pkgs = kojisession.listPackages(buildtag, inherited=True)
 
 # reduce the list to those that are not blocked and sort by package name
-pkgs = sorted([pkg for pkg in pkgs if not pkg['blocked']],
-              key=operator.itemgetter('package_name'))
+pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and
+            pkg['tag_name'] == target and pkg['package_name'] not in pkg_skip_list)],
+            key=operator.itemgetter('package_name'))
 
 print('Checking %s packages...' % len(pkgs))
+
+for pkg in pkgs:
+    name = pkg['package_name']
+    if name not in pkg_skip_list:
+        print("%s" % (name))
 
 # Loop over each package
 for pkg in pkgs:
     name = pkg['package_name']
     id = pkg['package_id']
 
-    # some package we just dont want to ever rebuild
+    # (not need anymore just safety rule) some package we just dont want to ever rebuild
     if name in pkg_skip_list:
         print('Skipping %s, package is explicitely skipped')
         continue
@@ -109,7 +118,7 @@ for pkg in pkgs:
 
     # Check out git
     fname = flavor + '/' + name
-    fedpkgcmd = ['rfpkg', '--user', 'leigh123linux', 'clone', fname]
+    fedpkgcmd = ['rfpkg', 'clone', fname]
     print('Checking out %s' % name)
     if runme(fedpkgcmd, 'rfpkg', name, enviro):
         continue
