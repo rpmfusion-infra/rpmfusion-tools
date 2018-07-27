@@ -33,7 +33,7 @@ pkg_skip_list = ['fedora-release', 'fedora-repos', 'generic-release', 'redhat-rp
 'buildsys-build-rpmfusion', 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
 'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
-'rpmfusion-nonfree-obsolete-packages']
+'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts']
 
 # Define functions
 
