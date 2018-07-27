@@ -13,7 +13,6 @@ from __future__ import print_function
 import koji
 import os
 import subprocess
-import sys
 import operator
 
 # Set some variables
@@ -48,7 +47,7 @@ def runme(cmd, action, pkg, env, cwd=workdir):
     try:
         subprocess.check_call(cmd, env=env, cwd=cwd)
     except subprocess.CalledProcessError, e:
-        sys.stderr.write('%s failed %s: %s\n' % (pkg, action, e))
+        print('%s failed %s: %s\n' % (pkg, action, e))
         return 1
     return 0
 
@@ -64,7 +63,7 @@ def runmeoutput(cmd, action, pkg, env, cwd=workdir):
         pid = subprocess.Popen(cmd, env=env, cwd=cwd,
                                stdout=subprocess.PIPE)
     except BaseException, e:
-        sys.stderr.write('%s failed %s: %s\n' % (pkg, action, e))
+        print('%s failed %s: %s\n' % (pkg, action, e))
         return 0
     result = pid.communicate()[0].rstrip('\n')
     return result
@@ -127,13 +126,19 @@ for pkg in pkgs:
 
     # Check for a checkout
     if not os.path.exists(os.path.join(workdir, name)):
-        sys.stderr.write('%s failed checkout.\n' % name)
+        print('%s failed checkout.\n' % name)
         continue
 
     # Check for a noautobuild file
     if os.path.exists(os.path.join(workdir, name, 'noautobuild')):
         # Maintainer does not want us to auto build.
         print('Skipping %s due to opt-out' % name)
+        continue
+
+    # Check for dead.package file
+    if os.path.exists(os.path.join(workdir, name, 'dead.package')):
+        # dead.package found we should skip or we may skip safely 
+        print('Skipping %s due dead.package' % name)
         continue
 
     # Find the spec file
@@ -145,7 +150,7 @@ for pkg in pkgs:
             break
 
     if not spec:
-        sys.stderr.write('%s failed spec check\n' % name)
+        print('%s failed spec check\n' % name)
         continue
 
     # rpmdev-bumpspec
@@ -153,6 +158,7 @@ for pkg in pkgs:
                 os.path.join(workdir, name, spec)]
     print('Bumping %s' % spec)
     if runme(bumpspec, 'bumpspec', name, enviro):
+        print('bumpspec %s failed \n' % bumpspec)
         continue
 
     # git commit
