@@ -77,8 +77,7 @@ kojisession = koji.ClientSession('http://koji.rpmfusion.org/kojihub')
 pkgs = kojisession.listPackages(buildtag, inherited=True)
 
 # reduce the list to those that are not blocked and sort by package name
-pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and
-            pkg['tag_name'] == target and pkg['package_name'] not in pkg_skip_list)],
+pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and pkg['tag_name'] == target)],
             key=operator.itemgetter('package_name'))
 
 print('Checking %s packages...' % len(pkgs))
@@ -93,9 +92,9 @@ for pkg in pkgs:
     name = pkg['package_name']
     id = pkg['package_id']
 
-    # (not need anymore just safety rule) some package we just dont want to ever rebuild
+    # some package we just dont want to ever rebuild
     if name in pkg_skip_list:
-        print('Skipping %s, package is explicitely skipped')
+        print('Skipping %s, package is explicitely skipped' % name)
         continue
 
     # Query to see if a build has already been attempted
@@ -133,13 +132,13 @@ for pkg in pkgs:
     # Check for a noautobuild file
     if os.path.exists(os.path.join(workdir, name, 'noautobuild')):
         # Maintainer does not want us to auto build.
-        print('Skipping %s due to opt-out' % name)
+        print('Skipping %s, due to opt-out' % name)
         continue
 
     # Check for dead.package file
     if os.path.exists(os.path.join(workdir, name, 'dead.package')):
-        # dead.package found we should skip or we may skip safely 
-        print('Skipping %s due dead.package' % name)
+        # dead.package found we should skip or we may skip safely
+        print('Skipping %s, due dead.package' % name)
         continue
 
     # Find the spec file
