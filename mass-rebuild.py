@@ -144,24 +144,24 @@ for pkg in pkgs:
     # Find the spec file
     files = os.listdir(os.path.join(workdir, name))
     spec = ''
-    for file in files:
-        if file.endswith('.spec'):
-            spec = os.path.join(workdir, name, file)
+    for filename in files:
+        if filename.endswith('.spec'):
+            spec = filename
             break
 
     if not spec:
-        print('%s failed spec check\n' % name)
+        print('%s failed spec check !\n' % name)
         continue
 
     # rpmdev-bumpspec
-    bumpspec = ['rpmdev-bumpspec', '-u', user, '-c', comment,
-                os.path.join(workdir, name, spec)]
+    bumpspec = ['rpmdev-bumpspec', '-u', user, '-c', comment, spec]
     print('Bumping %s' % spec)
-    if runme(bumpspec, 'bumpspec', name, enviro):
+    if runme(bumpspec, 'bumpspec', name, enviro,
+        cwd=os.path.join(workdir, name)):
         print('bumpspec %s failed \n' % bumpspec)
         continue
 
-    # git commit
+    # git commit and push
     commit = ['rfpkg', 'commit', '-s', '-p', '-m', comment]
     print('Committing changes for %s' % name)
     if runme(commit, 'commit', name, enviro,
