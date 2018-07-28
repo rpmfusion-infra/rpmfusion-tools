@@ -17,15 +17,15 @@ import operator
 
 # Set some variables
 # Some of these could arguably be passed in as args.
-flavor = 'nonfree'
-buildtag = 'f29-nonfree-build' # tag to build from
-targets = ['f29-nonfree-candidate', 'rawhide-nonfree', 'f29-nonfree'] # tag to build from
+flavor = 'free'
+buildtag = 'f29-%s-build' % flavor  # tag to build from
+targets = ['f29-%s-candidate' % flavor , 'rawhide-%s' % flavor, 'f29-%s' % flavor] # tag to build from
 epoch = '2018-07-24 06:00:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergio@serjux.com>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/nonfree/massrebuild')
 enviro = os.environ
-target = 'f29-nonfree'
+target = 'f29-%s' % flavor
 
 pkg_skip_list = ['fedora-release', 'fedora-repos', 'generic-release', 'redhat-rpm-config', 'shim', 'shim-signed',
 'kernel', 'linux-firmware', 'grub2', 'openh264', 'rpmfusion-free-release', 'rpmfusion-nonfree-release',
