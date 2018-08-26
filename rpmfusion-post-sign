@@ -4,7 +4,7 @@
 # 
 
 FEDORA_STABLES="27 28"
-FEDORA_BRANCH=""
+FEDORA_BRANCH="29"
 EL_STABLES="6 7"
 
 for f in free nonfree ; do
