@@ -8,7 +8,7 @@ FEDORA_BRANCH="29"
 EL_STABLES="6 7"
 
 for f in free nonfree ; do
-  for r in ${FEDORA_STABLES} ; do
+  for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ; do
     find /mnt/koji/mash/${f}/${r}-updates-candidate -name "*.rpm" | xargs -r koji-rpmfusion import-sig --write
   done
   for r in ${EL_STABLES} ; do
