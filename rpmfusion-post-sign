@@ -21,7 +21,7 @@ rpmfusion-update-report | mail -r noreply@rpmfusion.org -s "RPM Fusion update re
 
 for f in free nonfree ; do
   for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ; do
-    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep nvidia |grep -v nvidia-340xx |grep -v nvidia-390xx | xargs -r koji-rpmfusion tag-build f${r}-${f}-tainted
+    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep nvidia |grep -v nvidia-video-codec-sdk | grep -v nvidia-340xx |grep -v nvidia-390xx | xargs -r koji-rpmfusion tag-build f${r}-${f}-tainted
     koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep  libdvdcss| xargs -r koji-rpmfusion move-build f${r}-${f}-updates-testing f${r}-${f}-tainted
     koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep -v chromium-freeworld|grep -v nvidia| xargs -r koji-rpmfusion move-build f${r}-${f}-updates-testing f${r}-${f}-updates
     koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-updates-testing
