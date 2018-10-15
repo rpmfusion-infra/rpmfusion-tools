@@ -38,7 +38,7 @@ done
 
 # There is a need for a short delay before to fixup the branch push
 if [ ! x${FEDORA_BRANCH} == x ] ; then
-  wait 10
+  sleep 10
 fi
 
 for f in free nonfree ; do
