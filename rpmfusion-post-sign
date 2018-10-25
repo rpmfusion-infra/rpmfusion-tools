@@ -3,8 +3,8 @@
 # rpmfusion-post-sign
 # 
 
-FEDORA_STABLES="27 28"
-FEDORA_BRANCH="29"
+FEDORA_STABLES="27 28 29"
+FEDORA_BRANCH=""
 EL_STABLES="6 7"
 
 for f in free nonfree ; do
