@@ -2,15 +2,29 @@
 
 # update-appstream nvidia-driver steam
 
+set -e
+
+tmp=$(mktemp -d)
+
+trap cleanup EXIT
+cleanup() {
+    set +e
+    [ -z "$tmp" -o ! -d "$tmp" ] || rm -rf "$tmp"
+}
+
+if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
+        echo "Wrong host: run on bodhi-backend01" && exit 1
+fi
+
 for i in nvidia-driver steam ; do
   for f in 28 29 30 ; do
-    pushd /pub/nonfree/fedora/${i}/${f} &>/dev/null
-      appstream-builder --origin=rpmfusion.org --basename=appstream --cache-dir=/tmp/asb-cache --enable-hidpi --min-icon-size=32 --output-dir=/tmp/asb-md --packages-dir=x86_64/ --temp-dir=/tmp/asb-icons
-      [ -e /tmp/asb-md/appstream-icons.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames /tmp/asb-md/appstream-icons.tar.gz x86_64/repodata/
-      [ -e /tmp/asb-md/appstream-ignore.xml.gz ] && modifyrepo_c --no-compress --simple-md-filenames /tmp/asb-md/appstream-ignore.xml.gz x86_64/repodata/
-      [ -e /tmp/asb-md/appstream-screenshots.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames /tmp/asb-md/appstream-screenshots.tar.gz x86_64/repodata/
-      modifyrepo_c --no-compress --simple-md-filenames /tmp/asb-md/appstream.xml.gz x86_64/repodata/
-      rm -rf /tmp/asb-md
+    pushd /mnt/koji/mash/nonfree/${f}-${i} &>/dev/null
+    appstream-builder --origin=rpmfusion.org --basename=appstream --cache-dir=${tmp}/asb-md --enable-hidpi --min-icon-size=32 --output-dir=${tmp}/asb-md --packages-dir=x86_64/ --temp-dir=${tmp}/asb-icons
+      [ -e ${tmp}/asb-md/appstream-icons.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-icons.tar.gz x86_64/repodata/
+      [ -e ${tmp}/asb-md/appstream-ignore.xml.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-ignore.xml.gz x86_64/repodata/
+      [ -e ${tmp}/asb-md/appstream-screenshots.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-screenshots.tar.gz x86_64/repodata/
+      modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream.xml.gz x86_64/repodata/
+      rm -rf ${tmp}/asb-md
     popd &>/dev/null
   done
 done
