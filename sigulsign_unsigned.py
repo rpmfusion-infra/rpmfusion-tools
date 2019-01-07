@@ -35,12 +35,11 @@ CLIENTCA = os.path.expanduser('~/.rpmfusion-upload-ca.cert')
 CLIENTCERT = os.path.expanduser('~/.rpmfusion.cert')
 
 KEYS = {
-    'rpmfusion-fedora-free-27': {'id': '7d838377', 'v3': True},
+    'rpmfusion-cuda-2019': {'id': 'c8d47bb7', 'v3': True},
     'rpmfusion-fedora-free-28': {'id': '09eab3f2', 'v3': True},
     'rpmfusion-fedora-free-29': {'id': '42f19ed0', 'v3': True},
     'rpmfusion-fedora-free-30': {'id': 'c0aeda6e', 'v3': True},
     'rpmfusion-fedora-free-31': {'id': 'c481937a', 'v3': True},
-    'rpmfusion-fedora-nonfree-27': {'id': 'b9c13282', 'v3': True},
     'rpmfusion-fedora-nonfree-28': {'id': '7f858107', 'v3': True},
     'rpmfusion-fedora-nonfree-29': {'id': 'd6841af8', 'v3': True},
     'rpmfusion-fedora-nonfree-30': {'id': '1d14a795', 'v3': True},
