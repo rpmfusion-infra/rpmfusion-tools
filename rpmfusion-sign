@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# rpmfusion-sign
+
+set -e
+
+FEDORAS="28 29"
+BRANCHED=""
+RAWHIDE=""
+ELS="6 7 8"
+SIGUL_VERBOSE="-v -v "
+
+rm -f /tmp/sigul-*.log
+
+_sigul_sign() {
+local _sigul_tag=$1
+local _sigul_key=$2
+koji-rpmfusion list-tagged ${_sigul_tag} --quiet | awk '{print $1}' | tee /tmp/sigul-${_sigul_tag}.log
+sigulsign_unsigned.py --tag ${_sigul_tag} --arch koji-rpmfusion --just-list --gpg-agent ${_sigul_key} | xargs -r sigul ${SIGUL_VERBOSE} sign-rpms --store-in-koji --koji-only -k koji-rpmfusion --v3-signature ${_sigul_key}
+}
+
+for j in free nonfree ; do
+  for i in ${FEDORAS} ${BRANCHED} ; do
+    echo "------------------"
+    echo "Fedora ${i} - ${j}"
+    echo "------------------"
+    _sigul_sign f${i}-${j}-updates-candidate rpmfusion-fedora-${j}-${i}
+  done
+
+  for i in ${ELS} ; do
+    echo "------------------"
+    echo "EL ${i} - ${j}"
+    echo "------------------"
+    _sigul_sign el${i}-${j}-candidate rpmfusion-el-${j}-${i}
+  done
+done
+
+for i in 29 ${BRANCHED} ; do
+  # Sign CUDA namespace
+  echo "------------------"
+  echo "Fedora ${i} - CUDA"
+  echo "------------------"
+  _sigul_sign f${i}-cuda-candidate rpmfusion-cuda-2019
+
+  # Sign RPI namespace
+  echo "------------------"
+  echo "Fedora ${i} - RPI"
+  echo "------------------"
+  _sigul_sign f${i}-rpi-candidate rpmfusion-fedora-free-${i}
+done
+
+
