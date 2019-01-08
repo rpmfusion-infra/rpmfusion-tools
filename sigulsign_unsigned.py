@@ -46,8 +46,10 @@ KEYS = {
     'rpmfusion-fedora-nonfree-31': {'id': '54a86092', 'v3': True},
     'rpmfusion-el-free-6': {'id': '849c449f', 'v3': True},
     'rpmfusion-el-free-7': {'id': 'f5cf6c1e', 'v3': True},
+    'rpmfusion-el-free-8': {'id': '158b3811', 'v3': True},
     'rpmfusion-el-nonfree-6': {'id': '5568bbb2', 'v3': True},
     'rpmfusion-el-nonfree-7': {'id': 'a3108f6c', 'v3': True},
+    'rpmfusion-el-nonfree-8': {'id': 'bdda8475', 'v3': True},
 }
 
 
