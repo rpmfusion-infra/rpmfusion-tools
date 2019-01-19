@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# clean-up
+
+# scratch-build
+touch  /tmp/timestamp-3-months-ago -d '3 months ago'
+find /srv/nfs/rpmfusion_koji/koji/scratch  -maxdepth 2 -type d ! -newer /tmp/timestamp-3-months-ago -exec rm -rf {} ';'
+
+# repo
+touch  /tmp/timestamp-2-weeks-ago -d '2 weeks ago'
+find /srv/nfs/rpmfusion_koji/koji/repos  -maxdepth 2 -type d ! -newer /tmp/timestamp-2-weeks-ago -exec rm -rf {} ';'
+
+# cli-build
+find /srv/nfs/rpmfusion_koji/koji/work/cli-build  -maxdepth 2 -type d ! -newer /tmp/timestamp-2-weeks-ago -exec rm -rf {} ';'
+
+# Remove older build
+#find /srv/nfs/rpmfusion_koji/koji/packages -maxdepth 3 -type d -name "*fc24" -exec rm -rf {} ';'
+
+
+# logs
+#touch  /tmp/timestamp-13-months-ago -d '13 months ago'
