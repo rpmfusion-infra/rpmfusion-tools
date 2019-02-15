@@ -247,9 +247,9 @@ class SigulHelper(object):
 
         if password is None:
             try:
-                krb_realm = "FEDORAPROJECT.ORG"
+                krb_realm = "RPMFUSION.ORG"
                 if use_staging:
-                    krb_realm = "STAGING.FEDORAPROJECT.ORG"
+                    krb_realm = "STAGING.RPMFUSION.ORG"
 
                 fas_username = cccolutils.get_user_for_realm(krb_realm)
             except:
