@@ -3,10 +3,10 @@
 # rpmfusion-sign
 
 FEDORAS="28 29"
-BRANCHED=""
+BRANCHED="30"
 RAWHIDE="30"
 ELS="6 7 8"
-SIGUL_VERBOSE="-v -v "
+SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 10 -v "
 
 _sigul_sign() {
 local _sigul_tag=$1
@@ -15,7 +15,7 @@ rm -f /tmp/sigul-${_sigul_tag}.log
 koji-rpmfusion list-tagged ${_sigul_tag} --quiet | awk '{print $1}' | tee /tmp/sigul-${_sigul_tag}.log
 local _sigul_list=$(cat /tmp/sigul-${_sigul_tag}.log 2>/dev/null| wc -l)
 if [ x${_sigul_list} != x0 ] ; then
-  sigulsign_unsigned.py --tag ${_sigul_tag} --arch koji-rpmfusion ${_sigul_key}
+  sigulsign_unsigned.py --tag ${_sigul_tag} --arch koji-rpmfusion ${_sigul_key} ${SIGUL_VERBOSE}
 fi
 }
 
