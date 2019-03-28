@@ -11,6 +11,7 @@ for arch in $arches ; do
 # Dispatch
   case $arch in 
     i386)
+        [ -d i386 ] || continue
       for f in *i?86.rpm; do
         mv ${f} i386
       done
@@ -19,6 +20,7 @@ for arch in $arches ; do
       done
       ;;
     armhfp)
+        [ -d armhfp ] || continue
       for f in *.armv7h{,n}l.rpm ; do
         mv ${f} armhfp
       done
@@ -27,6 +29,7 @@ for arch in $arches ; do
       done
       ;;
     *)
+        [ -d $arch ] || continue
       for f in *${arch}.rpm ; do
         mv ${f} ${arch}
       done
