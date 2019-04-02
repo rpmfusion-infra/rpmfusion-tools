@@ -4,7 +4,7 @@
 # regen every rpmfusion repos
 
 for s in free nonfree ; do
-  for d in 28 29 30; do
+  for d in 28 29 30 31; do
     koji-rpmfusion regen-repo f${d}-${s}-build --nowait &>/dev/null
   done
   for d in 6 7 ; do
