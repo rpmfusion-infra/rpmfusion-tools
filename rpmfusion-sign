@@ -2,9 +2,9 @@
 
 # rpmfusion-sign
 
-FEDORAS="28 29"
-BRANCHED="30"
-RAWHIDE="30"
+FEDORAS="28 29 30"
+BRANCHED=""
+RAWHIDE="31"
 ELS="6 7 8"
 SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 10 -v "
 
@@ -20,7 +20,7 @@ fi
 }
 
 for j in free nonfree ; do
-  for i in ${FEDORAS} ${BRANCHED} ; do
+  for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE}; do
     echo "------------------"
     echo "Fedora ${i} - ${j}"
     echo "------------------"
@@ -35,7 +35,7 @@ for j in free nonfree ; do
   done
 done
 
-for i in 29 ${BRANCHED} ${RAWHIDE} ; do
+for i in 29 30 ${BRANCHED} ${RAWHIDE} ; do
   # Sign CUDA namespace
   echo "------------------"
   echo "Fedora ${i} - CUDA"
