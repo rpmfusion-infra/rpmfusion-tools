@@ -9,7 +9,7 @@ fi
 umask 002
 
 for i in free nonfree ; do
-  for j in 6 7 ; do
+  for j in 6 7 8 ; do
     mkdir -p /pub/${i}/el/updates/testing/${j}
     sg sysadmin-build "rsync -avH --no-p -O /mnt/koji/mash/${i}/el${j}-testing/* /pub/${i}/el/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
     sg sysadmin-build "rsync -avH --no-p -O /mnt/koji/mash/${i}/el${j}/* /pub/${i}/el/updates/${j}/ --delete | grep -v -e repodata -e repoview"
