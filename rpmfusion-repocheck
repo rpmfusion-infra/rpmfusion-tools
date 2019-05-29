@@ -5,7 +5,7 @@
 base_dir=/mnt/koji/mash
 
 for f in free nonfree; do
-  for v in 28-updates-testing 28-updates 29-updates-testing 29-updates-testing ; do
+  for v in 29-updates-testing 29-updates 30-updates-testing 30-updates ; do
     for a in armhfp i386 x86_64 aarch64 ppc64le ; do
       [ -f ${base_dir}/${f}/${v}/${a}/repodata/repomd.xml ] || echo "failed ${v}/${a} for $f"
     done
