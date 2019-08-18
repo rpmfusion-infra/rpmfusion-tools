@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# rpmfusion-old-sign
+
+echo Fedora free 29
+find /mnt/koji/mash/free/29-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=BD127385C312090FF2F35FA11191A7C442F19ED0
+echo Fedora free 30
+find /mnt/koji/mash/free/30-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=C0AEDA6E
+echo Fedora free 31
+find /mnt/koji/mash/free/31-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=C481937A
+echo Fedora free 32
+find /mnt/koji/mash/free/32-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=7BDA98EF593050A34B1697ABA0EE9D83100BCD92
+echo Fedora nonfree 29
+find /mnt/koji/mash/nonfree/29-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=18A50439A072A393E47178D49C009EABD6841AF8
+echo Fedora nonfree 30
+find /mnt/koji/mash/nonfree/30-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=1D14A795
+echo Fedora nonfree 31
+find /mnt/koji/mash/nonfree/31-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=54A86092
+echo Fedora nonfree 32
+find /mnt/koji/mash/nonfree/32-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=FE5A9393CB6E271B5A90CC1B0D9A76996DC1BE18
+echo EL free 6
+find /mnt/koji/mash/free/el6-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=849C449F
+echo EL free 7
+find /mnt/koji/mash/free/el7-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=F5CF6C1E
+echo EL free 8
+find /mnt/koji/mash/free/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=158B3811
+echo EL nonfree 6
+find /mnt/koji/mash/nonfree/el6-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=5568BBB2
+echo EL nonfree 7
+find /mnt/koji/mash/nonfree/el7-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=A3108F6C
+echo EL nonfree 8
+find /mnt/koji/mash/nonfree/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign --addsign -key-id=BDDA8475
