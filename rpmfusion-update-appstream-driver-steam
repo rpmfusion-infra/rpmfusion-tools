@@ -12,8 +12,8 @@ cleanup() {
     [ -z "$tmp" -o ! -d "$tmp" ] || rm -rf "$tmp"
 }
 
-if [ x${HOSTNAME} != "xbodhi-backend01.online.rpmfusion.net" ] ; then
-        echo "Wrong host: run on bodhi-backend01" && exit 1
+if [ x${HOSTNAME} != "xbuildvm-01.online.rpmfusion.net" ] ; then
+        echo "${0}: Wrong host: run on buildvm-01" && exit 1
 fi
 
 for i in nvidia-driver steam ; do
