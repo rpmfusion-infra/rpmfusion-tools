@@ -16,7 +16,7 @@ echo "-------------"
     koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}'
     echo ""
     echo "Pushed to stable: "
-    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | grep -v nvidia |grep -v chromium-freeworld | awk '{print $1}'
+    koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | grep -v nvidia |grep -v chromium-libs-media-freeworld | awk '{print $1}'
     echo ""
   done
   echo ""
@@ -27,7 +27,7 @@ echo "-------------"
     koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}'
     echo ""
     echo "Pushed to stable: "
-    koji-rpmfusion list-tagged el${r}-${f}-testing --quiet |grep -v chromium-freeworld | awk '{print $1}'
+    koji-rpmfusion list-tagged el${r}-${f}-testing --quiet |grep -v chromium-libs-media-freeworld | awk '{print $1}'
     echo ""
   done
 done
