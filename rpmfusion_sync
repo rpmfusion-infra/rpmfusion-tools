@@ -13,7 +13,7 @@ for i in free nonfree ; do
   #j=31
   #sg sysadmin-build "rsync -avHO --no-p --delete /mnt/koji/mash/${i}/branch/* /pub/${i}/fedora/development/${j}/Everything | grep -v -e repodata -e repoview"
   #sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates-testing/* /pub/${i}/fedora/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
-  for j in 29 30 31; do
+  for j in 30 31; do
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates-testing/* /pub/${i}/fedora/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates/* /pub/${i}/fedora/updates/${j}/ --delete | grep -v -e repodata -e repoview"
   done

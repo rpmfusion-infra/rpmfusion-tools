@@ -9,7 +9,7 @@ echo ""
 for f in free nonfree ; do
 echo "Section $f:"
 echo "-------------"
-  for r in 29 30 31; do
+  for r in 30 31; do
     echo "Fedora $r"
     echo "-------------"
     echo "Pushed to testing: "
@@ -32,7 +32,7 @@ echo "-------------"
   done
 done
 echo ""
-echo "Theses packages will be available in main mirror in few hours. Wait for local mirrors to sync"
+echo "Theses packages will be available in main mirror in a few hours. Wait for local mirrors to sync"
 echo "Please report any issue to https://bugzilla.rpmfusion.org"
 echo ""
 
