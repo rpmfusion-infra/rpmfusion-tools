@@ -21,7 +21,7 @@ import operator
 flavor = 'free'
 buildtag = 'f32-%s-build' % flavor  # tag to build from
 targets = ['f32-%s-candidate' % flavor , 'rawhide-%s' % flavor, 'f32-%s' % flavor] # tag to build from
-epoch = '2020-02-03 06:00:00.000000' # rebuild anything not built after this date
+epoch = '2020-02-24 06:00:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/nonfree/massrebuild')
