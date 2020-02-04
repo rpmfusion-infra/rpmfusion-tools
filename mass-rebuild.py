@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 #
 # mass-rebuild.py - A utility to rebuild packages.
 #
@@ -13,6 +13,7 @@ from __future__ import print_function
 import koji
 import os
 import subprocess
+import sys
 import operator
 
 # Set some variables
@@ -47,7 +48,7 @@ def runme(cmd, action, pkg, env, cwd=workdir):
 
     try:
         subprocess.check_call(cmd, env=env, cwd=cwd)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError as e:
         print('%s failed %s: %s\n' % (pkg, action, e))
         return 1
     return 0
@@ -62,8 +63,8 @@ def runmeoutput(cmd, action, pkg, env, cwd=workdir):
 
     try:
         pid = subprocess.Popen(cmd, env=env, cwd=cwd,
-                               stdout=subprocess.PIPE)
-    except BaseException, e:
+                               stdout=subprocess.PIPE, encoding='utf8')
+    except BaseException as e:
         print('%s failed %s: %s\n' % (pkg, action, e))
         return 0
     result = pid.communicate()[0].rstrip('\n')
