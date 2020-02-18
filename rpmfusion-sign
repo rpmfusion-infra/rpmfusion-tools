@@ -21,10 +21,14 @@ fi
 
 for j in free nonfree ; do
   for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE}; do
+    kn=$i
+    if [ $i -ge 33 ] ; then
+	    kn=2020
+    fi
     echo "------------------"
     echo "Fedora ${i} - ${j}"
     echo "------------------"
-    _sigul_sign f${i}-${j}-updates-candidate rpmfusion-fedora-${j}-${i}
+    _sigul_sign f${i}-${j}-updates-candidate rpmfusion-fedora-${j}-${kn}
   done
 
   for i in ${ELS} ; do
