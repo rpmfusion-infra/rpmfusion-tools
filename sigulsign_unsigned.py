@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 #
 # sigulsign_unsigned.py - A utility to use sigul to sign rpms in koji
 #
