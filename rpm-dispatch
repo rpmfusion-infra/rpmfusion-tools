@@ -4,44 +4,53 @@
 
 arches="x86_64 i386 ppc64le ppc64 aarch64 armhfp"
 
+shopt -s nullglob
+
 rm -f *s390x.rpm
 
 for arch in $arches ; do
 
 # Dispatch
-  case $arch in 
+  case "$arch" in 
     i386)
         [ -d i386 ] || continue
       for f in *i?86.rpm; do
-        mv ${f} i386
+        mv "${f}" i386
       done
       for f in *noarch.rpm ; do
-        ln ${f} i386
+        ln "${f}" i386
       done
       ;;
     armhfp)
         [ -d armhfp ] || continue
       for f in *.armv7h{,n}l.rpm ; do
-        mv ${f} armhfp
+        mv "${f}" armhfp
       done
       for f in *noarch.rpm ; do
-        ln ${f} armhfp
+        ln "${f}" armhfp
       done
       ;;
     *)
         [ -d $arch ] || continue
       for f in *${arch}.rpm ; do
-        mv ${f} ${arch}
+        mv "${f}" ${arch}
       done
       for f in *noarch.rpm ; do
-        ln ${f} ${arch}
+        ln "${f}" ${arch}
       done
       ;;
   esac
 
 # Createrepo
 pushd ${arch}
-  createrepo .
+  if [ -f $(which createrepo_c) ] ; then
+    createrepo_c .
+  elif [ -f $(which createrepo) ] ; then
+    createrepo .
+  else 
+    echo "no createrepo"
+    exit 2
+  fi
 popd &>/dev/null
 
 done
