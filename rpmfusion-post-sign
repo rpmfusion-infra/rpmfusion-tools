@@ -3,7 +3,7 @@
 # rpmfusion-post-sign
 # 
 
-FEDORA_STABLES="30 31 32"
+FEDORA_STABLES="31 32"
 FEDORA_BRANCH=""
 FEDORA_RAWHIDE="33"
 EL_STABLES="6 7 8"
@@ -47,7 +47,7 @@ for f in free nonfree ; do
 done
 
 # RPI
-for r in 30 31 ; do
+for r in 31 32; do
   f=rpi
   koji-rpmfusion list-tagged f${r}-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build f${r}-${f}-candidate f${r}-${f}
 done

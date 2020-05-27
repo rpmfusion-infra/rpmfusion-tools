@@ -36,11 +36,9 @@ CLIENTCERT = os.path.expanduser('~/.rpmfusion.cert')
 
 KEYS = {
     'rpmfusion-cuda-2019': {'id': 'c8d47bb7', 'v3': True},
-    'rpmfusion-fedora-free-30': {'id': 'c0aeda6e', 'v3': True},
     'rpmfusion-fedora-free-31': {'id': 'c481937a', 'v3': True},
     'rpmfusion-fedora-free-32': {'id': '100bcd92', 'v3': True},
     'rpmfusion-fedora-free-2020': {'id': 'd651ff2e', 'v3': True},
-    'rpmfusion-fedora-nonfree-30': {'id': '1d14a795', 'v3': True},
     'rpmfusion-fedora-nonfree-31': {'id': '54a86092', 'v3': True},
     'rpmfusion-fedora-nonfree-32': {'id': '6dc1be18', 'v3': True},
     'rpmfusion-fedora-nonfree-2020': {'id': '94843c65', 'v3': True},

@@ -2,7 +2,7 @@
 
 # rpmfusion-sign
 
-FEDORAS="30 31 32"
+FEDORAS="31 32"
 BRANCHED=""
 RAWHIDE="33"
 ELS="6 7 8"
@@ -39,7 +39,7 @@ for j in free nonfree ; do
   done
 done
 
-for i in 30 31 ${BRANCHED} ${RAWHIDE} ; do
+for i in 31 32 ${BRANCHED} ${RAWHIDE} ; do
   # Sign CUDA namespace
   echo "------------------"
   echo "Fedora ${i} - CUDA"
