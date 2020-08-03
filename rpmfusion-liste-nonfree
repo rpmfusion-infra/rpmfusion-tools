@@ -22,9 +22,12 @@ dgen-sdl
 discord
 doc
 doom-shareware
+dptfxtract
+dream
 dvb-firmware
 dwarffortress
 dwarftherapist
+dynamips
 ec2-api-tools
 edgar
 EmptyEpsilon
@@ -45,6 +48,7 @@ gnome-video-arcade
 gstreamer1-plugins-bad-nonfree
 gstreamer-plugins-bad-nonfree
 gsview
+intel-media-driver
 jad
 kisslicer
 larabie-fonts
@@ -66,10 +70,13 @@ mame
 mame-data-extras
 mari0
 mednafen
+megasync
 meka
+mendeleydesktop
 mess
 mock-rpmfusion-nonfree
 mod_h264_streaming
+mopidy-spotify
 Mosaic
 nautilus-dropbox
 nemo-dropbox
@@ -79,6 +86,7 @@ nrdp
 nvidia-173xx-kmod
 nvidia-304xx-kmod
 nvidia-340xx-kmod
+nvidia-390xx-kmod
 nvidia-96xx-kmod
 nvidia-beta-kmod
 nvidia-kmod
@@ -86,11 +94,13 @@ nvidia-modprobe
 nvidia-newest-kmod
 nvidia-persistenced
 nvidia-settings
+nvidia-settings-390xx
 nvidia-xconfig
 OCE
 ogre-cg
 openclonk
 OpenEXR_Viewers-nonfree
+openhantek
 openmotif
 openni-nite
 paintdotnet
@@ -108,11 +118,13 @@ psb-firmware
 psb-kmod
 pushover
 pyskool
+python-pyspotify
 qmc2
 qtads
 r5u87x-firmware
 raine
 realcrypt
+ripcord
 roadfighter
 rpmfusion-nonfree-appstream-data
 rpmfusion-nonfree-obsolete-packages
@@ -125,6 +137,7 @@ sdlmame-data-artwork
 sdlmame-data-roms
 sdlmame-data-samples
 sdlmess
+SDLPoP
 sidplay
 sidplay-libs
 slmodem
@@ -143,6 +156,7 @@ ufoai
 ufoai-data
 unace
 unifi
+unifi-lts
 unrar
 vice
 warsow
@@ -159,6 +173,7 @@ xorg-x11-drv-nvidia
 xorg-x11-drv-nvidia-173xx
 xorg-x11-drv-nvidia-304xx
 xorg-x11-drv-nvidia-340xx
+xorg-x11-drv-nvidia-390xx
 xorg-x11-drv-nvidia-96xx
 xorg-x11-drv-nvidia-beta
 xorg-x11-drv-nvidia-newest
