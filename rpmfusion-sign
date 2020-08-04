@@ -40,6 +40,10 @@ for j in free nonfree ; do
 done
 
 for i in 31 32 ${BRANCHED} ${RAWHIDE} ; do
+    kn=$i
+    if [ $i -ge 33 ] ; then
+	    kn=2020
+    fi
   # Sign CUDA namespace
   echo "------------------"
   echo "Fedora ${i} - CUDA"
@@ -50,7 +54,7 @@ for i in 31 32 ${BRANCHED} ${RAWHIDE} ; do
   echo "------------------"
   echo "Fedora ${i} - RPI"
   echo "------------------"
-  _sigul_sign f${i}-rpi-candidate rpmfusion-fedora-free-${i}
+  _sigul_sign f${i}-rpi-candidate rpmfusion-fedora-free-${kn}
 done
 
 
