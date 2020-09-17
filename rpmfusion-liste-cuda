@@ -1,0 +1,8 @@
+buildsys-build-rpmfusion-cuda
+buildsys-rpmfusion-cuda
+ffmpeg
+gdrcopy
+gdrcopy-kmod
+mpv
+nvidia-docker
+nvpipe
