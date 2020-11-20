@@ -5,7 +5,7 @@
 FEDORAS="32 33"
 BRANCHED=""
 RAWHIDE="34"
-ELS="6 7 8"
+ELS="7 8"
 SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 10 -v "
 
 _sigul_sign() {

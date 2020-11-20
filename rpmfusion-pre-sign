@@ -17,7 +17,7 @@ done
 
 # bodhi01
 for f in free nonfree ; do
-  for r in 6 7 8 ; do
+  for r in 7 8 ; do
     sg sysadmin-build "mash -o /mnt/koji/mash/${f} -c /etc/mash/mash.${f}.conf  el${r}-candidate"
   done
 done
