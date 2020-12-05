@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 #
 # sigulsign_unsigned.py - A utility to use sigul to sign rpms in koji
 #
@@ -8,6 +8,9 @@
 # Authors:
 #     Jesse Keating <jkeating@redhat.com>
 #     Patrick Uiterwijk <puiterwijk@redhat.com>
+#
+# To run the script
+# $ ./sigulsign_unsigned.py --write-all -v --tag f32-updates fedora-32
 #
 # This program requires koji and sigul installed, as well as configured.
 
@@ -147,7 +150,7 @@ class KojiHelper(object):
         unsigned = {}
         self.kojisession.multicall = True
 
-        rpm_filenames = rpms.keys()
+        rpm_filenames = list(rpms.keys())
         for rpm in rpm_filenames:
             self.kojisession.queryRPMSigs(rpm_id=rpms[rpm], sigkey=keyid)
 
@@ -187,7 +190,7 @@ def exit(status):
     """End the program using status, report any errors"""
 
     if errors:
-        for type in errors.keys():
+        for type in list(errors.keys()):
             logging.error('Errors during %s:' % type)
             for fault in errors[type]:
                 logging.error('     ' + fault)
@@ -202,10 +205,10 @@ def writeRPMs(status, kojihelper, batch=None):
 
     # Check to see if we want to write all, or just the unsigned.
     if args.write_all:
-        rpms = rpmdict.keys()
+        rpms = list(rpmdict.keys())
     else:
         if batch is None:
-            rpms = [rpm for rpm in rpmdict.keys() if rpm in unsigned]
+            rpms = [rpm for rpm in list(rpmdict.keys()) if rpm in unsigned]
         else:
             rpms = batch
     logging.info('Calling koji to write %s rpms' % len(rpms))
@@ -222,7 +225,7 @@ def writeRPMs(status, kojihelper, batch=None):
                           rpm, key, written, rpmcount)
         errors = kojihelper.write_signed_rpms(workset, KEYS[key]['id'])
 
-        for rpm, result in errors.items():
+        for rpm, result in list(errors.items()):
             logging.error('Error writing out %s' % rpm)
             errors.setdefault('Writing', []).append(rpm)
             if result['traceback']:
@@ -292,7 +295,8 @@ class SigulHelper(object):
         else:
             child = subprocess.Popen(command, stdin=subprocess.PIPE)
 
-        stdout, stderr = child.communicate(self.password + '\0')
+        passwd = self.password + '\0'
+        stdout, stderr = child.communicate(passwd.encode('utf-8'))
         ret = child.wait()
         return ret, stdout, stderr
 
@@ -379,7 +383,7 @@ if __name__ == "__main__":
 
     key = extras[0]
     logging.debug('Using %s for key %s' % (KEYS[key]['id'], key))
-    if key not in KEYS.keys():
+    if key not in list(KEYS.keys()):
         logging.error('Unknown key %s' % key)
         parser.print_help()
         sys.exit(1)
@@ -480,7 +484,7 @@ if __name__ == "__main__":
 
     if args.just_list:
         logging.info('Just listing rpms')
-        print('\n'.join(unsigned))
+        print(('\n'.join(unsigned)))
         exit(status)
 
     # run sigul
