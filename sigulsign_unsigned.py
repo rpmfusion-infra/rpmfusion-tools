@@ -30,8 +30,8 @@ unsigned = []
 # SigulHelper() instances
 
 # Should probably set these from a koji config file
-SERVERCA = os.path.expanduser('~/.rpmfusion-server-ca.cert')
-CLIENTCA = os.path.expanduser('~/.rpmfusion-upload-ca.cert')
+#SERVERCA = os.path.expanduser('~/.rpmfusion-server-ca.cert')
+#CLIENTCA = os.path.expanduser('~/.rpmfusion-upload-ca.cert')
 CLIENTCERT = os.path.expanduser('~/.rpmfusion.cert')
 
 KEYS = {
@@ -89,7 +89,7 @@ class KojiHelper(object):
             self.kojihub = "koji"
         self.koji_module = koji.get_profile_module(self.kojihub)
         self.kojisession = self.koji_module.ClientSession(self.koji_module.config.server, {'krb_rdns': False})
-        self.kojisession.ssl_login(CLIENTCERT, CLIENTCA, SERVERCA)
+        self.kojisession.ssl_login(CLIENTCERT)
 
     def listTagged(self, tag, inherit=False):
         """ Return list of SRPM NVRs for a tag
