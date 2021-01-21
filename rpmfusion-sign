@@ -39,7 +39,7 @@ for j in free nonfree ; do
   done
 done
 
-for i in 32 ${BRANCHED} ${RAWHIDE} ; do
+for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE} ; do
     kn=$i
     if [ $i -ge 33 ] ; then
 	    kn=2020
@@ -55,6 +55,15 @@ for i in 32 ${BRANCHED} ${RAWHIDE} ; do
   echo "Fedora ${i} - RPI"
   echo "------------------"
   _sigul_sign f${i}-rpi-candidate rpmfusion-fedora-free-${kn}
+done
+
+# Sign for el8-rpi
+for i in 8 ; do
+    j=rpi
+    echo "------------------"
+    echo "EL ${i} - ${j}"
+    echo "------------------"
+    _sigul_sign el${i}-${j}-candidate rpmfusion-el-${j}-${i}
 done
 
 
