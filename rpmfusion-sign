@@ -6,7 +6,7 @@ FEDORAS="32 33"
 BRANCHED=""
 RAWHIDE="34"
 ELS="7 8"
-SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 10 -v "
+SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 1 -v "
 
 _sigul_sign() {
 local _sigul_tag=$1
@@ -63,7 +63,7 @@ for i in 8 ; do
     echo "------------------"
     echo "EL ${i} - ${j}"
     echo "------------------"
-    _sigul_sign el${i}-${j}-candidate rpmfusion-el-${j}-${i}
+    _sigul_sign el${i}-${j}-candidate rpmfusion-el-free-${i}
 done
 
 
