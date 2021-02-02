@@ -19,18 +19,17 @@ import operator
 # Set some variables
 # Some of these could arguably be passed in as args.
 flavor = 'free'
-buildtag = 'f33-%s-build' % flavor  # tag to build from
-targets = ['f33-%s-candidate' % flavor , 'rawhide-%s' % flavor, 'f33-%s' % flavor] # tag to build from
-epoch = '2020-08-09 06:00:00.000000' # rebuild anything not built after this date
+buildtag = 'f34-%s-build' % flavor  # tag to build from
+targets = ['f34-%s-candidate' % flavor , 'rawhide-%s' % flavor, 'f34-%s' % flavor] # tag to build from
+epoch = '2021-02-02 09:30:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/free/massrebuild')
 enviro = os.environ
-target = 'f33-%s' % flavor
+target = 'f34-%s' % flavor
 
-pkg_skip_list = ['fedora-release', 'fedora-repos', 'generic-release', 'redhat-rpm-config', 'shim', 'shim-signed',
-'kernel', 'linux-firmware', 'grub2', 'openh264', 'rpmfusion-free-release', 'rpmfusion-nonfree-release',
-'buildsys-build-rpmfusion', 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
+pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release','buildsys-build-rpmfusion',
+'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
 'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
@@ -72,7 +71,7 @@ def runmeoutput(cmd, action, pkg, env, cwd=workdir):
 
 
 # Create a koji session
-kojisession = koji.ClientSession('http://koji.rpmfusion.org/kojihub')
+kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 
 # Generate a list of packages to iterate over
 pkgs = kojisession.listPackages(buildtag, inherited=True)
@@ -155,7 +154,7 @@ for pkg in pkgs:
         continue
 
     # rpmdev-bumpspec
-    bumpspec = ['rpmdev-bumpspec', '-u', user, '-c', comment, spec]
+    bumpspec = ['rpmdev-bumpspec', '-D', '-u', user, '-c', comment, spec]
     print('Bumping %s' % spec)
     if runme(bumpspec, 'bumpspec', name, enviro,
         cwd=os.path.join(workdir, name)):
@@ -178,7 +177,7 @@ for pkg in pkgs:
         continue
 
     # build
-    build = ['rfpkg', 'build', '--nowait', '--background', '--target', target]
+    build = ['rfpkg', 'build', '--nowait', '--background']
     print('Building %s' % name)
     runme(build, 'build', name, enviro, 
           cwd=os.path.join(workdir, name))
