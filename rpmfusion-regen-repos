@@ -3,8 +3,8 @@
 # rpmfusion-regen-repos
 # regen every rpmfusion repos
 
-for s in free nonfree ; do
-  for d in 32 33; do
+for s in free free-multilibs nonfree nonfree-multilibs ; do
+  for d in 32 33 34 35; do
     koji-rpmfusion regen-repo f${d}-${s}-build --nowait &>/dev/null
   done
   for d in 7 8 ; do
