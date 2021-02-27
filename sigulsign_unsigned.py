@@ -18,7 +18,7 @@ import getpass
 import subprocess
 import logging
 import koji
-import cccolutils
+#import cccolutils
 
 errors = {}
 
@@ -240,14 +240,14 @@ class SigulHelper(object):
         self.key = key
 
         if password is None:
-            try:
-                krb_realm = "RPMFUSION.ORG"
-                if use_staging:
-                    krb_realm = "STAGING.RPMFUSION.ORG"
-
-                fas_username = cccolutils.get_user_for_realm(krb_realm)
-            except:
-                fas_username = getpass.getuser()
+#            try:
+#                krb_realm = "RPMFUSION.ORG"
+#                if use_staging:
+#                    krb_realm = "STAGING.RPMFUSION.ORG"
+#
+#                fas_username = cccolutils.get_user_for_realm(krb_realm)
+#            except:
+            fas_username = getpass.getuser()
 
             cache_id = "sigul:{0}:{1}".format(fas_username, key)
             try:
