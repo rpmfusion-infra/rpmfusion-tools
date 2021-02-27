@@ -19,16 +19,18 @@ import operator
 # Set some variables
 # Some of these could arguably be passed in as args.
 flavor = 'free'
-buildtag = 'f34-%s-build' % flavor  # tag to build from
-targets = ['f34-%s-candidate' % flavor , 'rawhide-%s' % flavor, 'f34-%s' % flavor] # tag to build from
+target = 'f34-%s' % flavor
+buildtag = '%s-build' % target  # tag to build from
+targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
+# TODO we may need check multilibs targets ...
+#targets += ['rawhide-%s-multilibs' % flavor]
 epoch = '2021-02-02 09:30:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/free/massrebuild')
 enviro = os.environ
-target = 'f34-%s' % flavor
 
-pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release','buildsys-build-rpmfusion',
+pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
 'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
