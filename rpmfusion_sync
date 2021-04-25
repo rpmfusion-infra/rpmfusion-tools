@@ -10,10 +10,10 @@ umask 002
 
 for i in free nonfree ; do
   sg sysadmin-build "rsync -avHO --no-p --delete /mnt/koji/mash/${i}/rawhide/* /pub/${i}/fedora/development/rawhide/Everything | grep -v -e repodata -e repoview"
-  j=34
-  sg sysadmin-build "rsync -avHO --no-p --delete /mnt/koji/mash/${i}/branch/* /pub/${i}/fedora/development/${j}/Everything | grep -v -e repodata -e repoview"
-  sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates-testing/* /pub/${i}/fedora/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
-  for j in 32 33; do
+  #j=34
+  #sg sysadmin-build "rsync -avHO --no-p --delete /mnt/koji/mash/${i}/branch/* /pub/${i}/fedora/development/${j}/Everything | grep -v -e repodata -e repoview"
+  #sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates-testing/* /pub/${i}/fedora/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
+  for j in 32 33 34; do
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates-testing/* /pub/${i}/fedora/updates/testing/${j}/ --delete | grep -v -e repodata -e repoview"
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/${j}-updates/* /pub/${i}/fedora/updates/${j}/ --delete | grep -v -e repodata -e repoview"
   done
