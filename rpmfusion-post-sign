@@ -33,8 +33,6 @@ for f in free nonfree ; do
   done
   for r in ${FEDORA_BRANCH} ; do
     # fixup for branch
-    # Add a 1 minute delay to give the previous command time to complete
-    sleep 1m
     koji-rpmfusion list-tagged f${r}-${f}-updates --quiet | awk '{print $1}' |grep -v release | xargs -r koji-rpmfusion move-build f${r}-${f}-updates f${r}-${f}
   done
   for r in ${FEDORA_RAWHIDE} ; do
