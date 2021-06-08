@@ -2,6 +2,7 @@ buildsys-build-rpmfusion-rpi
 ffmpeg
 kodi
 mpv
+omxplayer
 raspberrypi-vc
 vlc
 wiringpi
