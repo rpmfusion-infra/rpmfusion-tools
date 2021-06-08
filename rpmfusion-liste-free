@@ -149,6 +149,7 @@ kodi-pvr-demo
 kodi-pvr-dvblink
 kodi-pvr-dvbviewer
 kodi-pvr-filmon
+kodi-pvr-hdhomerun
 kodi-pvr-hts
 kodi-pvr-iptvsimple
 kodi-pvr-mediaportal-tvserver
@@ -186,6 +187,7 @@ libmms
 libmp3splt
 libmpeg2
 libmpeg3
+libndi
 libopenshot
 libopenshot-audio
 libquicktime
@@ -202,6 +204,7 @@ libvlcpp
 lightspark
 live555
 lives
+loudgain
 ltris
 lxdream
 lxdvdrip
@@ -273,6 +276,7 @@ phonon-backend-vlc
 pianobar
 picard-freeworld
 pithos
+plasma-wallpapers-dynamic
 plex-media-player
 ppsspp
 pragha
@@ -318,6 +322,7 @@ SheepShaver
 shotcut
 simplescreenrecorder
 sinthgunt
+slowmovideo
 smc
 smc-music
 smpeg
@@ -339,6 +344,7 @@ sysprof
 sysprof-kmod
 telegram-desktop
 terminatorX
+tg_owt
 thoggen
 thunderbird-enigmail
 tilem
@@ -350,6 +356,8 @@ tvheadend
 twolame
 ultrastardx
 ushare-freeworld
+v4l2loopback
+v4l2loopback-kmod
 vagalume
 vbam
 vboxgtk
@@ -382,6 +390,7 @@ vlmc
 vo-amrwbenc
 vobcopy
 vokoscreen
+welle-io
 west-chamber
 west-chamber-kmod
 wf-recorder

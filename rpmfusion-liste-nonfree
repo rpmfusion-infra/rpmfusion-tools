@@ -49,6 +49,7 @@ gstreamer1-plugins-bad-nonfree
 gstreamer-plugins-bad-nonfree
 gsview
 intel-media-driver
+iozone
 jad
 kisslicer
 larabie-fonts
@@ -79,6 +80,7 @@ mod_h264_streaming
 mopidy-spotify
 Mosaic
 nautilus-dropbox
+ndi-sdk
 nemo-dropbox
 netfabb-basic
 nouveau-firmware
@@ -96,6 +98,7 @@ nvidia-persistenced
 nvidia-settings
 nvidia-settings-390xx
 nvidia-xconfig
+obs-ndi
 OCE
 ogre-cg
 openclonk
@@ -103,6 +106,7 @@ OpenEXR_Viewers-nonfree
 openhantek
 openmotif
 openni-nite
+p54pci-firmware
 paintdotnet
 pcsx2
 pdflib-lite
@@ -183,3 +187,4 @@ xrick
 xsnow
 xv
 yapeSDL
+zerotier-one
