@@ -9,7 +9,6 @@
 #     Jesse Keating <jkeating@redhat.com>
 #
 
-from __future__ import print_function
 import koji
 import os
 import subprocess
@@ -19,14 +18,14 @@ import operator
 # Set some variables
 # Some of these could arguably be passed in as args.
 flavor = 'free'
-target = 'f34-%s' % flavor
+target = 'f35-%s' % flavor
 buildtag = '%s-build' % target  # tag to build from
 targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
 # TODO we may need check multilibs targets ...
 #targets += ['rawhide-%s-multilibs' % flavor]
-epoch = '2021-02-02 09:30:00.000000' # rebuild anything not built after this date
+epoch = '2021-07-28 00:00:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/free/massrebuild')
 enviro = os.environ
 
