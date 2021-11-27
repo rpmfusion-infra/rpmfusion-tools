@@ -2,7 +2,7 @@
 
 # rpmfusion-sign
 
-FEDORAS="33 34 35"
+FEDORAS="34 35"
 BRANCHED=""
 RAWHIDE="36"
 ELS="7 8"

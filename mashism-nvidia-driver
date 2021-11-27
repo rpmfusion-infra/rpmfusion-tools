@@ -32,7 +32,7 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
- for r in 33 34 35 36; do
+ for r in 34 35 36; do
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-nvidia-driver $DEBUG
  done
 done
