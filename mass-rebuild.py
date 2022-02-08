@@ -19,14 +19,14 @@ import operator
 # Set some variables
 # Some of these could arguably be passed in as args.
 flavor = 'free'
-target = 'f34-%s' % flavor
+target = 'f36-%s' % flavor
 buildtag = '%s-build' % target  # tag to build from
 targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
-# TODO we may need check multilibs targets ...
-#targets += ['rawhide-%s-multilibs' % flavor]
-epoch = '2021-02-02 09:30:00.000000' # rebuild anything not built after this date
-user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild'
+# check builds on multilibs targets ...
+targets += ['rawhide-%s-multilibs' % flavor]
+epoch = '2022-02-04 15:00:00.000000' # rebuild anything not built after this date
+user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/free/massrebuild')
 enviro = os.environ
 
@@ -123,6 +123,7 @@ for pkg in pkgs:
     fname = flavor + '/' + name
     fedpkgcmd = ['rfpkg', 'clone', fname]
     print('Checking out %s' % name)
+"""
     if runme(fedpkgcmd, 'rfpkg', name, enviro):
         continue
 
@@ -183,3 +184,4 @@ for pkg in pkgs:
     print('Building %s' % name)
     runme(build, 'build', name, enviro, 
           cwd=os.path.join(workdir, name))
+          """
