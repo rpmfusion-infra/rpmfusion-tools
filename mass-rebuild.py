@@ -26,7 +26,7 @@ targets += ['rawhide-%s-multilibs' % flavor]
 epoch = '2022-02-04 15:00:00.000000' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild'
-workdir = os.path.expanduser('~/rpmfusion/new/%s/massrebuild' % flavor)
+workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/%s' % flavor)
 enviro = os.environ
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
@@ -180,5 +180,5 @@ for pkg in pkgs:
     # build
     build = ['rfpkg', 'build', '--nowait', '--background']
     print('Building %s' % name)
-    runme(build, 'build', name, enviro, 
+    runme(build, 'build', name, enviro,
           cwd=os.path.join(workdir, name))
