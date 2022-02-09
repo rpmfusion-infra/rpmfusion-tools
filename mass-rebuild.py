@@ -178,7 +178,7 @@ for pkg in pkgs:
         continue
 
     # build
-    build = ['rfpkg', 'build', '--nowait', '--background']
+    build = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
     print('Building %s' % name)
     runme(build, 'build', name, enviro,
           cwd=os.path.join(workdir, name))
