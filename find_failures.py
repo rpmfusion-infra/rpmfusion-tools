@@ -9,7 +9,6 @@
 #     Jesse Keating <jkeating@redhat.com>
 #
 
-from __future__ import print_function
 import koji
 import os
 import subprocess
@@ -21,28 +20,32 @@ import datetime
 # Some of these could arguably be passed in as args.
 flavor = 'free'
 flavor2= 'nonfree'
-rpmfusion = 'f34-%s' % flavor
-rpmfusion2 = 'f34-%s' % flavor2
-buildtag = '%s-build' % rpmfusion  # tag to build from
-buildtag2 = '%s-build' % rpmfusion2  # tag to build from
-targets = ['%s-candidate' % rpmfusion , 'rawhide-%s' % flavor, 'rawhide-%s-multilibs' % flavor, '%s' % rpmfusion] # tag to build from
-epoch = '2021-02-02 00:00:00.000000' # rebuild anything not built after this date
-user = 'RPM Fusion Release Engineering <leigh123linux@gmail.com>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild'
-workdir = os.path.expanduser('~/rpmfusion/new/free/massrebuild')
+target = 'f36-%s' % flavor
+target2 = 'f36-%s' % flavor2
+buildtag = '%s-build' % target  # tag to build from
+buildtag2 = '%s-build' % target2  # tag to build from
+targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
+# check builds on multilibs targets ...
+targets += ['rawhide-%s-multilibs' % flavor]
+targets += ['%s-candidate' % target2 , 'rawhide-%s' % flavor, '%s' % target2] # tag to build from
+targets += ['rawhide-%s-multilibs' % flavor2]
+epoch = '2022-02-04 15:00:00.000000' # rebuild anything not built after this date
+user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild'
+workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/%s' % flavor)
 enviro = os.environ
-target = '%s' % rpmfusion
-failures = {} # dict of owners to lists of packages that failed.
-failed = [] # raw list of failed packages
 
-pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release',
-'buildsys-build-rpmfusion', 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
+pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
+'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
 'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
-'ufoai-data']
+'ufoai-data', 'wormsofprey-data']
 
 # Define functions
+
+failures = {} # dict of owners to lists of packages that failed.
+failed = [] # raw list of failed packages
 
 # This function needs a dry-run like option
 def runme(cmd, action, pkg, env, cwd=workdir):
@@ -98,28 +101,30 @@ buildtag -- tag where to look for failed builds (usually fXX-rebuild)
 # Get a list of failed build tasks since our epoch
 failtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=3),
     key=operator.itemgetter('task_id'))
+canceledtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=4),
+    key=operator.itemgetter('task_id'))
 
 # Get a list of successful builds tagged
 goodbuilds = kojisession.listTagged(buildtag, latest=True)
 goodbuilds += kojisession.listTagged(buildtag2, latest=True)
 
 # Get a list of successful builds after the epoch in our dest tag
-destbuilds = kojisession.listTagged(rpmfusion, latest=True, inherit=True)
-destbuilds += kojisession.listTagged(rpmfusion2, latest=True, inherit=True)
-destbuilds += kojisession.listTagged(rpmfusion + "-multilibs", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(rpmfusion2 + "-multilibs", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(rpmfusion + "-updates-testing", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(rpmfusion2 + "-updates-testing", latest=True, inherit=True)
+destbuilds = kojisession.listTagged(target, latest=True, inherit=True)
+destbuilds += kojisession.listTagged(target2, latest=True, inherit=True)
+destbuilds += kojisession.listTagged(target + "-multilibs", latest=True, inherit=True)
+destbuilds += kojisession.listTagged(target2 + "-multilibs", latest=True, inherit=True)
+destbuilds += kojisession.listTagged(target + "-updates-testing", latest=True, inherit=True)
+destbuilds += kojisession.listTagged(target2 + "-updates-testing", latest=True, inherit=True)
 for build in destbuilds:
     if build['creation_time'] > epoch:
         goodbuilds.append(build)
 
-pkgs = kojisession.listPackages(rpmfusion, inherited=True)
-pkgs += kojisession.listPackages(rpmfusion2, inherited=True)
-pkgs += kojisession.listPackages(rpmfusion + "-multilibs", inherited=True)
-pkgs += kojisession.listPackages(rpmfusion2 + "-multilibs", inherited=True)
-pkgs += kojisession.listPackages(rpmfusion + "-updates-testing", inherited=True)
-pkgs += kojisession.listPackages(rpmfusion2 + "-updates-testing", inherited=True)
+pkgs = kojisession.listPackages(target, inherited=True)
+pkgs += kojisession.listPackages(target2, inherited=True)
+pkgs += kojisession.listPackages(target + "-multilibs", inherited=True)
+pkgs += kojisession.listPackages(target2 + "-multilibs", inherited=True)
+pkgs += kojisession.listPackages(target + "-updates-testing", inherited=True)
+pkgs += kojisession.listPackages(target2 + "-updates-testing", inherited=True)
 
 # get the list of packages that are blocked
 pkgs = sorted([pkg for pkg in pkgs if pkg['blocked']],
@@ -128,6 +133,11 @@ pkgs = sorted([pkg for pkg in pkgs if pkg['blocked']],
 # Check if newer build exists for package
 failbuilds = []
 for build in failtasks:
+    if ((not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]) and (not build['package_id'] in [pkg['package_id'] for pkg in pkgs])):
+        failbuilds.append(build)
+        #print(build)
+
+for build in canceledtasks:
     if ((not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]) and (not build['package_id'] in [pkg['package_id'] for pkg in pkgs])):
         failbuilds.append(build)
         #print(build)

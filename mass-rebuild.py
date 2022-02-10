@@ -34,7 +34,7 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
-'ufoai-data']
+'ufoai-data', 'wormsofprey-data']
 
 # Define functions
 
