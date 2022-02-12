@@ -1,12 +1,28 @@
 #!/usr/bin/python3
 #
-# mass-rebuild.py - A utility to rebuild packages.
+# find_failures.py - A utility to find packages that failed to rebuild
 #
 # Copyright (C) 2009-2013 Red Hat, Inc.
-# SPDX-License-Identifier:      GPL-2.0+
+# Copyright (C) 2022 Sérgio Basto <sergio@serjux.com>
 #
-# Authors:
-#     Jesse Keating <jkeating@redhat.com>
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
 import koji
@@ -20,20 +36,12 @@ import datetime
 # Some of these could arguably be passed in as args.
 flavor = 'free'
 flavor2= 'nonfree'
-target = 'f36-%s' % flavor
-target2 = 'f36-%s' % flavor2
-buildtag = '%s-build' % target  # tag to build from
-buildtag2 = '%s-build' % target2  # tag to build from
-targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
-# check builds on multilibs targets ...
-targets += ['rawhide-%s-multilibs' % flavor]
-targets += ['%s-candidate' % target2 , 'rawhide-%s' % flavor, '%s' % target2] # tag to build from
-targets += ['rawhide-%s-multilibs' % flavor2]
+destag = 'f36-%s' % flavor
+destag2 = 'f36-%s' % flavor2
+buildtag = '%s-build' % destag  # tag to build from
+buildtag2 = '%s-build' % destag2  # tag to build from
+
 epoch = '2022-02-04 15:00:00.000000' # rebuild anything not built after this date
-user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild'
-workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/%s' % flavor)
-enviro = os.environ
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
@@ -42,55 +50,6 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
 
-# Define functions
-
-failures = {} # dict of owners to lists of packages that failed.
-failed = [] # raw list of failed packages
-
-# This function needs a dry-run like option
-def runme(cmd, action, pkg, env, cwd=workdir):
-    """Simple function to run a command and return 0 for success, 1 for
-       failure.  cmd is a list of the command and arguments, action is a
-       name for the action (for logging), pkg is the name of the package
-       being operated on, env is the environment dict, and cwd is where
-       the script should be executed from."""
-
-    try:
-        subprocess.check_call(cmd, env=env, cwd=cwd)
-    except subprocess.CalledProcessError as e:
-        print('%s failed %s: %s\n' % (pkg, action, e))
-        return 1
-    return 0
-
-# This function needs a dry-run like option
-def runmeoutput(cmd, action, pkg, env, cwd=workdir):
-    """Simple function to run a command and return output if successful. 
-       cmd is a list of the command and arguments, action is a
-       name for the action (for logging), pkg is the name of the package
-       being operated on, env is the environment dict, and cwd is where
-       the script should be executed from.  Returns 0 for failure"""
-
-    try:
-        pid = subprocess.Popen(cmd, env=env, cwd=cwd,
-                               stdout=subprocess.PIPE, encoding='utf8')
-    except BaseException as e:
-        print('%s failed %s: %s\n' % (pkg, action, e))
-        return 0
-    result = pid.communicate()[0].rstrip('\n')
-    return result
-
-
-# Create a koji session
-kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
-
-# Generate a list of packages to iterate over
-pkgs = kojisession.listPackages(buildtag, inherited=True)
-
-# reduce the list to those that are not blocked and sort by package name
-pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and pkg['tag_name'] == target)],
-            key=operator.itemgetter('package_name'))
-
-print('Checking %s packages...' % len(pkgs))
 """
 Keyword arguments:
 kojisession -- connected koji.ClientSession instance
@@ -98,57 +57,90 @@ epoch -- string representing date to start looking for failed builds
          from. Format: "%F %T.%N"
 buildtag -- tag where to look for failed builds (usually fXX-rebuild)
 """
-# Get a list of failed build tasks since our epoch
-failtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=3),
-    key=operator.itemgetter('task_id'))
-canceledtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=4),
-    key=operator.itemgetter('task_id'))
+
+# Create a koji session
+kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 
 # Get a list of successful builds tagged
-goodbuilds = kojisession.listTagged(buildtag, latest=True)
-goodbuilds += kojisession.listTagged(buildtag2, latest=True)
+destbuilds = kojisession.listTagged("%s-updates-candidate" % destag, latest=True, inherit=True)
+print("destbuilds %d" % len(destbuilds))
+destbuilds += kojisession.listTagged("%s-updates-candidate" % destag2, latest=True, inherit=True)
+print("destbuilds %d" % len(destbuilds))
 
-# Get a list of successful builds after the epoch in our dest tag
-destbuilds = kojisession.listTagged(target, latest=True, inherit=True)
-destbuilds += kojisession.listTagged(target2, latest=True, inherit=True)
-destbuilds += kojisession.listTagged(target + "-multilibs", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(target2 + "-multilibs", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(target + "-updates-testing", latest=True, inherit=True)
-destbuilds += kojisession.listTagged(target2 + "-updates-testing", latest=True, inherit=True)
+goodbuilds = []
+# failbuilds2 is other way to count package that doesn't have a success build since epoch, not really failed builds
+failbuilds2 = []
 for build in destbuilds:
     if build['creation_time'] > epoch:
         goodbuilds.append(build)
+    elif (build['package_name'] not in [pkg for pkg in pkg_skip_list]):
+        failbuilds2.append(build)
+print("goodbuilds %d" % len(goodbuilds))
 
-pkgs = kojisession.listPackages(target, inherited=True)
-pkgs += kojisession.listPackages(target2, inherited=True)
-pkgs += kojisession.listPackages(target + "-multilibs", inherited=True)
-pkgs += kojisession.listPackages(target2 + "-multilibs", inherited=True)
-pkgs += kojisession.listPackages(target + "-updates-testing", inherited=True)
-pkgs += kojisession.listPackages(target2 + "-updates-testing", inherited=True)
+#pkgs = kojisession.listPackages(target, inherited=True)
+#print("target %d" % len(pkgs))
+print("buildtag=%s" % buildtag2)
+# with inherit we just need this one !?! ...
+pkgs = kojisession.listPackages(buildtag2, inherited=True)
+print("len pkgs buildtag2 %d" % len(pkgs))
 
-# get the list of packages that are blocked
-pkgs = sorted([pkg for pkg in pkgs if pkg['blocked']],
-              key=operator.itemgetter('package_id'))
+# reduce the list to those that are not blocked and sort by package name
+pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'])],
+            key=operator.itemgetter('package_name'))
+print("len pkgs buildtag2 without blocked %d" % len(pkgs))
+pkgs = sorted([pkg for pkg in pkgs if (not pkg['package_name'] in pkg_skip_list)],
+            key=operator.itemgetter('package_name'))
+print("len pkgs buildtag2 without pkg_skip_list %d" % len(pkgs))
+
+# Get a list of failed build tasks since our epoch
+failtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=koji.BUILD_STATES['FAILED']),
+    key=operator.itemgetter('task_id'))
+canceledtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=koji.BUILD_STATES['CANCELED']),
+    key=operator.itemgetter('task_id'))
 
 # Check if newer build exists for package
 failbuilds = []
 for build in failtasks:
-    if ((not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]) and (not build['package_id'] in [pkg['package_id'] for pkg in pkgs])):
+    if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]):
+        failbuilds.append(build)
+        #print(build)
+for build in canceledtasks:
+    if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]):
         failbuilds.append(build)
         #print(build)
 
-for build in canceledtasks:
-    if ((not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]) and (not build['package_id'] in [pkg['package_id'] for pkg in pkgs])):
-        failbuilds.append(build)
-        #print(build)
+print ("len of failbuild=%d" % len(failbuilds))
+print ("len of canceledbuild=%d" % len(failbuilds2))
+for build in failbuilds2:
+    if (build['package_name'] not in [pkg['package_name'] for pkg in failbuilds]):
+        print ("from failbuilds2 not in failbuild= %s %s" % (build['package_name'], build['creation_time']))
+
+for build in failbuilds:
+    if (build['package_name'] not in [pkg['package_name'] for pkg in failbuilds2]):
+        print ("from failbuilds not in failbuilds2 %s %s" % (build['package_name'], build['creation_time']))
+        if (build['package_name'] not in [pkg['package_name'] for pkg in destbuilds]):
+            print("failbuild also not in destbuild list")
+
 
 # Generate the dict with the failures and urls
+failed_pkgs = [] # raw list of failed packages
+failures = {} # dict of owners to lists of packages that failed.
+
+# we may use failbuilds or failbuilds2
 for build in failbuilds:
-    taskurl = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
     pkg = build['package_name']
-    failures[pkg] = taskurl
-    if pkg not in failed:
-        failed.append(pkg)
+    failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
+    if pkg not in failed_pkgs:
+        failed_pkgs.append(pkg)
+    else:
+        print ("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
+
+# pkg not in goods builds neither failed builds
+for build in pkgs:
+    if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
+    and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
+        pkg = build['package_name']
+        failures[pkg] = 'last failed build N/A, repo = %s' % build['tag_name']
 
 now = datetime.datetime.now()
 now_str = "%s UTC" % str(now.utcnow())
@@ -158,7 +150,7 @@ print('<style type="text/css"> dt { margin-top: 1em } </style>')
 print('</head><body>')
 print("<p>Last run: %s</p>" % now_str)
 
-print('%s failed builds:<p>' % len(failed))
+print('%s failed builds:<p>' % len(failed_pkgs))
 
 # Print the results
 print('<dl>')
@@ -167,6 +159,33 @@ print('<dt>%s (%s):</dt>' % ("rpmfusion", len(failures)))
 for pkg in sorted(failures.keys()):
     print('<dd><a href="%s">%s</a></dd>' % (failures[pkg], pkg))
 print('</dl>')
+
+"""
+failed_pkgs = [] # raw list of failed packages
+failures = {} # dict of owners to lists of packages that failed.
+
+# we may use failbuilds or failbuilds2
+for build in failbuilds2:
+    pkg = build['package_name']
+    failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
+    if pkg not in failed_pkgs:
+        failed_pkgs.append(pkg)
+    else:
+        print ("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
+
+print('%s failed builds:<p>' % len(failed_pkgs))
+
+# Print the results
+print('<dl>')
+print('<style type="text/css"> dt { margin-top: 1em } </style>')
+print('<dt>%s (%s):</dt>' % ("rpmfusion", len(failures)))
+for pkg in sorted(failures.keys()):
+    if failures[pkg].startswith("http"):
+        print('<dd><a href="%s">%s</a></dd>' % (failures[pkg], pkg))
+    else:
+        print('<dd>Package: %s, %s </dd>' % (pkg, failures[pkg]))
+print('</dl>')
+"""
 print('</body>')
 print('</html>')
 
