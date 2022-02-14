@@ -72,9 +72,13 @@ kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 # Get a list of successful builds tagged
 print("listTagged packages with inherit with tag = %s-updates-candidate" % destag)
 destbuilds = kojisession.listTagged("%s-updates-candidate" % destag, latest=True, inherit=True)
+destbuilds += kojisession.listTagged("%s-updates-testing" % destag, latest=True, inherit=True)
+destbuilds += kojisession.listTagged("%s-tainted" % destag, latest=True, inherit=True)
 print("destbuilds %d" % len(destbuilds))
 print("listTagged packages with inherit with tag = %s-updates-candidate" % destag2)
 destbuilds2 = kojisession.listTagged("%s-updates-candidate" % destag2, latest=True, inherit=True)
+destbuilds2 += kojisession.listTagged("%s-updates-testing" % destag2, latest=True, inherit=True)
+destbuilds2 += kojisession.listTagged("%s-tainted" % destag2, latest=True, inherit=True)
 print("destbuilds %d" % len(destbuilds2))
 destbuilds += destbuilds2
 print("sum of destbuilds %d" % len(destbuilds))
@@ -139,6 +143,7 @@ for build in failbuilds:
 failed_pkgs = [] # raw list of failed packages
 notbuilded_pkgs = []
 failures = {} # dict of owners to lists of packages that failed.
+failures2 = {} # dict of owners to lists of packages that failed.
 
 # we may use failbuilds or failbuilds2
 for build in failbuilds:
@@ -154,7 +159,7 @@ for build in pkgs:
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
     and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
         pkg = build['package_name']
-        failures[pkg] = 'no last failed build, repo = %s' % build['tag_name']
+        failures2[pkg] = 'no last failed build, repo = %s' % build['tag_name']
         notbuilded_pkgs.append(pkg)
 
 print('</pre>')
@@ -163,13 +168,13 @@ print("<p>Last run: %s</p>" % now_str)
 print('<dl>')
 print('<style type="text/css"> dt { margin-top: 1em } </style>')
 print('<dt>Failed builds: %d </dt>' % len(failed_pkgs))
-print('<dt>Packages not built: %d </dt>' % len(notbuilded_pkgs))
-print('<dt>%s (%s):</dt>' % ("rpmfusion", len(failures)))
 for pkg in sorted(failures.keys()):
-    if failures[pkg].startswith("http"):
-        print('<dd>Package: <a href="%s">%s</a></dd>' % (failures[pkg], pkg))
-    else:
-        print('<dd>Package: %s (%s)</dd>' % (pkg, failures[pkg]))
+    print('<dd>Package: <a href="%s">%s</a></dd>' % (failures[pkg], pkg))
+
+print('<dt>Packages not built: %d </dt>' % len(notbuilded_pkgs))
+for pkg in sorted(failures2.keys()):
+        print('<dd>Package: %s (%s)</dd>' % (pkg, failures2[pkg]))
+
 print('</dl>')
 
 # if we want see the count by builds that are tagged
