@@ -58,30 +58,36 @@ epoch -- string representing date to start looking for failed builds
 buildtag -- tag where to look for failed builds (usually fXX-rebuild)
 """
 
+debug_enabled = False
+def debug(msg):
+
+    if debug_enabled:
+        print(msg)
+
 now = datetime.datetime.now()
 now_str = "%s UTC" % str(now.utcnow())
 print('<html><head>')
 print('<title>Packages that failed to build as of %s</title>' % now_str)
 print('<style type="text/css"> dt { margin-top: 1em } </style>')
 print('</head><body>')
-print('<pre>')
+debug('<pre>')
 
 # Create a koji session
 kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 
 # Get a list of successful builds tagged
-print("listTagged packages with inherit with tag = %s-updates-candidate" % destag)
+debug("listTagged packages with inherit with tag = %s-updates-candidate" % destag)
 destbuilds = kojisession.listTagged("%s-updates-candidate" % destag, latest=True, inherit=True)
 destbuilds += kojisession.listTagged("%s-updates-testing" % destag, latest=True, inherit=True)
 destbuilds += kojisession.listTagged("%s-tainted" % destag, latest=True, inherit=True)
-print("destbuilds %d" % len(destbuilds))
-print("listTagged packages with inherit with tag = %s-updates-candidate" % destag2)
+debug("destbuilds %d" % len(destbuilds))
+debug("listTagged packages with inherit with tag = %s-updates-candidate" % destag2)
 destbuilds2 = kojisession.listTagged("%s-updates-candidate" % destag2, latest=True, inherit=True)
 destbuilds2 += kojisession.listTagged("%s-updates-testing" % destag2, latest=True, inherit=True)
 destbuilds2 += kojisession.listTagged("%s-tainted" % destag2, latest=True, inherit=True)
-print("destbuilds %d" % len(destbuilds2))
+debug("destbuilds %d" % len(destbuilds2))
 destbuilds += destbuilds2
-print("sum of destbuilds %d" % len(destbuilds))
+debug("sum of destbuilds %d" % len(destbuilds))
 
 goodbuilds = []
 # failbuilds2 is other way to count package that doesn't have a success build since epoch, not really failed builds
@@ -91,14 +97,14 @@ for build in destbuilds:
         goodbuilds.append(build)
     elif (build['package_name'] not in [pkg for pkg in pkg_skip_list]):
         failbuilds2.append(build)
-print("good builds after epoch %d\n" % len(goodbuilds))
+debug("good builds after epoch %d\n" % len(goodbuilds))
 
 #pkgs = kojisession.listPackages(target, inherited=True)
 #print("target %d" % len(pkgs))
-print("listPackages with inherit with buildtag = %s" % buildtag2)
+debug("listPackages with inherit with buildtag = %s" % buildtag2)
 # with inherit we just need this one !?! ...
 pkgs = kojisession.listPackages(buildtag2, inherited=True)
-print("len pkgs buildtag2 %d" % len(pkgs))
+debug("len pkgs buildtag2 %d" % len(pkgs))
 
 blockedpkgs = sorted([pkg for pkg in pkgs if (pkg['blocked'])],
 key=operator.itemgetter('package_name'))
@@ -106,10 +112,10 @@ key=operator.itemgetter('package_name'))
 # reduce the list to those that are not blocked and sort by package name
 pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'])],
             key=operator.itemgetter('package_name'))
-print("len pkgs buildtag2 without blocked %d" % len(pkgs))
+debug("len pkgs buildtag2 without blocked %d" % len(pkgs))
 pkgs = sorted([pkg for pkg in pkgs if (not pkg['package_name'] in pkg_skip_list)],
             key=operator.itemgetter('package_name'))
-print("len pkgs buildtag2 without pkg_skip_list %d" % len(pkgs))
+debug("len pkgs buildtag2 without pkg_skip_list %d" % len(pkgs))
 
 # Get a list of failed build tasks since our epoch
 failtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=koji.BUILD_STATES['FAILED']),
@@ -126,17 +132,17 @@ for build in failtasks + canceledtasks:
         failbuilds.append(build)
         #print(build)
 
-print ("len of failbuild=%d" % len(failbuilds))
-print ("len of failedbuilds2=%d (alternative way to count failed builds)" % len(failbuilds2))
+debug("len of failbuild=%d" % len(failbuilds))
+debug("len of failedbuilds2=%d (alternative way to count failed builds)" % len(failbuilds2))
 for build in failbuilds2:
     if (build['package_name'] not in [pkg['package_name'] for pkg in failbuilds]):
-        print ("from failbuilds2 not in failbuild= %s %s" % (build['package_name'], build['creation_time']))
+        debug("from failbuilds2 not in failbuild= %s %s" % (build['package_name'], build['creation_time']))
 
 for build in failbuilds:
     if (build['package_name'] not in [pkg['package_name'] for pkg in failbuilds2]):
-        print ("from failbuilds not in failbuilds2 %s %s" % (build['package_name'], build['creation_time']))
+        debug("from failbuilds not in failbuilds2 %s %s" % (build['package_name'], build['creation_time']))
         if (build['package_name'] not in [pkg['package_name'] for pkg in destbuilds]):
-            print("failbuild also not in destbuild list")
+            debug("failbuild also not in destbuild list")
 
 
 # Generate the dict with the failures and urls
@@ -152,7 +158,7 @@ for build in failbuilds:
     if pkg not in failed_pkgs:
         failed_pkgs.append(pkg)
     else:
-        print ("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
+        debug("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
 
 # pkg not in goods builds neither failed builds
 for build in pkgs:
@@ -162,7 +168,7 @@ for build in pkgs:
         failures2[pkg] = 'no last failed build, repo = %s' % build['tag_name']
         notbuilded_pkgs.append(pkg)
 
-print('</pre>')
+debug('</pre>')
 print("<p>Last run: %s</p>" % now_str)
 # Print the results
 print('<dl>')
