@@ -20,7 +20,7 @@ echo "-------------"
     echo ""
   done
   echo ""
-  for r in 7 8 ; do
+  for r in 7 8 9 ; do
     echo "EL $r"
     echo "-------------"
     echo "Pushed to testing: "

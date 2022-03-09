@@ -36,7 +36,7 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
-  for r in 7 8 ; do
+  for r in 7 8 9 ; do
     sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  el${r} -f /var/tmp/rpmfusion-${n}-comps/comps-el${r}.xml $DEBUG"
     sg sysadmin-build "mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  el${r}-testing -f /var/tmp/rpmfusion-${n}-comps/comps-el${r}.xml $DEBUG"
   done
