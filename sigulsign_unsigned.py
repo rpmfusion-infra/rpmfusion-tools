@@ -40,8 +40,10 @@ KEYS = {
     'rpmfusion-fedora-nonfree-2020': {'id': '94843c65', 'v3': True},
     'rpmfusion-el-free-7': {'id': 'f5cf6c1e', 'v3': True},
     'rpmfusion-el-free-8': {'id': '158b3811', 'v3': True},
+    'rpmfusion-el-free-9': {'id': '296458F3', 'v3': True},
     'rpmfusion-el-nonfree-7': {'id': 'a3108f6c', 'v3': True},
     'rpmfusion-el-nonfree-8': {'id': 'bdda8475', 'v3': True},
+    'rpmfusion-el-nonfree-9': {'id': 'AAB212EA', 'v3': True},
 }
 
 
