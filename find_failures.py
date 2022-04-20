@@ -32,15 +32,20 @@ import sys
 import operator
 import datetime
 
+import requests
+PAGURE_URL = 'https://src.fedoraproject.org'
+ns='rpms'
+
 # Set some variables
 # Some of these could arguably be passed in as args.
-flavor = 'free'
-flavor2= 'nonfree'
-destag = 'f36-%s' % flavor
-destag2 = 'f36-%s' % flavor2
-buildtag = '%s-build' % destag  # tag to build from
-buildtag2 = '%s-build' % destag2  # tag to build from
-
+"""
+Keyword arguments:
+kojisession -- connected koji.ClientSession instance
+epoch -- string representing date to start looking for failed builds
+         from. Format: "%F %T.%N"
+tag -- tag where to look for failed builds (usually fXX-rebuild)
+"""
+tag = 'f36'
 epoch = '2022-02-04 15:00:00.000000' # rebuild anything not built after this date
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
@@ -50,17 +55,9 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
 
-"""
-Keyword arguments:
-kojisession -- connected koji.ClientSession instance
-epoch -- string representing date to start looking for failed builds
-         from. Format: "%F %T.%N"
-buildtag -- tag where to look for failed builds (usually fXX-rebuild)
-"""
 
 debug_enabled = False
 def debug(msg):
-
     if debug_enabled:
         print(msg)
 
@@ -76,15 +73,15 @@ debug('<pre>')
 kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 
 # Get a list of successful builds tagged
-debug("listTagged packages with inherit with tag = %s-updates-candidate" % destag)
-destbuilds = kojisession.listTagged("%s-updates-candidate" % destag, latest=True, inherit=True)
-destbuilds += kojisession.listTagged("%s-updates-testing" % destag, latest=True, inherit=True)
-destbuilds += kojisession.listTagged("%s-tainted" % destag, latest=True, inherit=True)
+debug("listTagged packages with inherit with tag = %s-updates-candidate" % tag)
+destbuilds = kojisession.listTagged("%s-free-updates-candidate" % tag, latest=True, inherit=True)
+destbuilds += kojisession.listTagged("%s-free-updates-testing" % tag, latest=True, inherit=True)
+destbuilds += kojisession.listTagged("%s-free-tainted" % tag, latest=True, inherit=True)
 debug("destbuilds %d" % len(destbuilds))
-debug("listTagged packages with inherit with tag = %s-updates-candidate" % destag2)
-destbuilds2 = kojisession.listTagged("%s-updates-candidate" % destag2, latest=True, inherit=True)
-destbuilds2 += kojisession.listTagged("%s-updates-testing" % destag2, latest=True, inherit=True)
-destbuilds2 += kojisession.listTagged("%s-tainted" % destag2, latest=True, inherit=True)
+debug("listTagged packages with inherit with tag = %s-updates-candidate" % tag)
+destbuilds2 = kojisession.listTagged("%s-nonfree-updates-candidate" % tag, latest=True, inherit=True)
+destbuilds2 += kojisession.listTagged("%s-nonfree-updates-testing" % tag, latest=True, inherit=True)
+destbuilds2 += kojisession.listTagged("%s-nonfree-tainted" % tag, latest=True, inherit=True)
 debug("destbuilds %d" % len(destbuilds2))
 destbuilds += destbuilds2
 debug("sum of destbuilds %d" % len(destbuilds))
@@ -101,9 +98,9 @@ debug("good builds after epoch %d\n" % len(goodbuilds))
 
 #pkgs = kojisession.listPackages(target, inherited=True)
 #print("target %d" % len(pkgs))
-debug("listPackages with inherit with buildtag = %s" % buildtag2)
+debug("listPackages with inherit with buildtag = %s-nonfree-build" % tag)
 # with inherit we just need this one !?! ...
-pkgs = kojisession.listPackages(buildtag2, inherited=True)
+pkgs = kojisession.listPackages("%s-nonfree-build" % tag, inherited=True)
 debug("len pkgs buildtag2 %d" % len(pkgs))
 
 blockedpkgs = sorted([pkg for pkg in pkgs if (pkg['blocked'])],
@@ -129,8 +126,10 @@ for build in failtasks + canceledtasks:
     if (build['package_id'] in [blockedpkg['package_id'] for blockedpkg in blockedpkgs]):
         continue
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]):
-        failbuilds.append(build)
-        #print(build)
+        request_tag = kojisession.getTaskRequest(build['task_id'])[1]
+        if request_tag.startswith(tag) or request_tag.startswith("rawhide"):
+            failbuilds.append(build)
+            debug(build)
 
 debug("len of failbuild=%d" % len(failbuilds))
 debug("len of failedbuilds2=%d (alternative way to count failed builds)" % len(failbuilds2))
@@ -165,7 +164,11 @@ for build in pkgs:
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
     and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
         pkg = build['package_name']
-        failures2[pkg] = 'no last failed build, repo = %s' % build['tag_name']
+        response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
+        if 'error' in response:
+            failures2[pkg] = 'repo = %s' % build['tag_name']
+        else:
+            failures2[pkg] = 'moved to fedora ? (%s) ' % response['full_url']
         notbuilded_pkgs.append(pkg)
 
 debug('</pre>')
@@ -179,7 +182,7 @@ for pkg in sorted(failures.keys()):
 
 print('<dt>Packages not built: %d </dt>' % len(notbuilded_pkgs))
 for pkg in sorted(failures2.keys()):
-        print('<dd>Package: %s (%s)</dd>' % (pkg, failures2[pkg]))
+    print('<dd>Package: %s, %s</dd>' % (pkg, failures2[pkg]))
 
 print('</dl>')
 
