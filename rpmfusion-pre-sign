@@ -10,7 +10,7 @@ rpmfusion-keep-latest
 
 # bodhi01
 for f in free nonfree ; do
-  for r in 34 35 36; do
+  for r in 35 36; do
     sg sysadmin-build "mash -o /mnt/koji/mash/${f} -c /etc/mash/mash.${f}.conf  ${r}-updates-candidate"
   done
 done

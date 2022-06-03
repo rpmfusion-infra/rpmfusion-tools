@@ -3,7 +3,7 @@
 # rpmfusion-keep-latest
 
 for f in free nonfree ; do
-  for r in 34 35; do
+  for r in 35 36; do
     koji-keep-latest f${r}-${f}-updates-candidate
   done
   for r in 7 8 9 ; do
