@@ -1,7 +1,7 @@
 #!/bin/bash
 
 outputdir=/pub/DIRECTORY_SIZES.txt
-targetdir=rpmfusion@phoenix.crazyfrogs.org:
+targetdir=rpmfusion@mirrors.offmysoul.me:
 #targetdir=rpmfusion@download1.rpmfusion.org:free/fedora/
 exclude=""
 #ssh_opts="ssh -p 1433"
