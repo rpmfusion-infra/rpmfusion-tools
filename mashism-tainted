@@ -32,7 +32,7 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
- for r in 35 36 37; do
+ for r in 35 36 37 38; do
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-tainted $DEBUG
  done
 done
