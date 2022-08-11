@@ -1,7 +1,8 @@
 #!/bin/bash
 
 outputdir=/pub/nonfree/el/
-targetdir=rpmfusion@mirrors.offmysoul.me:nonfree/el/
+#targetdir=rpmfusion@mirrors.offmysoul.me:nonfree/el/
+targetdir=rpmfusion@download1.rpmfusion.org:nonfree/el/
 exclude=""
 opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
 

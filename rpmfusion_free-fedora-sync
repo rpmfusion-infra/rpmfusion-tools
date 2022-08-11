@@ -1,8 +1,8 @@
 #!/bin/bash
 
 outputdir=/pub/free/fedora/
-targetdir=rpmfusion@mirrors.offmysoul.me:free/fedora/
-#targetdir=rpmfusion@download1.rpmfusion.org:free/fedora/
+#targetdir=rpmfusion@mirrors.offmysoul.me:free/fedora/
+targetdir=rpmfusion@download1.rpmfusion.org:free/fedora/
 exclude=""
 #ssh_opts="ssh -p 1433"
 #opts="-avH --progress --delete-after --delay-updates -e ssh -p 22 $exclude"
