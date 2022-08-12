@@ -168,7 +168,7 @@ for build in pkgs:
         if 'error' in response:
             failures2[pkg] = 'repo = %s' % build['tag_name']
         else:
-            failures2[pkg] = 'moved to fedora ? (%s) ' % response['full_url']
+            failures2[pkg] = 'moved to fedora ? (<a target="_blank" href="%s">%s</a>) ' % (response['full_url'], response['full_url'])
         notbuilded_pkgs.append(pkg)
 
 debug('</pre>')
