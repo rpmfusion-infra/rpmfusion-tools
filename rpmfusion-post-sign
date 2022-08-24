@@ -38,6 +38,11 @@ for f in free nonfree ; do
     koji-rpmfusion list-tagged f${r}-${f}-updates --quiet | awk '{print $1}' |grep -v release | xargs -r koji-rpmfusion move-build f${r}-${f}-updates f${r}-${f}
   done
   for r in ${FEDORA_RAWHIDE} ; do
+    if [ $f == "nonfree" ] ; then
+      koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' |grep nvidia | grep -v 340xx |grep -v 390xx |grep -v open-kmod | xargs -r koji-rpmfusion tag-build f${r}-${f}-nvidia-driver
+      koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' |grep  nvidia-open-kmod | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-tainted
+      koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' |grep  steam | xargs -r koji-rpmfusion tag-build f${r}-${f}-steam
+    fi
     koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}
   done
   for r in ${EL_STABLES} ; do
