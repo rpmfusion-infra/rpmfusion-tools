@@ -4,10 +4,18 @@ outputdir=/pub/nonfree/el/
 #targetdir=rpmfusion@mirrors.offmysoul.me:nonfree/el/
 targetdir=rpmfusion@download1.rpmfusion.org:nonfree/el/
 exclude=""
+#ssh_opts="ssh -p 1433"
 opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
 
+finally() {
+	ssh ${targetdir%%:*} rm -f ${targetdir##*:}/.sync_in_progress
+}
+trap finally EXIT SIGTERM SIGINT
+
+ssh ${targetdir%%:*} touch ${targetdir##*:}/.sync_in_progress
+
 echo "Test sync"
-rsync -n $opts $outputdir/* $targetdir | grep -v -e repodata -e repoview | less
+rsync -n $opts $outputdir/* $targetdir | grep -v -e repodata -e repoview
 echo "Real Sync; hit Ctrl-C or kill to exit"
 sleep 3
 rsync $opts $outputdir/* $targetdir

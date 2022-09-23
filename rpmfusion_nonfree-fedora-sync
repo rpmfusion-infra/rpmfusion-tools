@@ -4,8 +4,15 @@ outputdir=/pub/nonfree/fedora/
 #targetdir=rpmfusion@mirrors.offmysoul.me:nonfree/fedora/
 targetdir=rpmfusion@download1.rpmfusion.org:nonfree/fedora/
 exclude=""
-#opts="-avH --progress --delete-after --delay-updates -e ssh -p 22 $exclude"
+#ssh_opts="ssh -p 1433"
 opts="-avH --progress --delete-after --delay-updates -e ssh $exclude"
+
+finally() {
+	ssh ${targetdir%%:*} rm -f ${targetdir##*:}/.sync_in_progress
+}
+trap finally EXIT SIGTERM SIGINT
+
+ssh ${targetdir%%:*} touch ${targetdir##*:}/.sync_in_progress
 
 echo "Test sync"
 rsync -n $opts $outputdir/* $targetdir | grep -v -e repodata -e repoview
