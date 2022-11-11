@@ -27,8 +27,8 @@ find /mnt/koji/mash/nonfree/el7-candidate -name "${1}*.rpm" | xargs -r rpmsign -
 echo EL nonfree 8
 find /mnt/koji/mash/nonfree/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=BDDA8475
 
-FEDORA_STABLES="35 36"
-FEDORA_BRANCH="37"
+FEDORA_STABLES="35 36 37"
+FEDORA_BRANCH=""
 FEDORA_RAWHIDE="38"
 EL_STABLES="7 8"
 
