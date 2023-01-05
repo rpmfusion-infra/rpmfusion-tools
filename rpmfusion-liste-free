@@ -34,6 +34,7 @@ chromium-vaapi
 cinelerra-gg
 cmus
 compat-ffmpeg28
+compat-ffmpeg4
 compat-plone
 compat-python24
 compat-python24-elementtree
@@ -179,6 +180,7 @@ libdvbcsa
 libdvbpsi
 libdvdcss
 libfame
+libfreeaptx
 libftl
 libheif
 libmad
@@ -275,6 +277,7 @@ perl-Crypt-IDEA
 phonon-backend-vlc
 pianobar
 picard-freeworld
+pipewire-codec-aptx
 pithos
 plasma-wallpapers-dynamic
 plex-media-player
@@ -285,6 +288,7 @@ pulseaudio-module-bluetooth-freeworld
 pxsup2dast
 pyglet
 python-ffmpeg-normalize
+python-ffmpeg-progress-yield
 python-vlc
 qarte
 qc-usb
@@ -349,6 +353,7 @@ thoggen
 thunderbird-enigmail
 tilem
 tivodecode
+tivodecode-ng
 torrentzip
 transcode
 traverso

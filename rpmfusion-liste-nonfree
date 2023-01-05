@@ -89,14 +89,18 @@ nvidia-173xx-kmod
 nvidia-304xx-kmod
 nvidia-340xx-kmod
 nvidia-390xx-kmod
+nvidia-470xx-kmod
 nvidia-96xx-kmod
 nvidia-beta-kmod
 nvidia-kmod
 nvidia-modprobe
 nvidia-newest-kmod
+nvidia-open-kmod
 nvidia-persistenced
 nvidia-settings
 nvidia-settings-390xx
+nvidia-settings-470xx
+nvidia-vaapi-driver
 nvidia-xconfig
 obs-ndi
 OCE
@@ -178,6 +182,7 @@ xorg-x11-drv-nvidia-173xx
 xorg-x11-drv-nvidia-304xx
 xorg-x11-drv-nvidia-340xx
 xorg-x11-drv-nvidia-390xx
+xorg-x11-drv-nvidia-470xx
 xorg-x11-drv-nvidia-96xx
 xorg-x11-drv-nvidia-beta
 xorg-x11-drv-nvidia-newest
