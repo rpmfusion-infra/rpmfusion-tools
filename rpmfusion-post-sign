@@ -53,15 +53,6 @@ for f in free nonfree ; do
 
 done
 
-# RPI
-f=rpi
-for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
-  koji-rpmfusion list-tagged f${r}-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build f${r}-${f}-candidate f${r}-${f}
-done
-for r in 8 9 ; do
-  koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-${f}-candidate el${r}-${f}
-done
-
 # There is a need for a short delay before to fixup the branch push
 if [ ! x${FEDORA_BRANCH} == x ] ; then
   sleep 10
