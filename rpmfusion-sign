@@ -49,21 +49,4 @@ for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE} ; do
   echo "Fedora ${i} - CUDA"
   echo "------------------"
   _sigul_sign f${i}-cuda-candidate rpmfusion-cuda-2019
-
-  # Sign RPI namespace
-  echo "------------------"
-  echo "Fedora ${i} - RPI"
-  echo "------------------"
-  _sigul_sign f${i}-rpi-candidate rpmfusion-fedora-free-${kn}
 done
-
-# Sign for el8-rpi
-for i in 8 ; do
-    j=rpi
-    echo "------------------"
-    echo "EL ${i} - ${j}"
-    echo "------------------"
-    _sigul_sign el${i}-${j}-candidate rpmfusion-el-free-${i}
-done
-
-
