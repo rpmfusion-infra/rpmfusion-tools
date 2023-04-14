@@ -2,8 +2,8 @@
 
 # rpmfusion-sign
 
-FEDORAS="36 37"
-BRANCHED="38"
+FEDORAS="36 37 38"
+BRANCHED=""
 RAWHIDE="39"
 ELS="7 8 9"
 SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 5 -v "
