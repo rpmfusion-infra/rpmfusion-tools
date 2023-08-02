@@ -18,15 +18,15 @@ import operator
 # Set some variables
 # Some of these could arguably be passed in as args.
 flavor = 'free'
-flavor = 'nonfree'
-target = 'f37-%s' % flavor
+#flavor = 'nonfree'
+target = 'f39-%s' % flavor
 buildtag = '%s-build' % target  # tag to build from
 targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
 # check builds on multilibs targets ...
 targets += ['rawhide-%s-multilibs' % flavor]
-epoch = '2022-08-06 10:00:00.000000' # rebuild anything not built after this date
+epoch = '2023-07-19 12:00:00' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg 5.1'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild'
 workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/%s' % flavor)
 enviro = os.environ
 
