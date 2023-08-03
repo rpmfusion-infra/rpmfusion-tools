@@ -121,10 +121,24 @@ for pkg in pkgs:
 
     # Check out git
     fname = flavor + '/' + name
-    fedpkgcmd = ['rfpkg', 'clone', fname]
-    print('Checking out %s' % name)
-    if runme(fedpkgcmd, 'rfpkg', name, enviro):
-        continue
+    mayduplicatecommits = False
+    if os.path.exists(os.path.join(workdir, name)):
+        mayduplicatecommits = True
+        fedpkgcmd = ['git', 'checkout', 'master', '-q']
+        #print('checking out %s master' % name)
+        if runme(fedpkgcmd, 'git checkout master', name, enviro,
+            cwd=os.path.join(workdir, name)):
+            continue
+        fedpkgcmd = ['git', 'pull', '-q']
+        #print('checking out %s pull' % name)
+        if runme(fedpkgcmd, 'git pull', name, enviro,
+            cwd=os.path.join(workdir, name)):
+            continue
+    else:
+        fedpkgcmd = ['rfpkg', 'clone', fname]
+        print('checking out %s' % name)
+        if runme(fedpkgcmd, 'rfpkg clone', name, enviro):
+            continue
 
     # Check for a checkout
     if not os.path.exists(os.path.join(workdir, name)):
@@ -163,11 +177,19 @@ for pkg in pkgs:
         print('bumpspec %s failed \n' % bumpspec)
         continue
 
-    # git commit and push
-    commit = ['rfpkg', 'commit', '-s', '-p', '-m', comment]
+    if mayduplicatecommits:
+        # git commit
+        commit = ['rfpkg', 'commit', '-s', '-m', comment]
+    else:
+        # git commit and push
+        commit = ['rfpkg', 'commit', '-s', '-p', '-m', comment]
     print('Committing changes for %s' % name)
     if runme(commit, 'commit', name, enviro,
                  cwd=os.path.join(workdir, name)):
+        continue
+
+    if mayduplicatecommits:
+        print('check if %s BUMP AGAIN and run rfpkg push && rfpkg build \n' % name)
         continue
 
     # get git url
