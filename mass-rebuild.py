@@ -17,8 +17,8 @@ import operator
 
 # Set some variables
 # Some of these could arguably be passed in as args.
-flavor = 'free'
-#flavor = 'nonfree'
+# flavor = 'free'
+flavor = 'nonfree'
 target = 'f39-%s' % flavor
 buildtag = '%s-build' % target  # tag to build from
 targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
