@@ -153,21 +153,27 @@ failures2 = {} # dict of owners to lists of packages that failed.
 # we may use failbuilds or failbuilds2
 for build in failbuilds:
     pkg = build['package_name']
-    failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
-    if pkg not in failed_pkgs:
-        failed_pkgs.append(pkg)
-    else:
-        debug("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
+    if build['package_name'] not in open('dead.packages').read():
+        failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
+        if pkg not in failed_pkgs:
+            failed_pkgs.append(pkg)
+        else:
+            debug("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
 
 # pkg not in goods builds neither failed builds
 for build in pkgs:
+    # we need first run find ~/rpmfusion/new/massrebuild -name dead.package > dead.packages
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
-    and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
+    and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]
+    and build['package_name'] not in open('dead.packages').read()):
         pkg = build['package_name']
+        failures2[pkg] = 'repo = %s' % build['tag_name']
+        #hosts_process = subprocess.Popen(['grep', '-c', build['package_name'], "dead.packages"], stdout= subprocess.PIPE)
+        #hosts_out, hosts_err = hosts_process.communicate()
+        #if hosts_out == "1":
+            #failures2[pkg] += " dead.package"
         response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
-        if 'error' in response:
-            failures2[pkg] = 'repo = %s' % build['tag_name']
-        else:
+        if not 'error' in response:
             failures2[pkg] = 'moved to fedora ? (<a target="_blank" href="%s">%s</a>) ' % (response['full_url'], response['full_url'])
         notbuilded_pkgs.append(pkg)
 
