@@ -17,7 +17,7 @@ if [ x${HOSTNAME} != "xbuildvm-01.online.rpmfusion.net" ] ; then
 fi
 
 for i in nvidia-driver steam ; do
-  for f in 37 38 39; do
+  for f in 37 38 39 40; do
     pushd /mnt/koji/mash/nonfree/${f}-${i} &>/dev/null
     appstream-builder --origin=rpmfusion.org --basename=appstream --cache-dir=${tmp}/asb-md --enable-hidpi --min-icon-size=32 --output-dir=${tmp}/asb-md --packages-dir=x86_64/ --temp-dir=${tmp}/asb-icons
       [ -e ${tmp}/asb-md/appstream-icons.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-icons.tar.gz x86_64/repodata/

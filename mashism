@@ -37,9 +37,9 @@ fi
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
   done
-  #r=39
-  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
-  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
   r=39
+  mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  r=40
   mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  rawhide -f /var/tmp/rpmfusion-${n}-comps/comps-devel.xml $DEBUG
 done
