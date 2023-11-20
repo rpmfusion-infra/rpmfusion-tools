@@ -185,6 +185,7 @@ libfame
 libfreeaptx
 libftl
 libheif
+libheif-freeworld
 libmad
 libmimic
 libmms
@@ -260,6 +261,7 @@ normalize
 npapi-vlc
 nvidia-video-codec-sdk
 obs-studio
+obs-studio-freeworld
 ogmrip
 olive
 omnibook
@@ -366,6 +368,7 @@ ultrastardx
 ushare-freeworld
 v4l2loopback
 v4l2loopback-kmod
+v4l2-relayd
 vagalume
 vbam
 vboxgtk

@@ -50,6 +50,7 @@ gstreamer1-plugins-bad-nonfree
 gstreamer1-plugins-icamerasrc
 gstreamer-plugins-bad-nonfree
 gsview
+intel-ipu6-kmod
 intel-media-driver
 iozone
 ipu6-camera-bins
