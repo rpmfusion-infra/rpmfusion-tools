@@ -131,6 +131,7 @@ imagination
 iscsitarget
 iscsitarget-kmod
 jbigkit
+jellyfin
 k3b-extras-freeworld
 k9copy
 kaffeine
@@ -142,6 +143,7 @@ kmediafactory
 kmodtool
 kodi
 kodi-inputstream-adaptive
+kodi-inputstream-rtmp
 kodi-peripheral-joystick
 kodi-platform
 kodi-pvr-addons
@@ -217,6 +219,7 @@ mamory
 mate-applet-streamer
 medialibrary
 megamario
+mesa-freeworld
 miam-player
 mimms
 mingw-libmad

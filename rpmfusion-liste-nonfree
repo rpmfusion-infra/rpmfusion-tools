@@ -31,6 +31,7 @@ dynamips
 ec2-api-tools
 edgar
 EmptyEpsilon
+etlegacy
 e-uae
 faac
 fdkaac
@@ -46,10 +47,14 @@ gens-gs
 gmameui
 gnome-video-arcade
 gstreamer1-plugins-bad-nonfree
+gstreamer1-plugins-icamerasrc
 gstreamer-plugins-bad-nonfree
 gsview
 intel-media-driver
 iozone
+ipu6-camera-bins
+ipu6-camera-hal
+ivsc-firmware
 jad
 kisslicer
 larabie-fonts
@@ -69,6 +74,7 @@ madwifi
 madwifi-kmod
 mame
 mame-data-extras
+man-pages-posix
 mari0
 mednafen
 megasync
