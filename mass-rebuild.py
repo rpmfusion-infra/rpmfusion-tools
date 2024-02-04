@@ -16,6 +16,7 @@ import sys
 import operator
 
 # Set some variables
+number_of_builds = 12
 # Some of these could arguably be passed in as args.
 flavor = 'free'
 #flavor = 'nonfree'
@@ -91,19 +92,26 @@ for pkg in pkgs:
     if name not in pkg_skip_list:
         print("%s" % (name))
 
+pkg_counter = 0
 # Loop over each package
 for pkg in pkgs:
     name = pkg['package_name']
-    id = pkg['package_id']
+    pkg_id = pkg['package_id']
 
     # some package we just dont want to ever rebuild
     if name in pkg_skip_list:
         print('Skipping %s, package is explicitely skipped' % name)
         continue
 
+    if pkg_counter >= number_of_builds:
+        print('press enter to build more %d packages' % pkg_counter)
+        pkg_counter = 0
+        fedpkgcmd = ['read', 'dummy']
+        runme(fedpkgcmd, 'read dummy', "read dummy", enviro)
+
     # Query to see if a build has already been attempted
     # this version requires newer koji:
-    builds = kojisession.listBuilds(id, createdAfter=epoch)
+    builds = kojisession.listBuilds(pkg_id, createdAfter=epoch)
     newbuild = False
     # Check the builds to make sure they were for the target we care about
     for build in builds:
@@ -207,3 +215,6 @@ for pkg in pkgs:
     print('Building %s' % name)
     runme(build, 'build', name, enviro,
           cwd=os.path.join(workdir, name))
+
+    pkg_counter += 1
+
