@@ -45,8 +45,8 @@ epoch -- string representing date to start looking for failed builds
          from. Format: "%F %T.%N"
 tag -- tag where to look for failed builds (usually fXX-rebuild)
 """
-tag = 'f39'
-epoch = '2023-07-19 12:00:00' # rebuild anything not built after this date
+tag = 'f40'
+epoch = '2024-02-01 00:00:00' # rebuild anything not built after this date
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
