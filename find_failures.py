@@ -150,32 +150,37 @@ notbuilded_pkgs = []
 failures = {} # dict of owners to lists of packages that failed.
 failures2 = {} # dict of owners to lists of packages that failed.
 
+import subprocess
+output = subprocess.check_output("""find ~/rpmfusion/new/massrebuild -name dead.package""", shell=True, text=True)
+
 # we may use failbuilds or failbuilds2
 for build in failbuilds:
     pkg = build['package_name']
-    if build['package_name'] not in open('dead.packages').read():
+    if len( [line for line in output.splitlines() if "/%s/" % pkg in line] ):
+        debug("dead package = %s" % pkg)
+    else:
         failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
         if pkg not in failed_pkgs:
             failed_pkgs.append(pkg)
         else:
             debug("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
 
+output = subprocess.check_output("""find ~/rpmfusion/new/massrebuild -name noautobuild""", shell=True, text=True)
 # pkg not in goods builds neither failed builds
 for build in pkgs:
+    pkg = build['package_name']
     # we need first run find ~/rpmfusion/new/massrebuild -name dead.package > dead.packages
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
     and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]
     and build['package_name'] not in open('dead.packages').read()):
-        pkg = build['package_name']
         failures2[pkg] = 'repo = %s' % build['tag_name']
-        #hosts_process = subprocess.Popen(['grep', '-c', build['package_name'], "dead.packages"], stdout= subprocess.PIPE)
-        #hosts_out, hosts_err = hosts_process.communicate()
-        #if hosts_out == "1":
-            #failures2[pkg] += " dead.package"
-        response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
-        if not 'error' in response:
-            failures2[pkg] = 'moved to fedora ? (<a target="_blank" href="%s">%s</a>) ' % (response['full_url'], response['full_url'])
-        notbuilded_pkgs.append(pkg)
+        if len( [line for line in output.splitlines() if "/%s/" % pkg in line] ):
+            failures2[pkg] += ", skipped from mass-rebuild because have noautobuild file"
+        else:
+            response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
+            if not 'error' in response:
+                failures2[pkg] = 'moved to fedora ? (<a target="_blank" href="%s">%s</a>) ' % (response['full_url'], response['full_url'])
+            notbuilded_pkgs.append(pkg)
 
 debug('</pre>')
 print("<p>Last run: %s</p>" % now_str)
