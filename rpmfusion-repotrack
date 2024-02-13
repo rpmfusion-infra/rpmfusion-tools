@@ -24,7 +24,7 @@ repotrack_list_toolset="devtoolset-8-binutils devtoolset-8-dwz devtoolset-8-elfu
 repotrack_list_cuda="cuda-10-2 cuda cuda-command-line-tools-10-2 cuda-compiler-10-2 cuda-cudart-10-2 cuda-cudart-dev-10-2 cuda-cufft-10-2 cuda-cufft-dev-10-2 cuda-cuobjdump-10-2 cuda-cupti-10-2 cuda-curand-10-2 cuda-curand-dev-10-2 cuda-cusolver-10-2 cuda-cusolver-dev-10-2 cuda-cusparse-10-2 cuda-cusparse-dev-10-2 cuda-demo-suite-10-2 cuda-documentation-10-2 cuda-gdb-10-2 cuda-libraries-10-2 cuda-libraries-dev-10-2 cuda-license-10-2 cuda-memcheck-10-2 cuda-misc-headers-10-2 cuda-npp-10-2 cuda-npp-dev-10-2 cuda-nsight-10-2 cuda-nsight-compute-10-2 cuda-nsight-systems-10-2 cuda-nvcc-10-2 cuda-nvdisasm-10-2 cuda-nvgraph-10-2 cuda-nvgraph-dev-10-2 cuda-nvjpeg-10-2 cuda-nvjpeg-dev-10-2 cuda-nvml-dev-10-2 cuda-nvprof-10-2 cuda-nvprune-10-2 cuda-nvrtc-10-2 cuda-nvrtc-dev-10-2 cuda-nvtx-10-2 cuda-nvvp-10-2 cuda-runtime-10-2 cuda-samples-10-2 cuda-sanitizer-api-10-2 cuda-toolkit-10-2 cuda-tools-10-2 cuda-visual-tools-10-2 cuda-drivers cuda-minimal-build-10-2"
 
 umask 002
-for i in 38 39 40; do
+for i in 38 39 40 41; do
   repotrack --arch i686 --repofrompath=f${i},https://kojipkgs.fedoraproject.org/repos/f${i}-build/latest/i386/ -r f${i} -t -p /mnt/koji/buildsys-override/f${i}-free/i386 \
     ${repotrack_list_i386}
   createrepo_c --update /mnt/koji/buildsys-override/f${i}-free/i386/
