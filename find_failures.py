@@ -61,8 +61,7 @@ def debug(msg):
     if debug_enabled:
         print(msg)
 
-now = datetime.datetime.now()
-now_str = "%s UTC" % str(now.utcnow())
+now_str = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 print('<html><head>')
 print('<title>Packages that failed to build as of %s</title>' % now_str)
 print('<style type="text/css"> dt { margin-top: 1em } </style>')
