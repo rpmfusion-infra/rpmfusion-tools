@@ -15,8 +15,8 @@ repotrack_list_pcsx2=" bubblewrap gettext ninja-build perl xz-devel libxml2-deve
 repotrack_list_zsnes=" hicolor-icon-theme perl-Carp nasm SDL-devel zlib-devel libpng-devel ncurses-devel libao-devel"
 repotrack_list_i386="add-determinism bash bzip2 coreutils cpio diffutils fedora-release findutils gawk gcc-plugin-annobin git glibc-gconv-extra  glibc-minimal-langpack grep gtk2-devel gzip info make patch redhat-rpm-config rpm-build pyproject-rpm-macros dnf-data \
   sed shadow-utils tar unzip util-linux which xz gcc gcc-c++ systemd-devel desktop-file-utils libappstream-glib python2 python3 libtool libXfixes-devel libdrm-devel \
-  libpciaccess-devel libva-devel libGL-devel llvm-devel mesa-libGL-devel libEGL-devel python3-dbus python3-gpg python3-hawkey python3-libcomps python3-libdnf python3-distro python3-rpm python3-setuptools python3-dnf \
-  python3-systemd libglvnd-devel systemd-rpm-macros wayland-devel annobin annobin-plugin-gcc ${repotrack_list_zsnes} ${repotrack_list_pcsx2} ${repotrack_list_ffmpeg} ${repotrack_list_mesa} \
+  libpciaccess-devel libva-devel libGL-devel llvm-devel mesa-libGL-devel libEGL-devel python3-dbus python3-gpg python3-hawkey python3-isodate python3-libcomps python3-libdnf python3-distro python3-rpm python3-setuptools python3-six python3-dnf \
+  python3-systemd libglvnd-devel systemd-rpm-macros wayland-devel wayland-protocols-devel annobin annobin-plugin-gcc ${repotrack_list_zsnes} ${repotrack_list_pcsx2} ${repotrack_list_ffmpeg} ${repotrack_list_mesa} \
   ${repotrack_list_gpac} ${repotrack_list_gst}"
 
 repotrack_list_toolset="devtoolset-8-binutils devtoolset-8-dwz devtoolset-8-elfutils devtoolset-8-elfutils-libelf devtoolset-8-elfutils-libs devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-gcc-gfortran devtoolset-8-gdb devtoolset-8-libatomic-devel devtoolset-8-libquadmath-devel devtoolset-8-libstdc++-devel devtoolset-8-ltrace devtoolset-8-make devtoolset-8-memstomp devtoolset-8-runtime devtoolset-8-strace devtoolset-8-toolchain"
