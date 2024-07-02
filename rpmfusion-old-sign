@@ -14,19 +14,19 @@ echo Fedora nonfree 40
 find /mnt/koji/mash/nonfree/40-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=94843C65
 echo Fedora nonfree 41
 find /mnt/koji/mash/nonfree/41-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=94843C65
-echo EL free 7
-find /mnt/koji/mash/free/el7-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=F5CF6C1E
 echo EL free 8
 find /mnt/koji/mash/free/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=158B3811
-echo EL nonfree 7
-find /mnt/koji/mash/nonfree/el7-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=A3108F6C
+echo EL free 9
+find /mnt/koji/mash/free/el9-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=296458f3
 echo EL nonfree 8
 find /mnt/koji/mash/nonfree/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=BDDA8475
+echo EL nonfree 9
+find /mnt/koji/mash/nonfree/el9-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=aab212ea
 
 FEDORA_STABLES="39 40"
 FEDORA_BRANCH=""
 FEDORA_RAWHIDE="41"
-EL_STABLES="7 8"
+EL_STABLES="8 9"
 
 for f in free nonfree ; do
   for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE} ; do

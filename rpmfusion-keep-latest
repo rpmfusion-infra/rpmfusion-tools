@@ -6,7 +6,7 @@ for f in free nonfree ; do
   for r in 39 40 41 ; do
     koji-keep-latest f${r}-${f}-updates-candidate
   done
-  for r in 7 8 9 ; do
+  for r in 8 9 ; do
    koji-keep-latest el${r}-${f}-candidate
   done
     koji-keep-latest rawhide-${f}

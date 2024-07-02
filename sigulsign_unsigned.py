@@ -38,10 +38,8 @@ KEYS = {
     'rpmfusion-cuda-2019': {'id': 'c8d47bb7', 'v3': False},
     'rpmfusion-fedora-free-2020': {'id': 'd651ff2e', 'v3': False},
     'rpmfusion-fedora-nonfree-2020': {'id': '94843c65', 'v3': False},
-    'rpmfusion-el-free-7': {'id': 'f5cf6c1e', 'v3': False},
     'rpmfusion-el-free-8': {'id': '158b3811', 'v3': False},
     'rpmfusion-el-free-9': {'id': '296458f3', 'v3': False},
-    'rpmfusion-el-nonfree-7': {'id': 'a3108f6c', 'v3': False},
     'rpmfusion-el-nonfree-8': {'id': 'bdda8475', 'v3': False},
     'rpmfusion-el-nonfree-9': {'id': 'aab212ea', 'v3': False},
 }
