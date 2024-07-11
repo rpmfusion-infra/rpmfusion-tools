@@ -47,6 +47,9 @@ for f in free nonfree ; do
   done
   for r in ${EL_STABLES} ; do
     koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}' | grep libdvdcss |xargs -r koji-rpmfusion move-build el${r}-${f}-testing el${r}-${f}-tainted
+    koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}' |grep  nvidia-open-kmod | xargs -r koji-rpmfusion move-build el${r}-${f}-testing el${r}-${f}-tainted
+    #automove discord to stable ASAP
+    koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}' | grep discord | xargs -r koji-rpmfusion move-build el${r}-${f}-candidate el${r}-${f}
     koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-${f}-testing el${r}-${f}
     koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-${f}-candidate el${r}-${f}-testing
   done
