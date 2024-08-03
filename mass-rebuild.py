@@ -14,24 +14,15 @@ import os
 import subprocess
 import sys
 import operator
+import path
 
 # Set some variables
 number_of_builds = 12
+flavors = ["free", "nonfree"]
 # Some of these could arguably be passed in as args.
-flavor = 'free'
-#flavor = 'nonfree'
-target = 'f40-%s' % flavor
-buildtag = '%s-build' % target  # tag to build from
-targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
-# check builds on multilibs targets ...
-targets += ['rawhide-%s-multilibs' % flavor]
-epoch = '2024-02-01 00:00:00' # rebuild anything not built after this date
+epoch = '2024-07-25 00:00:00' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild'
-# before run this script we need run:
-# mkdir -p ~/rpmfusion/new/massrebuild/free or mkdir -p ~/rpmfusion/new/massrebuild/nonfree
-workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/%s' % flavor)
-enviro = os.environ
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild'
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
@@ -40,10 +31,11 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
 
+local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 # Define functions
 
 # This function needs a dry-run like option
-def runme(cmd, action, pkg, env, cwd=workdir):
+def runme(cmd, action, pkg, env, cwd):
     """Simple function to run a command and return 0 for success, 1 for
        failure.  cmd is a list of the command and arguments, action is a
        name for the action (for logging), pkg is the name of the package
@@ -58,8 +50,8 @@ def runme(cmd, action, pkg, env, cwd=workdir):
     return 0
 
 # This function needs a dry-run like option
-def runmeoutput(cmd, action, pkg, env, cwd=workdir):
-    """Simple function to run a command and return output if successful. 
+def runmeoutput(cmd, action, pkg, env, cwd):
+    """Simple function to run a command and return output if successful.
        cmd is a list of the command and arguments, action is a
        name for the action (for logging), pkg is the name of the package
        being operated on, env is the environment dict, and cwd is where
@@ -75,146 +67,163 @@ def runmeoutput(cmd, action, pkg, env, cwd=workdir):
     return result
 
 
-# Create a koji session
-kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
+def mass_rebuild(workdir, flavor):
+    enviro = os.environ
 
-# Generate a list of packages to iterate over
-pkgs = kojisession.listPackages(buildtag, inherited=True)
+    target = 'f41-%s' % flavor
+    buildtag = '%s-build' % target  # tag to build from
+    targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
+    # check builds on multilibs targets ...
+    targets += ['rawhide-%s-multilibs' % flavor]
 
-# reduce the list to those that are not blocked and sort by package name
-pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and pkg['tag_name'] == target)],
-            key=operator.itemgetter('package_name'))
+    # Create a koji session
+    kojisession = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 
-print('Checking %s packages...' % len(pkgs))
+    # Generate a list of packages to iterate over
+    pkgs = kojisession.listPackages(buildtag, inherited=True)
 
-for pkg in pkgs:
-    name = pkg['package_name']
-    if name not in pkg_skip_list:
-        print("%s" % (name))
+    # reduce the list to those that are not blocked and sort by package name
+    pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'] and pkg['tag_name'] == target)],
+                key=operator.itemgetter('package_name'))
 
-pkg_counter = 0
-# Loop over each package
-for pkg in pkgs:
-    name = pkg['package_name']
-    pkg_id = pkg['package_id']
+    for pkg in pkgs:
+        name = pkg['package_name']
+        if name not in pkg_skip_list:
+            print("%s" % (name))
 
-    # some package we just dont want to ever rebuild
-    if name in pkg_skip_list:
-        print('Skipping %s, package is explicitely skipped' % name)
-        continue
+    print('Checking %s packages...' % len(pkgs))
+    print('massrebuild all packages since %s, target %s, workdir %s' % (target, epoch, workdir))
 
-    if pkg_counter >= number_of_builds:
-        print('press enter to build more %d packages' % pkg_counter)
-        pkg_counter = 0
-        fedpkgcmd = ['read', 'dummy']
-        runme(fedpkgcmd, 'read dummy', "read dummy", enviro)
+    pkg_counter = 0
+    # Loop over each package
+    for pkg in pkgs:
+        name = pkg['package_name']
+        pkg_id = pkg['package_id']
 
-    # Query to see if a build has already been attempted
-    # this version requires newer koji:
-    builds = kojisession.listBuilds(pkg_id, createdAfter=epoch)
-    newbuild = False
-    # Check the builds to make sure they were for the target we care about
-    for build in builds:
-        try:
-            buildtarget = kojisession.getTaskInfo(build['task_id'],
-                                       request=True)['request'][1]
-            if buildtarget == target or buildtarget in targets:
-                # We've already got an attempt made, skip.
-                newbuild = True
+        # some package we just dont want to ever rebuild
+        if name in pkg_skip_list:
+            print('Skipping %s, package is explicitely skipped' % name)
+            continue
+
+        if pkg_counter >= number_of_builds:
+            print('press enter to build more %d packages' % pkg_counter)
+            pkg_counter = 0
+            fedpkgcmd = ['read', 'dummy']
+            runme(fedpkgcmd, 'read dummy', "read dummy", enviro, workdir)
+
+        # Query to see if a build has already been attempted
+        # this version requires newer koji:
+        builds = kojisession.listBuilds(pkg_id, createdAfter=epoch)
+        newbuild = False
+        # Check the builds to make sure they were for the target we care about
+        for build in builds:
+            try:
+                buildtarget = kojisession.getTaskInfo(build['task_id'],
+                                           request=True)['request'][1]
+                if buildtarget == target or buildtarget in targets:
+                    # We've already got an attempt made, skip.
+                    newbuild = True
+                    break
+            except:
+                print('Skipping %s, no taskinfo.' % name)
+                continue
+        if newbuild:
+            print('Skipping %s, already attempted.' % name)
+            continue
+
+        # Check out git
+        fname = flavor + '/' + name
+        mayduplicatecommits = False
+        if os.path.exists(os.path.join(workdir, name)):
+            mayduplicatecommits = True
+            fedpkgcmd = ['git', 'checkout', 'master', '-q']
+            #print('checking out %s master' % name)
+            if runme(fedpkgcmd, 'git checkout master', name, enviro,
+                os.path.join(workdir, name)):
+                continue
+            fedpkgcmd = ['git', 'pull', '-q']
+            #print('checking out %s pull' % name)
+            if runme(fedpkgcmd, 'git pull', name, enviro, os.path.join(workdir, name)):
+                continue
+        else:
+            fedpkgcmd = ['rfpkg', 'clone', fname]
+            print('checking out %s' % name)
+            if runme(fedpkgcmd, 'rfpkg clone', name, enviro, workdir):
+                continue
+
+        # Check for a checkout
+        if not os.path.exists(os.path.join(workdir, name)):
+            print('%s failed checkout.\n' % name)
+            continue
+
+        # Check for a noautobuild file
+        if os.path.exists(os.path.join(workdir, name, 'noautobuild')):
+            # Maintainer does not want us to auto build.
+            print('Skipping %s, due to opt-out' % name)
+            continue
+
+        # Check for dead.package file
+        if os.path.exists(os.path.join(workdir, name, 'dead.package')):
+            # dead.package found we should skip or we may skip safely
+            print('Skipping %s, due dead.package' % name)
+            continue
+
+        # Find the spec file
+        files = os.listdir(os.path.join(workdir, name))
+        spec = ''
+        for filename in files:
+            if filename.endswith('.spec'):
+                spec = filename
                 break
-        except:
-            print('Skipping %s, no taskinfo.' % name)
-            continue
-    if newbuild:
-        print('Skipping %s, already attempted.' % name)
-        continue
 
-    # Check out git
-    fname = flavor + '/' + name
-    mayduplicatecommits = False
-    if os.path.exists(os.path.join(workdir, name)):
-        mayduplicatecommits = True
-        fedpkgcmd = ['git', 'checkout', 'master', '-q']
-        #print('checking out %s master' % name)
-        if runme(fedpkgcmd, 'git checkout master', name, enviro,
-            cwd=os.path.join(workdir, name)):
-            continue
-        fedpkgcmd = ['git', 'pull', '-q']
-        #print('checking out %s pull' % name)
-        if runme(fedpkgcmd, 'git pull', name, enviro,
-            cwd=os.path.join(workdir, name)):
-            continue
-    else:
-        fedpkgcmd = ['rfpkg', 'clone', fname]
-        print('checking out %s' % name)
-        if runme(fedpkgcmd, 'rfpkg clone', name, enviro):
+        if not spec:
+            print('%s failed spec check !\n' % name)
             continue
 
-    # Check for a checkout
-    if not os.path.exists(os.path.join(workdir, name)):
-        print('%s failed checkout.\n' % name)
-        continue
+        # rpmdev-bumpspec
+        bumpspec = ['rpmdev-bumpspec', '-D', '-u', user, '-c', comment, spec]
+        print('Bumping %s' % spec)
+        if runme(bumpspec, 'bumpspec', name, enviro, os.path.join(workdir, name)):
+            print('bumpspec %s failed \n' % bumpspec)
+            continue
 
-    # Check for a noautobuild file
-    if os.path.exists(os.path.join(workdir, name, 'noautobuild')):
-        # Maintainer does not want us to auto build.
-        print('Skipping %s, due to opt-out' % name)
-        continue
+        if mayduplicatecommits:
+            # git commit
+            commit = ['rfpkg', 'commit', '-s', '-m', comment]
+        else:
+            # git commit and push
+            commit = ['rfpkg', 'commit', '-s', '-p', '-m', comment]
+        print('Committing changes for %s' % name)
+        if runme(commit, 'commit', name, enviro, os.path.join(workdir, name)):
+            continue
 
-    # Check for dead.package file
-    if os.path.exists(os.path.join(workdir, name, 'dead.package')):
-        # dead.package found we should skip or we may skip safely
-        print('Skipping %s, due dead.package' % name)
-        continue
+        if mayduplicatecommits:
+            print('check if %s BUMP AGAIN and run rfpkg push && rfpkg build \n' % name)
+            continue
 
-    # Find the spec file
-    files = os.listdir(os.path.join(workdir, name))
-    spec = ''
-    for filename in files:
-        if filename.endswith('.spec'):
-            spec = filename
-            break
+        # get git url
+        urlcmd = ['rfpkg', 'giturl']
+        print('Getting git url for %s' % name)
+        url = runmeoutput(urlcmd, 'giturl', name, enviro, os.path.join(workdir, name))
+        if not url:
+            continue
 
-    if not spec:
-        print('%s failed spec check !\n' % name)
-        continue
+        # build
+        build = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
+        print('Building %s' % name)
+        runme(build, 'build', name, enviro, os.path.join(workdir, name))
 
-    # rpmdev-bumpspec
-    bumpspec = ['rpmdev-bumpspec', '-D', '-u', user, '-c', comment, spec]
-    print('Bumping %s' % spec)
-    if runme(bumpspec, 'bumpspec', name, enviro,
-        cwd=os.path.join(workdir, name)):
-        print('bumpspec %s failed \n' % bumpspec)
-        continue
+        pkg_counter += 1
 
-    if mayduplicatecommits:
-        # git commit
-        commit = ['rfpkg', 'commit', '-s', '-m', comment]
-    else:
-        # git commit and push
-        commit = ['rfpkg', 'commit', '-s', '-p', '-m', comment]
-    print('Committing changes for %s' % name)
-    if runme(commit, 'commit', name, enviro,
-                 cwd=os.path.join(workdir, name)):
-        continue
 
-    if mayduplicatecommits:
-        print('check if %s BUMP AGAIN and run rfpkg push && rfpkg build \n' % name)
-        continue
+for flavor in flavors:
+    workdir = os.path.join(local_workdir, flavor)
+    if not os.path.isdir(workdir):
+        print('Before run this script you need set local_workdir in this script and create the directory where it will save the work, please run:\nmkdir -p %s' % workdir)
 
-    # get git url
-    urlcmd = ['rfpkg', 'giturl']
-    print('Getting git url for %s' % name)
-    url = runmeoutput(urlcmd, 'giturl', name, enviro,
-                 cwd=os.path.join(workdir, name))
-    if not url:
-        continue
-
-    # build
-    build = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
-    print('Building %s' % name)
-    runme(build, 'build', name, enviro,
-          cwd=os.path.join(workdir, name))
-
-    pkg_counter += 1
+for flavor in flavors:
+    workdir = os.path.join(local_workdir, flavor)
+    if not os.path.isdir(workdir):
+        exit(1)
+    mass_rebuild(workdir, flavor)
 
