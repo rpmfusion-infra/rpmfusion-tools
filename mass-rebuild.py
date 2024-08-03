@@ -20,9 +20,11 @@ import path
 number_of_builds = 12
 flavors = ["free", "nonfree"]
 # Some of these could arguably be passed in as args.
+tag = 'f41'
 epoch = '2024-07-25 00:00:00' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
 comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild'
+local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
@@ -31,7 +33,6 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
 
-local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 # Define functions
 
 # This function needs a dry-run like option
@@ -67,10 +68,10 @@ def runmeoutput(cmd, action, pkg, env, cwd):
     return result
 
 
-def mass_rebuild(workdir, flavor):
+def mass_rebuild(tag, workdir, flavor):
     enviro = os.environ
 
-    target = 'f41-%s' % flavor
+    target = '%s-%s' % (tag, flavor)
     buildtag = '%s-build' % target  # tag to build from
     targets = ['%s-candidate' % target , 'rawhide-%s' % flavor, '%s' % target] # tag to build from
     # check builds on multilibs targets ...
@@ -225,5 +226,5 @@ for flavor in flavors:
     workdir = os.path.join(local_workdir, flavor)
     if not os.path.isdir(workdir):
         exit(1)
-    mass_rebuild(workdir, flavor)
+    mass_rebuild(tag, workdir, flavor)
 

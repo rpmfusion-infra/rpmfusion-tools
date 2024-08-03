@@ -45,8 +45,9 @@ epoch -- string representing date to start looking for failed builds
          from. Format: "%F %T.%N"
 tag -- tag where to look for failed builds (usually fXX-rebuild)
 """
-tag = 'f40'
-epoch = '2024-02-01 00:00:00' # rebuild anything not built after this date
+tag = 'f41'
+epoch = '2024-07-25 00:00:00' # rebuild anything not built after this date
+local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
@@ -55,7 +56,11 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
 
+dead_packages = subprocess.check_output("find %s -name dead.package" % local_workdir, shell=True, text=True)
+noautobuild_output_packages = subprocess.check_output("find %s -name noautobuild" % local_workdir, shell=True, text=True)
 
+
+print_skipped = False
 debug_enabled = False
 def debug(msg):
     if debug_enabled:
@@ -149,10 +154,6 @@ notbuilded_pkgs = []
 failures = {} # dict of owners to lists of packages that failed.
 failures2 = {} # dict of owners to lists of packages that failed.
 
-import subprocess
-dead_packages = subprocess.check_output("""find ~/rpmfusion/new/massrebuild -name dead.package""", shell=True, text=True)
-noautobuild_output_packages = subprocess.check_output("""find ~/rpmfusion/new/massrebuild -name noautobuild""", shell=True, text=True)
-
 # we may use failbuilds or failbuilds2
 for build in failbuilds:
     pkg = build['package_name']
@@ -168,18 +169,19 @@ for build in failbuilds:
 # pkg not in goods builds neither failed builds
 for build in pkgs:
     pkg = build['package_name']
-    # we need first run find ~/rpmfusion/new/massrebuild -name dead.package > dead.packages
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
         and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
-        failures2[pkg] = 'repo = %s' % build['tag_name']
         if len( [line for line in noautobuild_output_packages.splitlines() if "/%s/" % pkg in line] ):
-            failures2[pkg] += ", skipped from mass-rebuild because have noautobuild file"
+            if print_skipped:
+                failures2[pkg] = "repo = %s, skipped because have noautobuild file" % build['tag_name']
         elif len( [line for line in dead_packages.splitlines() if "/%s/" % pkg in line] ):
-            failures2[pkg] += ", skipped from mass-rebuild because dead package"
+            if print_skipped:
+                failures2[pkg] = "repo = %s, skipped because have dead.package file" % build['tag_name']
         else:
             # response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
             # if not 'error' in response:
             #     failures2[pkg] = 'moved to fedora ? (<a target="_blank" href="%s">%s</a>) ' % (response['full_url'], response['full_url'])
+            failures2[pkg] = 'repo = %s' % build['tag_name']
             notbuilded_pkgs.append(pkg)
 
 debug('</pre>')
