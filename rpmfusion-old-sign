@@ -2,16 +2,12 @@
 
 # rpmfusion-old-sign
 
-echo Fedora free 39
-find /mnt/koji/mash/free/39-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=D651FF2E
 echo Fedora free 40
 find /mnt/koji/mash/free/40-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=D651FF2E
 echo Fedora free 41
 find /mnt/koji/mash/free/41-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=D651FF2E
 echo Fedora free 42
 find /mnt/koji/mash/free/42-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=D651FF2E
-echo Fedora nonfree 39
-find /mnt/koji/mash/nonfree/39-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=94843C65
 echo Fedora nonfree 40
 find /mnt/koji/mash/nonfree/40-updates-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=94843C65
 echo Fedora nonfree 41
@@ -27,7 +23,7 @@ find /mnt/koji/mash/nonfree/el8-candidate -name "${1}*.rpm" | xargs -r rpmsign -
 echo EL nonfree 9
 find /mnt/koji/mash/nonfree/el9-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=aab212ea
 
-FEDORA_STABLES="39 40 41"
+FEDORA_STABLES="40 41"
 FEDORA_BRANCH=""
 FEDORA_RAWHIDE="42"
 EL_STABLES="8 9"
