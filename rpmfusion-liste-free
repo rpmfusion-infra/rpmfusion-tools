@@ -35,6 +35,7 @@ cinelerra-gg
 cmus
 compat-ffmpeg28
 compat-ffmpeg4
+compat-ffmpeg5
 compat-plone
 compat-python24
 compat-python24-elementtree
@@ -397,6 +398,7 @@ VirtualBox
 VirtualBox-kmod
 vlc
 vlc-bittorrent
+vlc-plugins-freeworld
 vlmc
 vo-amrwbenc
 vobcopy
