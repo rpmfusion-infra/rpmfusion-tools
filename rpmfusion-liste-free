@@ -295,6 +295,7 @@ pxsup2dast
 pyglet
 python-ffmpeg-normalize
 python-ffmpeg-progress-yield
+python-rpmfusion
 python-vlc
 qarte
 qc-usb

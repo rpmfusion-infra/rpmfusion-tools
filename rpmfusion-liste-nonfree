@@ -63,6 +63,7 @@ lha
 libcapsimage
 libdrm-poulsbo
 libspotify
+libva-intel-hybrid-driver
 livna-config-display
 lpf-cleartype-fonts
 lpf-flash-plugin
@@ -119,6 +120,7 @@ openmotif
 openni-nite
 p54pci-firmware
 paintdotnet
+palcom-wwan-fcc-unlock
 pcsx2
 pdflib-lite
 perl-IP-Country
