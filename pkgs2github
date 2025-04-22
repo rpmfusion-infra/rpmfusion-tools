@@ -4,8 +4,8 @@
 # pkgs2github
 
 
-for i in free nonfree rpi cuda ; do
+for i in free nonfree cuda ; do
   ls -d1 /srv/git/repositories/${i}/*.git |sed  -e "s|/srv/git/repositories/${i}/||g" | sed  -e 's/.git//g' | sort -d > rpmfusion-liste-${i}
   git diff rpmfusion-liste-${i} | grep '^+' | sed -e '1d' -e 's/^+//g' > new-${i}
-  create2github new-${i} ${i}
+  echo create2github new-${i} ${i}
 done
