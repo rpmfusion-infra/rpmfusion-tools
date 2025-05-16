@@ -4,7 +4,7 @@
 # regen every rpmfusion repos
 
 for s in free free-multilibs nonfree nonfree-multilibs ; do
-  for d in 40 41 42 ; do
+  for d in 41 42 ; do
     koji-rpmfusion regen-repo f${d}-${s}-build --nowait &>/dev/null
   done
   for d in 8 9 ; do
