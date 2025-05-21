@@ -8,14 +8,14 @@
 
 repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel qt5-qt5base-devel nss-sysinit nss-softokn-freebl "
 repotrack_list_gpac=" doxygen libXt-devel libXv-devel glx-utils openjpeg-devel gsm-devel libvorbis-devel gcc-objc++ yasm"
-repotrack_list_ffmpeg=" libaom-devel rav1e-devel rust-rav1e-devel texinfo intel-mediasdk-devel fontconfig-devel freetype-devel fribidi-devel libdav1d-devel libtheora-devel openjpeg2-devel opus-devel zvbi-devel libgcrypt-devel libjxl-devel libvpx-devel \
- ladspa-devel librsvg2-devel pulseaudio-libs-devel gnutls-devel libtasn1-tools libass-devel harfbuzz-devel jack-audio-connection-kit-devel srt-devel libssh-devel SDL2-devel mesa-libEGL-devel libmysofa-devel vulkan-loader-devel alsa-lib-devel libwebp-devel lilv-devel libGL-devel libopenmpt-devel"
-repotrack_list_mesa=" flex bison python3-mako bindgen-cli clang-devel "
-repotrack_list_pcsx2=" bubblewrap gettext ninja-build perl xz-devel libxml2-devel libpcap-devel cmake gtk3-devel vapoursynth-devel python3-rpm-macros python-rpm-macros xdg-dbus-proxy webkit2gtk3 wxGTK3-webview wxGTK-webview"
+repotrack_list_ffmpeg=" dbus-broker libaom-devel rav1e-devel rust-rav1e-devel texinfo intel-mediasdk-devel fontconfig-devel freetype-devel fribidi-devel libdav1d-devel libtheora-devel openjpeg2-devel opus-devel zvbi-devel libgcrypt-devel libjxl-devel libvpx-devel \
+ ladspa-devel librsvg2-devel pulseaudio-libs-devel gnutls-devel libtasn1-tools libass-devel harfbuzz-devel jack-audio-connection-kit-devel srt-devel libssh-devel SDL2-devel mesa-libEGL-devel libmysofa-devel libquadmath-devel vulkan-loader-devel alsa-lib-devel libwebp-devel lilv-devel libGL-devel libopenmpt-devel"
+repotrack_list_mesa=" flex bison python3-mako bindgen-cli cbindgen clang-devel spirv-tools-devel"
+repotrack_list_pcsx2=" bubblewrap gettext ninja-build perl xz-devel libxml2-devel libpcap-devel cmake cmake-rpm-macros gtk3-devel vapoursynth-devel python3-rpm-macros python-rpm-macros xdg-dbus-proxy webkit2gtk3 wxGTK3-webview wxGTK-webview"
 repotrack_list_zsnes=" hicolor-icon-theme perl-Carp nasm SDL-devel zlib-devel libpng-devel ncurses-devel libao-devel"
 repotrack_list_i386="add-determinism bash bzip2 coreutils cpio diffutils fedora-release findutils gawk gcc-plugin-annobin git glibc-gconv-extra  glibc-minimal-langpack grep gtk2-devel gzip info make patch redhat-rpm-config rpm-build pyproject-rpm-macros dnf-data \
   sed shadow-utils tar unzip util-linux which xz gcc gcc-c++ systemd-devel desktop-file-utils libappstream-glib python2 python3 libtool libXfixes-devel libdrm-devel \
-  libpciaccess-devel libva-devel libGL-devel llvm-devel mesa-libGL-devel libEGL-devel python3-dbus python3-gpg python3-hawkey python3-isodate python3-libcomps python3-libdnf python3-distro python3-rpm python3-setuptools python3-six python3-dnf \
+  libpciaccess-devel libva-devel libGL-devel llvm-devel mesa-libGL-devel libEGL-devel python3-pyyaml python3-dbus python3-gpg python3-hawkey python3-isodate python3-libcomps python3-libdnf python3-distro python3-rpm python3-setuptools python3-six python3-dnf \
   python3-systemd libglvnd-devel systemd-rpm-macros wayland-devel wayland-protocols-devel annobin annobin-plugin-gcc ${repotrack_list_zsnes} ${repotrack_list_pcsx2} ${repotrack_list_ffmpeg} ${repotrack_list_mesa} \
   ${repotrack_list_gpac} ${repotrack_list_gst}"
 
