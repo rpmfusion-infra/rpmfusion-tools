@@ -26,7 +26,7 @@ find /mnt/koji/mash/nonfree/el9-candidate -name "${1}*.rpm" | xargs -r rpmsign -
 FEDORA_STABLES="41 42"
 FEDORA_BRANCH=""
 FEDORA_RAWHIDE="43"
-EL_STABLES="8 9"
+EL_STABLES="8 9 10"
 
 for f in free nonfree ; do
   for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE} ; do
