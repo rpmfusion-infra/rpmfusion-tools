@@ -7,6 +7,7 @@ FEDORA_STABLES="41 42"
 FEDORA_BRANCH=""
 FEDORA_RAWHIDE="43"
 EL_STABLES="8 9 10"
+EL_NEXT="10"
 
 for f in free nonfree ; do
   for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE} ; do
@@ -52,6 +53,14 @@ for f in free nonfree ; do
     koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}' | grep discord | xargs -r koji-rpmfusion move-build el${r}-${f}-candidate el${r}-${f}
     koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-${f}-testing el${r}-${f}
     koji-rpmfusion list-tagged el${r}-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-${f}-candidate el${r}-${f}-testing
+  done
+  for r in ${EL_NEXT} ; do
+    koji-rpmfusion list-tagged el${r}-next-${f}-testing --quiet | awk '{print $1}' | grep libdvdcss |xargs -r koji-rpmfusion move-build el${r}-next-${f}-testing el${r}-${f}-tainted
+    koji-rpmfusion list-tagged el${r}-next-${f}-testing --quiet | awk '{print $1}' |grep  nvidia-open-kmod | xargs -r koji-rpmfusion move-build el${r}-next-${f}-testing el${r}-${f}-tainted
+    #automove discord to stable ASAP
+    koji-rpmfusion list-tagged el${r}-next-${f}-candidate --quiet | awk '{print $1}' | grep discord | xargs -r koji-rpmfusion move-build el${r}-next-${f}-candidate el${r}-next-${f}
+    koji-rpmfusion list-tagged el${r}-next-${f}-testing --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-next-${f}-testing el${r}-next-${f}
+    koji-rpmfusion list-tagged el${r}-next-${f}-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build el${r}-next-${f}-candidate el${r}-next-${f}-testing
   done
 
 done

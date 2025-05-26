@@ -6,6 +6,7 @@ FEDORAS="41 42"
 BRANCHED=""
 RAWHIDE="43"
 ELS="8 9 10"
+NEXT="10"
 SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 1 -v "
 
 _sigul_sign() {
@@ -37,6 +38,13 @@ for j in free nonfree ; do
     echo "------------------"
     _sigul_sign el${i}-${j}-candidate rpmfusion-el-${j}-${i}
   done
+  for i in ${NEXT} ; do
+    echo "------------------"
+    echo "NEXT ${i} - ${j}"
+    echo "------------------"
+    _sigul_sign el${i}-next-${j}-candidate rpmfusion-el-${j}-${i}
+  done
+
 done
 
 for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE} ; do
