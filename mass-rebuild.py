@@ -20,10 +20,10 @@ import path
 number_of_builds = 9
 flavors = ["free", "nonfree"]
 # Some of these could arguably be passed in as args.
-tag = 'f42'
-epoch = '2025-01-16 00:00:00' # rebuild anything not built after this date
+tag = 'f43'
+epoch = '2025-07-24 00:00:00' # rebuild anything not built after this date
 user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_43_Mass_Rebuild'
 local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
