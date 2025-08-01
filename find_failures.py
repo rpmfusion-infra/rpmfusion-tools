@@ -50,8 +50,8 @@ epoch = '2025-07-24 00:00:00' # rebuild anything not built after this date
 local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
-'rpmfusion-packager', 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
-'rfpkg-minimal', 'rfpkg', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
+'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
+'rfpkg-minimal', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'ufoai-data', 'wormsofprey-data']
@@ -60,7 +60,8 @@ dead_packages = subprocess.check_output("find %s -name dead.package" % local_wor
 noautobuild_output_packages = subprocess.check_output("find %s -name noautobuild" % local_workdir, shell=True, text=True)
 
 
-print_skipped = False
+print_checks = False
+print_second_count = False
 debug_enabled = False
 def debug(msg):
     if debug_enabled:
@@ -160,7 +161,7 @@ for build in failbuilds:
     if len( [line for line in dead_packages.splitlines() if "/%s/" % pkg in line] ):
         debug("dead package = %s" % pkg)
     else:
-        failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
+        failures[pkg] = build['task_id']
         if pkg not in failed_pkgs:
             failed_pkgs.append(pkg)
         else:
@@ -172,11 +173,9 @@ for build in pkgs:
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
         and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
         if len( [line for line in noautobuild_output_packages.splitlines() if "/%s/" % pkg in line] ):
-            if print_skipped:
-                failures2[pkg] = "repo = %s, skipped because have noautobuild file" % build['tag_name']
+            failures2[pkg] = "repo = %s, skipped because have noautobuild file" % build['tag_name']
         elif len( [line for line in dead_packages.splitlines() if "/%s/" % pkg in line] ):
-            if print_skipped:
-                failures2[pkg] = "repo = %s, skipped because have dead.package file" % build['tag_name']
+            failures2[pkg] = "repo = %s, skipped because have dead.package file" % build['tag_name']
         else:
             # response = requests.get(f'{PAGURE_URL}/api/0/{ns}/{pkg}').json()
             # if not 'error' in response:
@@ -187,45 +186,81 @@ for build in pkgs:
 debug('</pre>')
 print("<p>Last run: %s</p>" % now_str)
 # Print the results
-print('<dl>')
-print('<style type="text/css"> dt { margin-top: 1em } </style>')
-print('<dt>Failed builds: %d </dt>' % len(failed_pkgs))
+print('''
+<style type="text/css">
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  caption {
+    margin-bottom: 1em;
+    font-weight: bold;
+  }
+</style>
+''')
+
+print('<table>')
+print('<caption>Failed builds: %d</caption>' % len(failed_pkgs))
+print('<thead><tr><th>Package</th><th>Task Link</th></tr></thead>')
+print('<tbody>')
 for pkg in sorted(failures.keys()):
-    print('<dd>Package: <a href="%s">%s</a></dd>' % (failures[pkg], pkg))
+    task_id = failures[pkg]
+    print('<tr>')
+    print(f'  <td>{pkg}</td>')
+    print(f'  <td><a href="https://koji.rpmfusion.org/koji/taskinfo?taskID={task_id}">failed build</a>, you also can see it with: koji-rpmfusion watch-task {task_id}</td>')
+    print('</tr>')
+print('</tbody>')
+print('</table>')
 
-print('<dt>Packages not built: %d </dt>' % len(notbuilded_pkgs))
-for pkg in sorted(failures2.keys()):
-    print('<dd>Package: %s, %s</dd>' % (pkg, failures2[pkg]))
+print('<p>Packages not built: %d</p>' % len(notbuilded_pkgs))
+if print_checks:
+    print('<table>')
+    print('<caption>Packages not built: %d</caption>' % len(notbuilded_pkgs))
+    print('<thead><tr><th>Package</th><th>Reason</th></tr></thead>')
+    print('<tbody>')
+    for pkg in sorted(failures2.keys()):
+        print('<tr>')
+        print(f'  <td>{pkg}</td>')
+        print(f'  <td>{failures2[pkg]}</td>')
+        print('</tr>')
+    print('</tbody>')
+    print('</table>')
 
-print('</dl>')
-
-# if we want see the count by builds that are tagged
-# just to double check
-second_count = False
-if second_count:
-    failed_pkgs = [] # raw list of failed packages
-    failures = {} # dict of owners to lists of packages that failed.
+if print_second_count:
+    failed_pkgs = []  # raw list of failed packages  
+    failures_second_pass = {}     # dict of packages to task URLs
+    duplicates = {}   # dict pkg -> lista de task URLs duplicadas (extras)
 
     for build in failbuilds2:
         pkg = build['package_name']
-        failures[pkg] = 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']
-        if pkg not in failed_pkgs:
+        if pkg in failures:
+            continue
+        task_id = build['task_id']
+        if pkg not in failures_second_pass:
+            failures_second_pass[pkg] = task_id
             failed_pkgs.append(pkg)
-        else:
-            print ("pkg failed more than one time %s register this one %s" % (pkg, 'https://koji.rpmfusion.org/koji/taskinfo?taskID=%s' % build['task_id']))
 
-    print('%s failed builds:<p>' % len(failed_pkgs))
-
-    # Print the results
-    print('<dl>')
-    print('<style type="text/css"> dt { margin-top: 1em } </style>')
-    print('<dt>%s (%s):</dt>' % ("rpmfusion", len(failures)))
-    for pkg in sorted(failures.keys()):
-        if failures[pkg].startswith("http"):
-            print('<dd><a href="%s">%s</a></dd>' % (failures[pkg], pkg))
-        else:
-            print('<dd>Package: %s, %s </dd>' % (pkg, failures[pkg]))
-    print('</dl>')
+    print('<table>')
+    print('<caption>Failed builds: %d</caption>' % len(failed_pkgs))
+    print('<thead><tr><th>Package</th><th>Task Link</th></tr></thead>')
+    print('<tbody>')
+    for pkg in sorted(failures_second_pass.keys()):
+        task_id = failures_second_pass[pkg]
+        print('<tr>')
+        print(f'  <td>{pkg}</td>')
+        print(f'  <td><a href="https://koji.rpmfusion.org/koji/taskinfo?taskID={task_id}">'
+              f'latest build {task_id}</a></td>')
+        print('</tr>')
+    print('</tbody>')
+    print('</table>')
 
 print('</body>')
 print('</html>')
