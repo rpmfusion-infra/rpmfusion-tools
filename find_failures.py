@@ -220,7 +220,6 @@ for pkg in sorted(failures.keys()):
 print('</tbody>')
 print('</table>')
 
-print('<p>Packages not built: %d</p>' % len(notbuilded_pkgs))
 if print_checks:
     print('<table>')
     print('<caption>Packages not built: %d</caption>' % len(notbuilded_pkgs))
