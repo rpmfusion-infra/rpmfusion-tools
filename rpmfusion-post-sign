@@ -27,11 +27,13 @@ for f in free nonfree ; do
       koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep nvidia | grep -v 340xx |grep -v 390xx |grep -v 470xx |grep -v open-kmod | xargs -r koji-rpmfusion tag-build f${r}-${f}-nvidia-driver
       koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep  nvidia-open-kmod | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-testing f${r}-${f}-tainted
       koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep  steam | xargs -r koji-rpmfusion tag-build f${r}-${f}-steam
+    #automove discord to stable ASAP
+    koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | grep discord | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-updates
     fi
     koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep  libdvdcss| xargs -r koji-rpmfusion move-build f${r}-${f}-updates-testing f${r}-${f}-tainted
     koji-rpmfusion list-tagged f${r}-${f}-updates-testing --quiet | awk '{print $1}' |grep -v release | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-testing f${r}-${f}-updates
-    #automove discord to stable ASAP
-    koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | grep discord | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-updates
+    #automove freeworld to stable ASAP
+    koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | grep freeworld | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-updates
     koji-rpmfusion list-tagged f${r}-${f}-updates-candidate --quiet | awk '{print $1}' | xargs -r koji-rpmfusion move-build f${r}-${f}-updates-candidate f${r}-${f}-updates-testing
   done
   for r in ${FEDORA_BRANCH} ; do
