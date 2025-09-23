@@ -166,6 +166,7 @@ kodi-pvr-vbox
 kodi-pvr-vdr-vnsi
 kodi-pvr-vuplus
 kodi-pvr-wmc
+kodi-visualization-matrix
 kodi-visualization-spectrum
 kplayer
 kqemu
@@ -404,6 +405,7 @@ vlmc
 vo-amrwbenc
 vobcopy
 vokoscreen
+vvdec
 vvenc
 welle-io
 west-chamber

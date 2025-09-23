@@ -3,4 +3,5 @@ rpmfusion.source
 project.source
 new-free
 new-nonfree
+new-cuda
 */*
