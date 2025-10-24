@@ -32,14 +32,14 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
- for r in 41 42; do
+ for r in 41 42 43; do
     #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-candidate $DEBUG
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
     mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
   done
-  r=43
-  mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
-  mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  #r=44
+  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-updates-testing -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
+  #mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-branch -f /var/tmp/rpmfusion-${n}-comps/comps-f${r}.xml $DEBUG
   r=44
   mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  rawhide -f /var/tmp/rpmfusion-${n}-comps/comps-devel.xml $DEBUG
 done

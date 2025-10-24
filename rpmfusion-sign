@@ -2,8 +2,8 @@
 
 # rpmfusion-sign
 
-FEDORAS="41 42"
-BRANCHED="43"
+FEDORAS="41 42 43"
+BRANCHED=""
 RAWHIDE="44"
 ELS="8 9 10"
 NEXT="10"
