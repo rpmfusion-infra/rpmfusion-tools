@@ -11,6 +11,6 @@ umask 002
 for i in free nonfree ; do
   for j in 8 9 10; do
     sg sysadmin-build "mkdir -p /pub/${i}/el/tainted/${j}/"
-    sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash/${i}/el${j}-tainted/* /pub/${i}/el/tainted/${j}/ --delete | grep -v -e repodata -e repoview"
+    sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash-${USER}/${i}/el${j}-tainted/* /pub/${i}/el/tainted/${j}/ --delete | grep -v -e repodata -e repoview"
   done
 done

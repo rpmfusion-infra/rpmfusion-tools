@@ -33,6 +33,6 @@ else
   popd &>/dev/null
 fi
  for r in 41 42 43 44; do
-    mash -o /mnt/koji/mash/${n} -c /etc/mash/mash.${n}.conf  ${r}-tainted $DEBUG
+    mash -o /mnt/koji/mash-${USER}/${n} -c /etc/mash/mash.${n}.conf  ${r}-tainted $DEBUG
  done
 done
