@@ -9,15 +9,6 @@ FEDORA_RAWHIDE="44"
 EL_STABLES="8 9 10"
 EL_NEXT="10"
 
-for f in free nonfree ; do
-  for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE} ; do
-    find /mnt/koji/mash-${USER}/${f}/${r}-updates-candidate -name "*.rpm" | xargs -r koji-rpmfusion import-sig --write
-  done
-  for r in ${EL_STABLES} ; do
-    find /mnt/koji/mash-${USER}/${f}/el${r}-candidate -name "*.rpm" | xargs -r koji-rpmfusion import-sig --write
-  done
-done
-
 #Create report
 rpmfusion-update-report | mail -r noreply@rpmfusion.org -s "RPM Fusion update report $(date -I)" rpmfusion-developers@lists.rpmfusion.org,rpmfusion-users@lists.rpmfusion.org
 
