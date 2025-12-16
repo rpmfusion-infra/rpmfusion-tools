@@ -9,7 +9,7 @@ fi
 umask 002
 
 for i in free nonfree ; do
-  for j in 41 42 43 44; do
+  for j in 42 43 44; do
     sg sysadmin-build "mkdir -p /pub/${i}/fedora/tainted/${j}/"
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash-${USER}/${i}/${j}-tainted/* /pub/${i}/fedora/tainted/${j}/ --delete | grep -v -e repodata -e repoview"
   done
