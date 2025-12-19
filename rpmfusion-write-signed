@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# rpmfusion-write-signed
+
+FEDORAS="42 43"
+BRANCHED=""
+RAWHIDE="44"
+ELS="8 9 10"
+NEXT="10"
+
+for j in free ; do
+  for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE}; do
+    kn=$i
+    echo "------------------"
+    echo "Fedora ${i} - ${j}"
+    echo "------------------"
+    koji-rpmfusion list-tagged f${i}-${j}-updates-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm d651ff2e
+  done
+done
+
+for j in nonfree ; do
+  for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE}; do
+    kn=$i
+    echo "------------------"
+    echo "Fedora ${i} - ${j}"
+    echo "------------------"
+    koji-rpmfusion list-tagged f${i}-${j}-updates-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm 94843c65
+  done
+done
