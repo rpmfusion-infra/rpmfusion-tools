@@ -5,7 +5,6 @@
 # best to run as root
 # best to run on el7
 
-
 repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel qt5-qt5base-devel nss-sysinit nss-softokn-freebl "
 repotrack_list_gpac=" doxygen libXt-devel libXv-devel glx-utils openjpeg-devel gsm-devel libvorbis-devel gcc-objc++ yasm"
 repotrack_list_ffmpeg=" dbus-broker libaom-devel rav1e-devel rust-rav1e-devel texinfo intel-mediasdk-devel fontconfig-devel freetype-devel fribidi-devel libdav1d-devel libtheora-devel openjpeg2-devel opus-devel zvbi-devel libgcrypt-devel libjxl-devel libvpx-devel \
@@ -13,48 +12,17 @@ repotrack_list_ffmpeg=" dbus-broker libaom-devel rav1e-devel rust-rav1e-devel te
 repotrack_list_mesa=" flex bison python3-mako bindgen-cli cbindgen clang-devel spirv-tools-devel"
 repotrack_list_pcsx2=" bubblewrap gettext ninja-build perl xz-devel libxml2-devel libpcap-devel cmake cmake-rpm-macros gtk3-devel vapoursynth-devel python3-rpm-macros python-rpm-macros xdg-dbus-proxy webkit2gtk3 wxGTK3-webview wxGTK-webview"
 repotrack_list_zsnes=" hicolor-icon-theme perl-Carp nasm SDL-devel zlib-devel libpng-devel ncurses-devel libao-devel"
-repotrack_list_i386="add-determinism bash bzip2 coreutils cpio diffutils fedora-release findutils gawk gcc-plugin-annobin git glibc-gconv-extra  glibc-minimal-langpack grep gtk2-devel gzip info make patch redhat-rpm-config rpm-build pyproject-rpm-macros dnf-data \
+repotrack_list_i386="add-determinism bash bzip2 coreutils cpio diffutils fedora-release findutils gawk gcc-plugin-annobin git glibc-gconv-extra  glibc-minimal-langpack grep gtk2-devel gzip info make patch redhat-rpm-config rpm-build rpm-plugin-selinux pyproject-rpm-macros dnf-data \
   sed shadow-utils tar unzip util-linux which xz gcc gcc-c++ systemd-devel desktop-file-utils libappstream-glib python2 python3 libtool libXfixes-devel libdrm-devel \
   libpciaccess-devel libva-devel libGL-devel llvm-devel mesa-libGL-devel libEGL-devel python3-pyyaml python3-dbus python3-gpg python3-hawkey python3-isodate python3-libcomps python3-libdnf python3-distro python3-rpm python3-setuptools python3-six python3-dnf \
   python3-systemd libglvnd-devel systemd-rpm-macros wayland-devel wayland-protocols-devel annobin annobin-plugin-gcc ${repotrack_list_zsnes} ${repotrack_list_pcsx2} ${repotrack_list_ffmpeg} ${repotrack_list_mesa} \
   ${repotrack_list_gpac} ${repotrack_list_gst}"
 
-repotrack_list_toolset="devtoolset-8-binutils devtoolset-8-dwz devtoolset-8-elfutils devtoolset-8-elfutils-libelf devtoolset-8-elfutils-libs devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-gcc-gfortran devtoolset-8-gdb devtoolset-8-libatomic-devel devtoolset-8-libquadmath-devel devtoolset-8-libstdc++-devel devtoolset-8-ltrace devtoolset-8-make devtoolset-8-memstomp devtoolset-8-runtime devtoolset-8-strace devtoolset-8-toolchain"
-
-repotrack_list_cuda="cuda-10-2 cuda cuda-command-line-tools-10-2 cuda-compiler-10-2 cuda-cudart-10-2 cuda-cudart-dev-10-2 cuda-cufft-10-2 cuda-cufft-dev-10-2 cuda-cuobjdump-10-2 cuda-cupti-10-2 cuda-curand-10-2 cuda-curand-dev-10-2 cuda-cusolver-10-2 cuda-cusolver-dev-10-2 cuda-cusparse-10-2 cuda-cusparse-dev-10-2 cuda-demo-suite-10-2 cuda-documentation-10-2 cuda-gdb-10-2 cuda-libraries-10-2 cuda-libraries-dev-10-2 cuda-license-10-2 cuda-memcheck-10-2 cuda-misc-headers-10-2 cuda-npp-10-2 cuda-npp-dev-10-2 cuda-nsight-10-2 cuda-nsight-compute-10-2 cuda-nsight-systems-10-2 cuda-nvcc-10-2 cuda-nvdisasm-10-2 cuda-nvgraph-10-2 cuda-nvgraph-dev-10-2 cuda-nvjpeg-10-2 cuda-nvjpeg-dev-10-2 cuda-nvml-dev-10-2 cuda-nvprof-10-2 cuda-nvprune-10-2 cuda-nvrtc-10-2 cuda-nvrtc-dev-10-2 cuda-nvtx-10-2 cuda-nvvp-10-2 cuda-runtime-10-2 cuda-samples-10-2 cuda-sanitizer-api-10-2 cuda-toolkit-10-2 cuda-tools-10-2 cuda-visual-tools-10-2 cuda-drivers cuda-minimal-build-10-2"
 
 umask 002
-for i in 41 42 43; do
+for i in 42 43 44; do
   repotrack --arch i686 --repofrompath=f${i},https://kojipkgs.fedoraproject.org/repos/f${i}-build/latest/i386/ -r f${i} -t -p /mnt/koji/buildsys-override/f${i}-free/i386 \
     ${repotrack_list_i386}
   createrepo_c --update /mnt/koji/buildsys-override/f${i}-free/i386/
 done
-
-exit 0
-
-repotrack --arch x86_64 --repofrompath=sclorh,http://mirror.centos.org/centos/7/sclo/x86_64/rh/ -r sclorh -t -p /mnt/koji/buildsys-override/el7-free/x86_64 \
-  ${repotrack_list_toolset}
-createrepo_c --update /mnt/koji/buildsys-override/el7-free/x86_64/
-
-
-repotrack --arch x86_64 --repofrompath=fedora-cuda,http://developer.download.nvidia.com/compute/cuda/repos/fedora29/x86_64/ -r fedora-cuda -t -p /mnt/koji/buildsys-override/fedora-cuda/x86_64 \
-  ${repotrack_list_cuda}
-pushd /mnt/koji/buildsys-override/fedora-cuda/x86_64/
-  rm -f nvidia-*.rpm cuda-drivers*.rpm dkms-nvidia*.rpm akmod-nvidia*.rpm cuda-repo-*.rpm cuda-compat*.rpm kmod-nvidia*.rpm xorg-x11-drv-nvidia*
-popd &>/dev/null
-createrepo_c --update /mnt/koji/buildsys-override/fedora-cuda/x86_64/
-
-repotrack --arch x86_64 --repofrompath=el8-cuda,http://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/ -r el8-cuda -t -p /mnt/koji/buildsys-override/el8-cuda/x86_64 \
-  ${repotrack_list_cuda}
-pushd /mnt/koji/buildsys-override/el8-cuda/x86_64/
-  rm -f nvidia-*.rpm cuda-drivers*.rpm dkms-nvidia*.rpm akmod-nvidia*.rpm cuda-repo-*.rpm cuda-compat*.rpm kmod-nvidia*.rpm xorg-x11-drv-nvidia*
-popd &>/dev/null
-createrepo_c --update /mnt/koji/buildsys-override/el8-cuda/x86_64/
-
-repotrack --arch x86_64 --repofrompath=el7-cuda,http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/ -r el7-cuda -t -p /mnt/koji/buildsys-override/el7-cuda/x86_64 \
-  ${repotrack_list_cuda}
-pushd /mnt/koji/buildsys-override/el7-cuda/x86_64/
-  rm -f nvidia-*.rpm cuda-drivers*.rpm dkms-nvidia*.rpm akmod-nvidia*.rpm cuda-repo-*.rpm cuda-compat*.rpm kmod-nvidia*.rpm xorg-x11-drv-nvidia*
-popd &>/dev/null
-createrepo_c --update /mnt/koji/buildsys-override/el7-cuda/x86_64/
 
