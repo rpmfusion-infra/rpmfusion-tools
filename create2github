@@ -19,5 +19,5 @@ else
 fi
 
 for package in $(cat $1) ; do
-  gh repo create -d "${package} - ${section}" --homepage "http://rpmfusion.org/Package/${package}" --disable-issues --disable-wiki  --public -t  packager rpmfusion/${package}
+  echo gh repo create -d "'${package} - ${section}'" --homepage "http://rpmfusion.org/Package/${package}" --disable-issues --disable-wiki  --public -t  packager rpmfusion/${package}
 done
