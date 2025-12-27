@@ -7,6 +7,37 @@ BRANCHED=""
 RAWHIDE="44"
 ELS="8 9 10"
 NEXT="10"
+CUDA="41"
+
+get_free_hash(){
+case ${1} in
+  8)
+  _key=158b3811
+  ;;
+  9)
+  _key=296458f3
+  ;;
+  10)
+  _key=db85ddd7
+  ;;
+esac
+}
+
+
+get_nonfree_hash(){
+case ${1} in
+  8)
+  _key=bdda8475
+  ;;
+  9)
+  _key=aab212ea
+  ;;
+  10)
+  _key=1bc7b804
+  ;;
+esac
+}
+
 
 for j in free ; do
   for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE}; do
@@ -25,5 +56,59 @@ for j in nonfree ; do
     echo "Fedora ${i} - ${j}"
     echo "------------------"
     koji-rpmfusion list-tagged f${i}-${j}-updates-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm 94843c65
+  done
+done
+
+for j in free ; do
+  for i in ${ELS}; do
+    kn=$i
+    echo "------------------"
+    echo "EL ${i} - ${j}"
+    echo "------------------"
+    get_free_hash ${i}
+    koji-rpmfusion list-tagged el${i}-${j}-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm $_key
+  done
+done
+
+for j in free ; do
+  for i in ${NEXT}; do
+    kn=$i
+    echo "------------------"
+    echo "NEXT ${i} - ${j}"
+    echo "------------------"
+    get_free_hash ${i}
+    koji-rpmfusion list-tagged el${i}-next-${j}-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm $_key
+  done
+done
+
+for j in nonfree ; do
+  for i in ${ELS}; do
+    kn=$i
+    echo "------------------"
+    echo "EL ${i} - ${j}"
+    echo "------------------"
+    get_nonfree_hash ${i}
+    koji-rpmfusion list-tagged el${i}-${j}-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm $_key
+  done
+done
+
+for j in nonfree ; do
+  for i in ${NEXT}; do
+    kn=$i
+    echo "------------------"
+    echo "NEXT ${i} - ${j}"
+    echo "------------------"
+    get_nonfree_hash ${i}
+    koji-rpmfusion list-tagged el${i}-next-${j}-testing  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm $_key
+  done
+done
+
+for j in cuda ; do
+  for i in ${CUDA}; do
+    kn=$i
+    echo "------------------"
+    echo "CUDA ${i} "
+    echo "------------------"
+    koji-rpmfusion list-tagged f${i}-cuda  --quiet | awk '{print $1}' | xargs -r koji-rpmfusion write-signed-rpm c8d47bb7
   done
 done
