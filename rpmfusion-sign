@@ -5,6 +5,7 @@
 FEDORAS="42 43"
 BRANCHED=""
 RAWHIDE="44"
+CUDA="41"
 ELS="8 9 10"
 NEXT="10"
 SIGUL_VERBOSE=" --gpg-agent --sigul-batch-size 1 -v "
@@ -47,11 +48,7 @@ for j in free nonfree ; do
 
 done
 
-for i in ${FEDORAS} ${BRANCHED} ${RAWHIDE} ; do
-    kn=$i
-    if [ $i -ge 33 ] ; then
-	    kn=2020
-    fi
+for i in ${CUDA} ; do
   # Sign CUDA namespace
   echo "------------------"
   echo "Fedora ${i} - CUDA"
