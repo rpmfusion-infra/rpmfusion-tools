@@ -66,6 +66,32 @@ def runmeoutput(cmd, action, pkg, env, cwd):
     result = pid.communicate()[0].rstrip('\n')
     return result
 
+def monitor_builds(kojisession, min_builds=3, interval=10*60):
+    """
+    Checks builds in progress every 10 minutes.
+    Exits the loop if fewer than min_builds builds are running.
+    """
+    while True:
+        opts = {
+            'method': 'build',
+            'state': [koji.TASK_STATES['FREE'],
+                      koji.TASK_STATES['OPEN'],
+                      koji.TASK_STATES['ASSIGNED']]
+        }
+        tasks = kojisession.listTasks(opts=opts)
+        num_builds = len(tasks)
+
+        print(f"Builds in progress: {num_builds}")
+        for t in tasks:
+            print(f"  Task {t['id']}: {t['method']} ({t['state']})")
+
+        if num_builds < min_builds:
+            print(f"Fewer than {min_builds} builds in progress. Exiting.")
+            break
+
+        print(f"Waiting {interval//60} minutes...")
+        time.sleep(interval)
+
 
 def mass_rebuild(tag, workdir, flavor):
     enviro = os.environ
@@ -94,7 +120,7 @@ def mass_rebuild(tag, workdir, flavor):
     print('Checking %s packages...' % len(pkgs))
     print('massrebuild all packages since %s, target %s, workdir %s' % (target, epoch, workdir))
 
-    pkg_counter = 0
+    pkg_counter = 9
     # Loop over each package
     for pkg in pkgs:
         name = pkg['package_name']
@@ -106,10 +132,11 @@ def mass_rebuild(tag, workdir, flavor):
             continue
 
         if pkg_counter >= number_of_builds:
-            print('press enter to build more %d packages' % pkg_counter)
+            # print('press enter to build more %d packages' % number_of_builds)
+            # fedpkgcmd = ['read', 'dummy']
+            # runme(fedpkgcmd, 'read dummy', "read dummy", enviro, workdir)
+            monitor_builds(kojisession)
             pkg_counter = 0
-            fedpkgcmd = ['read', 'dummy']
-            runme(fedpkgcmd, 'read dummy', "read dummy", enviro, workdir)
 
         # Query to see if a build has already been attempted
         # this version requires newer koji:
