@@ -28,11 +28,10 @@
 import koji
 import os
 import subprocess
-import sys
 import operator
 import datetime
 
-import requests
+#import requests
 PAGURE_URL = 'https://src.fedoraproject.org'
 ns='rpms'
 
@@ -45,8 +44,8 @@ epoch -- string representing date to start looking for failed builds
          from. Format: "%F %T.%N"
 tag -- tag where to look for failed builds (usually fXX-rebuild)
 """
-tag = 'f43'
-epoch = '2025-07-24 00:00:00' # rebuild anything not built after this date
+tag = 'f44'
+epoch = '2026-01-16 00:00:00' # rebuild anything not built after this date
 local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
