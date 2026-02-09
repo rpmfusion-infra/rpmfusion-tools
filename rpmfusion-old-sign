@@ -28,8 +28,8 @@ echo EL nonfree 9
 find /mnt/koji/mash/nonfree/el9-candidate -name "${1}*.rpm" | xargs -r rpmsign --resign -key-id=aab212ea
 
 FEDORA_STABLES="41 42 43"
-FEDORA_BRANCH=""
-FEDORA_RAWHIDE="44"
+FEDORA_BRANCH="44"
+FEDORA_RAWHIDE="45"
 EL_STABLES="8 9 10"
 
 for f in free nonfree ; do
