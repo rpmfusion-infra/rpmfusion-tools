@@ -8,8 +8,11 @@ fi
 
 umask 002
 
+ELS="8 9 10"
+NEXT="10"
+
 for i in free nonfree ; do
-  for j in 8 9 10; do
+  for j in ${ELS}; do
     sg sysadmin-build "mkdir -p /pub/${i}/el/tainted/${j}/"
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash-${USER}/${i}/el${j}-tainted/* /pub/${i}/el/tainted/${j}/ --delete | grep -v -e repodata -e repoview"
   done

@@ -8,8 +8,12 @@ fi
 
 umask 002
 
+FEDORAS="42 43"
+FEDORA_BRANCH="44"
+FEDORA_RAWHIDE="45"
+
 for i in nonfree ; do
-  for j in 42 43 44; do
+  for j in ${FEDORAS} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     sg sysadmin-build "mkdir -p /pub/${i}/fedora/steam/${j}/ "
     sg sysadmin-build "rsync -avHO --no-p /mnt/koji/mash-${USER}/${i}/${j}-steam/* /pub/${i}/fedora/steam/${j}/ --delete | grep -v -e repodata -e repoview"
   done
