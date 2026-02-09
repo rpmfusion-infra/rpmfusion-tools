@@ -129,6 +129,8 @@ gxine
 h264enc
 HandBrake
 imagination
+intel-vision
+intel-vision-kmod
 iscsitarget
 iscsitarget-kmod
 jbigkit
