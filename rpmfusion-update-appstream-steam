@@ -6,6 +6,17 @@ set -e
 
 tmp=$(mktemp -d)
 
+# needed for PackageKit 1.2.8 and later versions, to install the icons
+function repack_icons() {
+    ICONSDIR=$1/icons/
+    DESTDIR=$2
+    for fl in `ls ${ICONSDIR}`; do
+      pushd ${ICONSDIR}/$fl >/dev/null
+      tar -czf ${DESTDIR}/appstream-icons-$fl.tar.gz .
+      popd >/dev/null
+   done
+}
+
 trap cleanup EXIT
 cleanup() {
     set +e
@@ -23,9 +34,9 @@ FEDORA_RAWHIDE="45"
 for i in steam ; do
   for f in ${FEDORAS} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     pushd /mnt/koji/mash-${USER}/nonfree/${f}-${i} &>/dev/null
-    appstream-builder --origin=rpmfusion.org --basename=appstream --cache-dir=${tmp}/asb-md --min-icon-size=32 --output-dir=${tmp}/asb-md --packages-dir=x86_64/ --temp-dir=${tmp}/asb-icons
-      [ -e ${tmp}/asb-md/appstream-icons.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-icons.tar.gz x86_64/repodata/
-      [ -e ${tmp}/asb-md/appstream-ignore.xml.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-ignore.xml.gz x86_64/repodata/
+    appstream-builder --origin=rpmfusion.org --basename=appstream --cache-dir=${tmp}/asb-md --min-icon-size=128 --output-dir=${tmp}/asb-md --packages-dir=x86_64/ --temp-dir=${tmp}/asb-icons
+      repack_icons ${tmp}/asb-icons/ ${tmp}/asb-md/
+      [ -e ${tmp}/asb-md/appstream-icons-128x128.tar.gz ]&& modifyrepo_c --compress --compress-type=gz --simple-md-filenames --mdtype=appstream-icons ${tmp}/asb-md/appstream-icons-128x128.tar.gz x86_64/repodata/
       [ -e ${tmp}/asb-md/appstream-screenshots.tar.gz ] && modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream-screenshots.tar.gz x86_64/repodata/
       modifyrepo_c --no-compress --simple-md-filenames ${tmp}/asb-md/appstream.xml.gz x86_64/repodata/
       rm -rf ${tmp}/asb-md
