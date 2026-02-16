@@ -3,11 +3,10 @@
 # rpmfusion-keep-latest
 
 for f in free nonfree ; do
-  for r in 42 43; do
+  for r in 42 43 44 45; do
     koji-keep-latest f${r}-${f}-updates-candidate
   done
-  for r in 8 9 ; do
+  for r in 8 9 10 ; do
    koji-keep-latest el${r}-${f}-candidate
   done
-    koji-keep-latest rawhide-${f}
 done
