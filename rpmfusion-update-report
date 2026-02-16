@@ -3,13 +3,20 @@
 # rpmfusion-updates-report
 
 
+FEDORAS="42 43"
+FEDORA_BRANCH="44"
+FEDORA_RAWHIDE="45"
+CUDA="41"
+ELS="8 9 10"
+NEXT="10"
+
 echo "RPM Fusion update report"
 echo "------------------------"
 echo ""
 for f in free nonfree ; do
 echo "Section $f:"
 echo "-------------"
-  for r in 42 43; do
+  for r in ${FEDORA} ${FEDORA_BRANCH}; do
     echo "Fedora $r"
     echo "-------------"
     echo "Pushed to testing: "
@@ -20,7 +27,7 @@ echo "-------------"
     echo ""
   done
   echo ""
-  for r in 8 9 ; do
+  for r in ${ELS} ; do
     echo "EL $r"
     echo "-------------"
     echo "Pushed to testing: "
@@ -30,7 +37,7 @@ echo "-------------"
     koji-rpmfusion list-tagged el${r}-${f}-testing --quiet | awk '{print $1}'
     echo ""
   done
-  for r in 10 ; do
+  for r in ${NEXT} ; do
     echo "EL $r Next"
     echo "-------------"
     echo "Pushed to testing: "
