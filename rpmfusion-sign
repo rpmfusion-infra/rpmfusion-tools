@@ -2,6 +2,8 @@
 
 # rpmfusion-sign
 
+set -e
+
 FEDORAS="42 43"
 FEDORA_BRANCH="44"
 FEDORA_RAWHIDE="45"
