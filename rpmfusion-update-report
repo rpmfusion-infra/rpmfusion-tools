@@ -16,7 +16,7 @@ echo ""
 for f in free nonfree ; do
 echo "Section $f:"
 echo "-------------"
-  for r in ${FEDORA} ${FEDORA_BRANCH}; do
+  for r in ${FEDORAS} ${FEDORA_BRANCH}; do
     echo "Fedora $r"
     echo "-------------"
     echo "Pushed to testing: "
