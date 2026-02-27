@@ -9,7 +9,6 @@ fi
 umask 002
 
 ELS="8 9 10"
-NEXT="10"
 
 for i in free nonfree ; do
   for j in ${ELS}; do
