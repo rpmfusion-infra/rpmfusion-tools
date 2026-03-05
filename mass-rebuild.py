@@ -27,10 +27,10 @@ local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
 'rpmfusion-free-appstream-data', 'rpmfusion-nonfree-appstream-data',
-'rfpkg-minimal', 'lpf-cleartype-fonts', 'lpf-flash-plugin', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
+'rfpkg-minimal', 'lpf-cleartype-fonts', 'lpf-mscore-fonts', 'lpf-mscore-tahoma-fonts',
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
-'ufoai-data', 'wormsofprey-data']
+'wormsofprey-data']
 
 # Define functions
 
