@@ -3,14 +3,20 @@
 # rpmfusion-regen-repos
 # regen every rpmfusion repos
 
+FEDORA_STABLES="42 43 44"
+#FEDORA_BRANCH="44"
+FEDORA_RAWHIDE="45"
+ELS="8 9 10"
+NEXT="10"
+
 for s in free free-multilibs nonfree nonfree-multilibs ; do
-  for d in 42 43 44; do
+  for d in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     koji-rpmfusion regen-repo f${d}-${s}-build --nowait &>/dev/null
   done
-  for d in 8 9 ; do
+  for d in ${ELS}; do
     koji-rpmfusion regen-repo el${d}-${s}-build --nowait &>/dev/null
   done
-  for d in 10 ; do
+  for d in ${NEXT}; do
     koji-rpmfusion regen-repo el${d}-next-${s}-build --nowait &>/dev/null
   done
 done

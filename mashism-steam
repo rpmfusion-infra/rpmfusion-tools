@@ -11,8 +11,8 @@ if [ ! $(id -ng) == "sysadmin-build" ] ; then
   exec sg sysadmin-build $0
 fi
 
-FEDORAS="42 43"
-FEDORA_BRANCH="44"
+FEDORA_STABLES="42 43 44"
+#FEDORA_BRANCH="44"
 FEDORA_RAWHIDE="45"
 
 # fix for rfbz#2142
@@ -36,7 +36,7 @@ else
     popd &>/dev/null
   popd &>/dev/null
 fi
- for r in ${FEDORAS} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
+ for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     mash -o /mnt/koji/mash-${USER}/${n} -c /etc/mash/mash.${n}.conf  ${r}-steam $DEBUG
  done
 done

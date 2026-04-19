@@ -2,8 +2,8 @@
 
 # rpmfusion-write-signed
 
-FEDORAS="42 43"
-FEDORA_BRANCH="44"
+FEDORA_STABLES="42 43 44"
+#FEDORA_BRANCH="44"
 FEDORA_RAWHIDE="45"
 ELS="8 9 10"
 NEXT="10"
@@ -40,7 +40,7 @@ esac
 
 
 for j in free ; do
-  for i in ${FEDORAS} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
+  for i in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     kn=$i
     echo "------------------"
     echo "Fedora ${i} - ${j}"
@@ -50,7 +50,7 @@ for j in free ; do
 done
 
 for j in nonfree ; do
-  for i in ${FEDORAS} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
+  for i in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
     kn=$i
     echo "------------------"
     echo "Fedora ${i} - ${j}"
