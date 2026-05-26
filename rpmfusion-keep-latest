@@ -2,11 +2,18 @@
 
 # rpmfusion-keep-latest
 
+FEDORA_STABLES="43 44"
+#FEDORA_BRANCH="44"
+FEDORA_RAWHIDE="45"
+EL_STABLES="8 9 10"
+EL_NEXT="10"
+
+
 for f in free nonfree ; do
-  for r in 42 43 44 45; do
+  for r in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE} ; do
     koji-keep-latest f${r}-${f}-updates-candidate
   done
-  for r in 8 9 10 ; do
+  for r in ${EL_STABLES} ; do
    koji-keep-latest el${r}-${f}-candidate
   done
 done
