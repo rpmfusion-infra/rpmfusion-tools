@@ -27,7 +27,7 @@ if [ x${HOSTNAME} != "xbuildvm-01.online.rpmfusion.net" ] ; then
         echo "${0}: Wrong host: run on buildvm-01" && exit 1
 fi
 
-FEDORA_STABLES="42 43 44"
+FEDORA_STABLES="43 44"
 #FEDORA_BRANCH="44"
 FEDORA_RAWHIDE="45"
 

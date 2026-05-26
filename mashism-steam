@@ -11,7 +11,7 @@ if [ ! $(id -ng) == "sysadmin-build" ] ; then
   exec sg sysadmin-build $0
 fi
 
-FEDORA_STABLES="42 43 44"
+FEDORA_STABLES="43 44"
 #FEDORA_BRANCH="44"
 FEDORA_RAWHIDE="45"
 
