@@ -72,7 +72,7 @@ def runmeoutput(cmd, action, pkg, env, cwd):
     result = pid.communicate()[0].rstrip('\n')
     return result
 
-def wait_for_tasks(kojisession, task_ids, interval=5*60):
+def wait_for_tasks(kojisession, task_ids, interval=2*60):
     """Poll koji until every task_id in this batch has finished
        (closed, canceled, or failed). task_ids is a list/set of
        koji task ids submitted for the current batch."""
