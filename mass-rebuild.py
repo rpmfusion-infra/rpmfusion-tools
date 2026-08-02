@@ -17,7 +17,7 @@ import time
 import operator
 
 # Set some variables
-number_of_builds = 10
+max_concurrent_builds = 5
 flavors = ["free", "nonfree"]
 # Some of these could arguably be passed in as args.
 tag = 'f45'
@@ -72,37 +72,59 @@ def runmeoutput(cmd, action, pkg, env, cwd):
     result = pid.communicate()[0].rstrip('\n')
     return result
 
-def wait_for_tasks(kojisession, task_ids, interval=2*60):
+def prune_finished(kojisession, active_tasks):
+    """Remove any task ids from active_tasks that have finished
+       (closed, canceled, or failed). Returns the still-running set."""
+
+    still_running = set()
+    for tid in active_tasks:
+        try:
+            info = kojisession.getTaskInfo(tid)
+        except Exception as e:
+            print('Could not query task %s: %s' % (tid, e))
+            # If we can't query it, assume it's still running rather than
+            # silently dropping it from tracking.
+            still_running.add(tid)
+            continue
+        if info and info['state'] not in DONE_STATES:
+            still_running.add(tid)
+    return still_running
+
+
+def wait_for_room(kojisession, active_tasks, max_concurrent, interval=2*60):
+    """Block until fewer than max_concurrent of active_tasks are still
+       running, pruning finished tasks along the way. Returns the
+       updated (pruned) active_tasks set."""
+
+    active_tasks = prune_finished(kojisession, active_tasks)
+    while len(active_tasks) >= max_concurrent:
+        print('%d task(s) currently running (limit %d): %s'
+              % (len(active_tasks), max_concurrent, sorted(active_tasks)))
+        time.sleep(interval)
+        active_tasks = prune_finished(kojisession, active_tasks)
+    return active_tasks
+
+
+def wait_for_tasks(kojisession, task_ids, interval=5*60):
     """Poll koji until every task_id in this batch has finished
        (closed, canceled, or failed). task_ids is a list/set of
-       koji task ids submitted for the current batch."""
+       koji task ids. Used at the very end to drain any stragglers."""
 
     pending = set(task_ids)
     if not pending:
         return
 
-    print('Waiting for batch of %d task(s) to complete: %s'
+    print('Waiting for final %d task(s) to complete: %s'
           % (len(pending), sorted(pending)))
 
     while pending:
-        finished = set()
-        for tid in pending:
-            try:
-                info = kojisession.getTaskInfo(tid)
-            except Exception as e:
-                print('Could not query task %s: %s' % (tid, e))
-                continue
-            if info and info['state'] in DONE_STATES:
-                finished.add(tid)
-
-        pending -= finished
-
+        pending = prune_finished(kojisession, pending)
         if pending:
             print('Still waiting on %d task(s): %s'
                   % (len(pending), sorted(pending)))
             time.sleep(interval)
 
-    print('Batch of %d task(s) finished.' % len(task_ids))
+    print('All %d task(s) finished.' % len(task_ids))
 
 
 def mass_rebuild(tag, workdir, flavor):
@@ -132,8 +154,7 @@ def mass_rebuild(tag, workdir, flavor):
     print('Checking %s packages...' % len(pkgs))
     print('massrebuild all packages since %s, target %s, workdir %s' % (target, epoch, workdir))
 
-    pkg_counter = 0
-    batch_tasks = []
+    active_tasks = set()
 
     # Loop over each package
     for pkg in pkgs:
@@ -144,11 +165,6 @@ def mass_rebuild(tag, workdir, flavor):
         if name in pkg_skip_list:
             print('Skipping %s, package is explicitely skipped' % name)
             continue
-
-        if pkg_counter >= number_of_builds:
-            wait_for_tasks(kojisession, batch_tasks)
-            batch_tasks = []
-            pkg_counter = 0
 
         # Query to see if a build has already been attempted
         # this version requires newer koji:
@@ -247,6 +263,10 @@ def mass_rebuild(tag, workdir, flavor):
         if not url:
             continue
 
+        # Only submit once fewer than max_concurrent_builds of our tasks
+        # are currently running; otherwise wait and re-check.
+        active_tasks = wait_for_room(kojisession, active_tasks, max_concurrent_builds)
+
         # build
         buildcmd = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
         print('Building %s' % name)
@@ -259,16 +279,15 @@ def mass_rebuild(tag, workdir, flavor):
                 task_id = int(m.group(1))
 
         if task_id:
-            print('%s submitted as task %s' % (name, task_id))
-            batch_tasks.append(task_id)
+            print('%s submitted as task %s (%d/%d slots now in use)'
+                  % (name, task_id, len(active_tasks) + 1, max_concurrent_builds))
+            active_tasks.add(task_id)
         else:
             print('Could not parse task id for %s, build may not have been submitted. Output was:\n%s'
                   % (name, output))
 
-        pkg_counter += 1
-
-    # wait for any stragglers left in the last, possibly partial, batch
-    wait_for_tasks(kojisession, batch_tasks)
+    # wait for any stragglers still running once we're out of packages
+    wait_for_tasks(kojisession, active_tasks)
 
 
 for flavor in flavors:
