@@ -11,18 +11,19 @@
 
 import koji
 import os
+import re
 import subprocess
 import time
 import operator
 
 # Set some variables
-number_of_builds = 9
+number_of_builds = 10
 flavors = ["free", "nonfree"]
 # Some of these could arguably be passed in as args.
-tag = 'f44'
-epoch = '2026-01-16 00:00:00' # rebuild anything not built after this date
-user = 'RPM Fusion Release Engineering <sergiomb@rpmfusion.org>'
-comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_44_Mass_Rebuild'
+tag = 'f45'
+epoch = '2026-07-30 00:00:00' # rebuild anything not built after this date
+user = 'RPM Fusion Release Engineering <leigh123linux@rpmfusion.org>'
+comment = '- Rebuilt for https://fedoraproject.org/wiki/Fedora_45_Mass_Rebuild'
 local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
@@ -31,6 +32,11 @@ pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsy
 'lpf-spotify-client', 'mock-rpmfusion-free', 'mock-rpmfusion-nonfree', 'rpmfusion-free-obsolete-packages',
 'rpmfusion-nonfree-obsolete-packages', 'rpmfusion-free-remix-kickstarts', 'rpmfusion-nonfree-remix-kickstarts',
 'wormsofprey-data']
+
+# koji task states that mean "this task is no longer running"
+DONE_STATES = {koji.TASK_STATES['CLOSED'],
+               koji.TASK_STATES['CANCELED'],
+               koji.TASK_STATES['FAILED']}
 
 # Define functions
 
@@ -66,31 +72,37 @@ def runmeoutput(cmd, action, pkg, env, cwd):
     result = pid.communicate()[0].rstrip('\n')
     return result
 
-def monitor_builds(kojisession, min_builds=3, interval=10*60):
-    """
-    Checks builds in progress every 10 minutes.
-    Exits the loop if fewer than min_builds builds are running.
-    """
-    while True:
-        opts = {
-            'method': 'build',
-            'state': [koji.TASK_STATES['FREE'],
-                      koji.TASK_STATES['OPEN'],
-                      koji.TASK_STATES['ASSIGNED']]
-        }
-        tasks = kojisession.listTasks(opts=opts)
-        num_builds = len(tasks)
+def wait_for_tasks(kojisession, task_ids, interval=5*60):
+    """Poll koji until every task_id in this batch has finished
+       (closed, canceled, or failed). task_ids is a list/set of
+       koji task ids submitted for the current batch."""
 
-        print(f"Builds in progress: {num_builds}")
-        for t in tasks:
-            print(f"  Task {t['id']}: {t['method']} ({t['state']})")
+    pending = set(task_ids)
+    if not pending:
+        return
 
-        if num_builds < min_builds:
-            print(f"Fewer than {min_builds} builds in progress. Exiting.")
-            break
+    print('Waiting for batch of %d task(s) to complete: %s'
+          % (len(pending), sorted(pending)))
 
-        print(f"Waiting {interval//60} minutes...")
-        time.sleep(interval)
+    while pending:
+        finished = set()
+        for tid in pending:
+            try:
+                info = kojisession.getTaskInfo(tid)
+            except Exception as e:
+                print('Could not query task %s: %s' % (tid, e))
+                continue
+            if info and info['state'] in DONE_STATES:
+                finished.add(tid)
+
+        pending -= finished
+
+        if pending:
+            print('Still waiting on %d task(s): %s'
+                  % (len(pending), sorted(pending)))
+            time.sleep(interval)
+
+    print('Batch of %d task(s) finished.' % len(task_ids))
 
 
 def mass_rebuild(tag, workdir, flavor):
@@ -120,7 +132,9 @@ def mass_rebuild(tag, workdir, flavor):
     print('Checking %s packages...' % len(pkgs))
     print('massrebuild all packages since %s, target %s, workdir %s' % (target, epoch, workdir))
 
-    pkg_counter = 9
+    pkg_counter = 0
+    batch_tasks = []
+
     # Loop over each package
     for pkg in pkgs:
         name = pkg['package_name']
@@ -132,10 +146,8 @@ def mass_rebuild(tag, workdir, flavor):
             continue
 
         if pkg_counter >= number_of_builds:
-            # print('press enter to build more %d packages' % number_of_builds)
-            # fedpkgcmd = ['read', 'dummy']
-            # runme(fedpkgcmd, 'read dummy', "read dummy", enviro, workdir)
-            monitor_builds(kojisession)
+            wait_for_tasks(kojisession, batch_tasks)
+            batch_tasks = []
             pkg_counter = 0
 
         # Query to see if a build has already been attempted
@@ -236,11 +248,27 @@ def mass_rebuild(tag, workdir, flavor):
             continue
 
         # build
-        build = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
+        buildcmd = ['rfpkg', 'build', '--nowait', '--background', '--fail-fast']
         print('Building %s' % name)
-        runme(build, 'build', name, enviro, os.path.join(workdir, name))
+        output = runmeoutput(buildcmd, 'build', name, enviro, os.path.join(workdir, name))
+
+        task_id = None
+        if output:
+            m = re.search(r'Created task:\s*(\d+)', output)
+            if m:
+                task_id = int(m.group(1))
+
+        if task_id:
+            print('%s submitted as task %s' % (name, task_id))
+            batch_tasks.append(task_id)
+        else:
+            print('Could not parse task id for %s, build may not have been submitted. Output was:\n%s'
+                  % (name, output))
 
         pkg_counter += 1
+
+    # wait for any stragglers left in the last, possibly partial, batch
+    wait_for_tasks(kojisession, batch_tasks)
 
 
 for flavor in flavors:
@@ -253,4 +281,3 @@ for flavor in flavors:
     if not os.path.isdir(workdir):
         exit(1)
     mass_rebuild(tag, workdir, flavor)
-
