@@ -107,9 +107,6 @@ debug("listPackages with inherit with buildtag = %s-nonfree-build" % tag)
 pkgs = kojisession.listPackages("%s-nonfree-build" % tag, inherited=True)
 debug("len pkgs buildtag2 %d" % len(pkgs))
 
-blockedpkgs = sorted([pkg for pkg in pkgs if (pkg['blocked'])],
-key=operator.itemgetter('package_name'))
-
 # reduce the list to those that are not blocked and sort by package name
 pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'])],
             key=operator.itemgetter('package_name'))
@@ -127,7 +124,7 @@ canceledtasks = sorted(kojisession.listBuilds(createdAfter=epoch, state=koji.BUI
 # Check if newer build exists for package
 failbuilds = []
 for build in failtasks + canceledtasks:
-    if (build['package_id'] in [blockedpkg['package_id'] for blockedpkg in blockedpkgs]):
+    if (build['package_id'] not in [pkg['package_id'] for pkg in pkgs]):
         continue
     if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]):
         request_tag = kojisession.getTaskRequest(build['task_id'])[1]
