@@ -44,8 +44,8 @@ epoch -- string representing date to start looking for failed builds
          from. Format: "%F %T.%N"
 tag -- tag where to look for failed builds (usually fXX-rebuild)
 """
-tag = 'f44'
-epoch = '2026-01-16 00:00:00' # rebuild anything not built after this date
+tag = 'f45'
+epoch = '2026-07-30 00:00:00' # rebuild anything not built after this date
 local_workdir = os.path.expanduser('~/rpmfusion/new/massrebuild/')
 
 pkg_skip_list = ['rpmfusion-free-release', 'rpmfusion-nonfree-release', 'buildsys-build-rpmfusion',
