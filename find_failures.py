@@ -111,7 +111,7 @@ debug("len pkgs buildtag2 %d" % len(pkgs))
 pkgs = sorted([pkg for pkg in pkgs if (not pkg['blocked'])],
             key=operator.itemgetter('package_name'))
 debug("len pkgs buildtag2 without blocked %d" % len(pkgs))
-pkgs = sorted([pkg for pkg in pkgs if (not pkg['package_name'] in pkg_skip_list)],
+pkgs = sorted([pkg for pkg in pkgs if (pkg['package_name'] not in pkg_skip_list)],
             key=operator.itemgetter('package_name'))
 debug("len pkgs buildtag2 without pkg_skip_list %d" % len(pkgs))
 
@@ -126,7 +126,7 @@ failbuilds = []
 for build in failtasks + canceledtasks:
     if (build['package_id'] not in [pkg['package_id'] for pkg in pkgs]):
         continue
-    if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]):
+    if (build['package_id'] not in [goodbuild['package_id'] for goodbuild in goodbuilds]):
         request_tag = kojisession.getTaskRequest(build['task_id'])[1]
         if request_tag.startswith(tag) or request_tag.startswith("rawhide"):
             failbuilds.append(build)
@@ -166,8 +166,8 @@ for build in failbuilds:
 # pkg not in goods builds neither failed builds
 for build in pkgs:
     pkg = build['package_name']
-    if (not build['package_id'] in [goodbuild['package_id'] for goodbuild in goodbuilds]
-        and not build['package_id'] in [pkg['package_id'] for pkg in failbuilds]):
+    if (build['package_id'] not in [goodbuild['package_id'] for goodbuild in goodbuilds]
+        and build['package_id'] not in [pkg['package_id'] for pkg in failbuilds]):
         if len( [line for line in noautobuild_output_packages.splitlines() if "/%s/" % pkg in line] ):
             failures2[pkg] = "repo = %s, skipped because have noautobuild file" % build['tag_name']
         elif len( [line for line in dead_packages.splitlines() if "/%s/" % pkg in line] ):
@@ -230,7 +230,7 @@ if print_checks:
     print('</table>')
 
 if print_second_count:
-    failed_pkgs = []  # raw list of failed packages  
+    failed_pkgs = []  # raw list of failed packages
     failures_second_pass = {}     # dict of packages to task URLs
     duplicates = {}   # dict pkg -> lista de task URLs duplicadas (extras)
 
