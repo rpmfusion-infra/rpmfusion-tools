@@ -28,8 +28,8 @@ if [ x${HOSTNAME} != "xbuildvm-01.online.rpmfusion.net" ] ; then
 fi
 
 FEDORA_STABLES="43 44"
-#FEDORA_BRANCH="44"
-FEDORA_RAWHIDE="45"
+FEDORA_BRANCH="45"
+FEDORA_RAWHIDE="46"
 
 for i in nvidia-driver ; do
   for f in ${FEDORA_STABLES} ${FEDORA_BRANCH} ${FEDORA_RAWHIDE}; do
