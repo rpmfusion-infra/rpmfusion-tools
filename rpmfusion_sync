@@ -9,7 +9,7 @@ fi
 umask 002
 
 FEDORA_STABLES="43 44"
-#FEDORA_BRANCH="44"
+FEDORA_BRANCH="45"
 
 for i in free nonfree ; do
   sg sysadmin-build "rsync -avHO --no-p --delete /mnt/koji/mash-${USER}/${i}/rawhide/* /pub/${i}/fedora/development/rawhide/Everything | grep -v -e repodata -e repoview"
