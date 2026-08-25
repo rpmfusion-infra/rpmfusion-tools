@@ -291,6 +291,7 @@ def handle_failed_task(task, regenned_tags, confirm=False):
         if answer.lower() == 's':
             print("    Skipped.")
             return
+        print("    Continuing...")
 
     #task_info_ts = session.getTaskInfo(task_id, request=False)
     fail_ts = task_info.get('completion_ts')
@@ -351,6 +352,8 @@ def parse_args():
 
 def main():
     args = parse_args()
+    mode = "manual confirmation for each operation" if args.confirm else "unattended mode (no confirmation)"
+    print(f"It will check failed build task(s) in the last {args.hours} hours, running in {mode}.")
     regenned_tags = set()
 
     hours_ago = int(time.time()) - args.hours * 60 * 60
