@@ -9,6 +9,7 @@ For each task failed with mock exit status 30:
 import os
 import re
 import time
+import argparse
 import json
 import rpm
 import koji
@@ -259,7 +260,7 @@ def regen_repo(build_tag_name):
     return True
 
 
-def handle_failed_task(task, regenned_tags):
+def handle_failed_task(task, regenned_tags, confirm=False):
     task_id = int(task['id'])
     #task2 = session.getTaskInfo(task['id'], request=False)
     #print(f" task2 {task['id']} = {task2}")
@@ -285,10 +286,11 @@ def handle_failed_task(task, regenned_tags):
     if is_already_built_or_building(task_id, build_tag_name):
         return
 
-    # confirm = input("Press Enter to continue or s to skip [Enter / s to skip]")
-    # if confirm.lower() == 's':
-    #     print("    Skipped.")
-    #     return
+    if confirm :
+        answer = input("Press Enter to continue or s to skip [Enter / s to skip]")
+        if answer.lower() == 's':
+            print("    Skipped.")
+            return
 
     #task_info_ts = session.getTaskInfo(task_id, request=False)
     fail_ts = task_info.get('completion_ts')
@@ -333,12 +335,25 @@ def handle_failed_task(task, regenned_tags):
     else:
         print(f"[task {new_task_id2}] Still failing after repo regen. Manual intervention needed.")
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Fetch failed build tasks and retry mock status 30 failures."
+    )
+    parser.add_argument(
+        '--hours', type=int, default=72,
+        help="How many hours back to look for failed tasks (default: 72)."
+    )
+    parser.add_argument(
+        '--confirm', action='store_true',
+        help="Ask for confirmation before each resubmit/regen operation."
+    )
+    return parser.parse_args()
 
 def main():
+    args = parse_args()
     regenned_tags = set()
 
-    hours = 72
-    hours_ago = int(time.time()) - hours * 60 * 60
+    hours_ago = int(time.time()) - args.hours * 60 * 60
 
     failed_opts = {
         'method': 'build',
@@ -347,14 +362,14 @@ def main():
     }
     failed_tasks = session.listTasks(opts=failed_opts, queryOpts={'order': 'id'})
 
-    print(f"Found {len(failed_tasks)} failed build task(s) in the last {hours} hours.")
+    print(f"Found {len(failed_tasks)} failed build task(s) in the last {args.hours} hours.")
 
     # print("Failed or canceled tasks found:")
     # for task in failed_tasks:
     #     print(f"  Task {task['id']}")
     for task in failed_tasks:
         print(f"\n  Failed or canceled task found: {task['id']}")
-        handle_failed_task(task, regenned_tags)
+        handle_failed_task(task, regenned_tags, confirm=args.confirm)
 
     print("\nDone.")
 
