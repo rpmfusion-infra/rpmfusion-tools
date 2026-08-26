@@ -11,12 +11,16 @@ import re
 import time
 import argparse
 import json
+from zoneinfo import ZoneInfo
+from datetime import datetime
 import rpm
 import koji
 from koji_cli.lib import watch_tasks
 
 MOCK_STATUS_30_PATTERN = "mock exited with status 30"
 POLL_INTERVAL = 10
+dt_paris = int(datetime.now(ZoneInfo('Europe/Paris')).utcoffset().total_seconds())
+
 
 session = koji.ClientSession('https://koji.rpmfusion.org/kojihub')
 cert_path = os.path.expanduser('~/.rpmfusion.cert')
@@ -92,7 +96,7 @@ def repo_was_regenerated_after(build_tag_name, after_ts):
     newrepo_opts = {
         'method': 'newRepo',
         'state': [koji.TASK_STATES['CLOSED']],
-        'completeAfter': after_ts,
+        'completeAfter': after_ts - dt_paris,
     }
 
     tasks = session.listTasks(opts=newrepo_opts, queryOpts={'order': '-id'})
@@ -294,7 +298,7 @@ def handle_failed_task(task, regenned_tags, confirm=False):
         print("    Continuing...")
 
     #task_info_ts = session.getTaskInfo(task_id, request=False)
-    fail_ts = task_info.get('completion_ts')
+    fail_ts = task_info.get('start_ts')
 
     if repo_was_regenerated_after(build_tag_name, fail_ts):
         # --- Attempt 1: resubmit directly ---
@@ -361,7 +365,7 @@ def main():
     failed_opts = {
         'method': 'build',
         'state': [koji.TASK_STATES['FAILED'], koji.TASK_STATES['CANCELED']],
-        'completeAfter': hours_ago,
+        'completeAfter': hours_ago - dt_paris,
     }
     failed_tasks = session.listTasks(opts=failed_opts, queryOpts={'order': 'id'})
 
