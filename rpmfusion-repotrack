@@ -12,7 +12,7 @@ FEDORA_RAWHIDE="46"
 repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel qt5-qt5base-devel nss-sysinit nss-softokn-freebl "
 repotrack_list_ffmpeg=" dbus-broker libaom-devel rav1e-devel rust-rav1e-devel texinfo intel-mediasdk-devel fontconfig-devel freetype-devel fribidi-devel libdav1d-devel libtheora-devel openjpeg2-devel opus-devel zvbi-devel libgcrypt-devel libjxl-devel libvpx-devel \
  ladspa-devel librsvg2-devel pulseaudio-libs-devel gnutls-devel libtasn1-tools libass-devel harfbuzz-devel jack-audio-connection-kit-devel srt-devel libssh-devel SDL2-devel mesa-libEGL-devel libmysofa-devel libquadmath-devel vulkan-loader-devel alsa-lib-devel libwebp-devel lilv-devel libGL-devel libopenmpt-devel"
-repotrack_list_mesa=" flex bison python3-mako bindgen-cli cbindgen clang-devel spirv-tools-devel"
+repotrack_list_mesa=" flex bison python3-mako bindgen-cli cbindgen clang-devel ninja-build spirv-tools-devel"
 repotrack_list_zsnes=" hicolor-icon-theme perl-Carp nasm SDL-devel zlib-devel libpng-devel ncurses-devel libao-devel sdl12-compat-devel"
 repotrack_list_i386="add-determinism bash dnf5 dnf5-plugins bzip2 coreutils cpio diffutils fedora-release findutils gawk gcc-plugin-annobin git glibc-gconv-extra  glibc-minimal-langpack grep gtk2-devel gzip info make patch redhat-rpm-config rpm-build rpm-plugin-selinux pyproject-rpm-macros dnf-data \
   sed shadow-utils tar unzip util-linux which xz gcc gcc-c++ systemd-devel desktop-file-utils libappstream-glib python2 python3 libtool libXfixes-devel libdrm-devel \
