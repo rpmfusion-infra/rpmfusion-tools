@@ -9,7 +9,7 @@ FEDORA_STABLES="43 44"
 FEDORA_BRANCH="45"
 FEDORA_RAWHIDE="46"
 
-repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel qt5-qt5base-devel nss-sysinit nss-softokn-freebl "
+repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel nss-sysinit nss-softokn-freebl "
 repotrack_list_ffmpeg=" dbus-broker libaom-devel rav1e-devel rust-rav1e-devel texinfo intel-mediasdk-devel fontconfig-devel freetype-devel fribidi-devel libdav1d-devel libtheora-devel openjpeg2-devel opus-devel zvbi-devel libgcrypt-devel libjxl-devel libvpx-devel \
  ladspa-devel librsvg2-devel pulseaudio-libs-devel gnutls-devel libtasn1-tools libass-devel harfbuzz-devel jack-audio-connection-kit-devel srt-devel libssh-devel SDL2-devel mesa-libEGL-devel libmysofa-devel libquadmath-devel vulkan-loader-devel alsa-lib-devel libwebp-devel lilv-devel libGL-devel libopenmpt-devel"
 repotrack_list_mesa=" flex bison python3-mako bindgen-cli cbindgen clang-devel ninja-build spirv-tools-devel"
