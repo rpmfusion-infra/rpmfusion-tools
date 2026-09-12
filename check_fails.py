@@ -158,7 +158,7 @@ def is_already_built_or_building(task_id, build_tag_name):
                 return True
     else:
         updates_tag = build_tag_name.removesuffix('-build').removesuffix('-multilibs')
-        print(f"build_tag_name = {build_tag_name}, updates_tag = {updates_tag}")
+        print(f"build_tag_name = {build_tag_name}, updates_tag = {updates_tag}, pkg_name = {pkg_name}")
         if updates_tag.startswith('el'):
             tags_to_check = [
                 updates_tag + '-candidate',
@@ -230,14 +230,25 @@ def get_task_error_message(task_id):
         print('get_task_error_message result is not a dictonary !')
     except koji.GenericError as e:
         return (f'koji.GenericError: {e}')
+    return ''
+
+
+def get_task_root_log(task_id):
+    try:
+        root_log = session.downloadTaskOutput(task_id, 'root.log')
+
+        if isinstance(root_log, bytes):
+            return root_log
+
+        return b''
+
+    except Exception as exc:
+        print(f'Could not retrieve root.log for task {task_id}: {exc}')
+        return b''
 
 
 def is_mock_status_30(task_id):
-    err = get_task_error_message(task_id)
-    perr = {err}
-    print(f'Parent task {task_id}, message: {perr}')
-    if MOCK_STATUS_30_PATTERN in err:
-        return True
+    print_default_msg = True
     children = session.getTaskChildren(task_id, request=False)
     for child in children:
         if child.get('state') == koji.TASK_STATES['FAILED']:
@@ -245,7 +256,29 @@ def is_mock_status_30(task_id):
             perr = {err}
             print(f'Child task {child['id']}, message: {perr}')
             if MOCK_STATUS_30_PATTERN in err:
-                return True
+                root_log = get_task_root_log(child['id'])
+                if b'No match for argument' in root_log:
+                    if print_default_msg:
+                        print(f" [skip] [task {task_id}] Failed with \"No match for argument\" is not that we are looking for")
+                        print_default_msg = False
+                elif b'nothing provides' in root_log:
+                        print(f" [skip] [task {task_id}] Failed with \"nothing provides\" is not that we are looking for")
+                        print_default_msg = False
+                else:
+                    return True
+        elif child.get('state') == koji.TASK_STATES['CANCELED']:
+            if print_default_msg:
+                print(f'Child task {child['id']}, with state canceled')
+                print_default_msg = False
+
+    #err = get_task_error_message(task_id)
+    #perr = {err}
+    #print(f'Parent task {task_id}, message: {perr}')
+    #if MOCK_STATUS_30_PATTERN in err:
+    #    return True
+
+    if print_default_msg:
+        print(f" [skip] [task {task_id}] Failed but not with mock status 30.")
     return False
 
 
@@ -279,7 +312,6 @@ def handle_failed_task(task, regenned_tags, confirm=False):
         return
 
     if not is_mock_status_30(task_id):
-        print(f" [skip] [task {task_id}] Failed but not with mock status 30.")
         return
 
     print(f"[task {task_id}] Failed with mock status 30.")
@@ -310,7 +342,6 @@ def handle_failed_task(task, regenned_tags, confirm=False):
             return
 
         if not is_mock_status_30(int(new_task_id)):
-            print(f"[skip] [new task {new_task_id}] Failed, but NOT with mock status 30.")
             return
 
         print(f"[task {new_task_id}] Failed again with mock status 30.")
@@ -343,8 +374,8 @@ def parse_args():
         description="Fetch failed build tasks and retry mock status 30 failures."
     )
     parser.add_argument(
-        '--hours', type=int, default=72,
-        help="How many hours back to look for failed tasks (default: 72)."
+        '--hours', type=int, default=48,
+        help="How many hours back to look for failed tasks (default: 48)."
     )
     parser.add_argument(
         '--confirm', action='store_true',
