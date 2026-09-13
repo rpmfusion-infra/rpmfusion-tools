@@ -21,3 +21,7 @@ fi
 for package in $(cat $1) ; do
   echo gh repo create -d "'${package} - ${section}'" --homepage "http://rpmfusion.org/Package/${package}" --disable-issues --disable-wiki  --public -t  packager rpmfusion/${package}
 done
+  echo and after fist git push
+for package in $(cat $1) ; do
+  echo gh repo edit rpmfusion/${package} --default-branch master
+done
