@@ -18,6 +18,7 @@ import koji
 from koji_cli.lib import watch_tasks
 
 MOCK_STATUS_30_PATTERN = "mock exited with status 30"
+MOCK_STATUS_40_PATTERN = "mock exited with status 40"
 POLL_INTERVAL = 10
 dt_paris = int(datetime.now(ZoneInfo('Europe/Paris')).utcoffset().total_seconds())
 
@@ -255,7 +256,7 @@ def is_mock_status_30(task_id):
             err = get_task_error_message(child['id'])
             perr = {err}
             print(f'Child task {child['id']}, message: {perr}')
-            if MOCK_STATUS_30_PATTERN in err:
+            if MOCK_STATUS_30_PATTERN in err or MOCK_STATUS_40_PATTERN in err:
                 root_log = get_task_root_log(child['id'])
                 if b'No match for argument' in root_log:
                     if print_default_msg:
