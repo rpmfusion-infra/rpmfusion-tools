@@ -378,8 +378,8 @@ def parse_args():
         description="Fetch failed build tasks and retry mock status 30 failures."
     )
     parser.add_argument(
-        '--hours', type=int, default=48,
-        help="How many hours back to look for failed tasks (default: 48)."
+        '--hours', type=int, default=36,
+        help="How many hours back to look for failed tasks (default: 36)."
     )
     parser.add_argument(
         '--confirm', action='store_true',
