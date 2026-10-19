@@ -169,9 +169,11 @@ def is_already_built_or_building(task_id, build_tag_name):
             tags_to_check = [
                 updates_tag + '-updates-candidate',
                 updates_tag + '-updates-testing',
+                updates_tag + '-tainted',
             ]
 
         for tag in tags_to_check:
+            #print(f"is_already_built_or_building Check tag = {tag} with pkg_name = {pkg_name}")
             existing_builds = session.listTagged(
                 tag,
                 package=pkg_name,
@@ -180,6 +182,7 @@ def is_already_built_or_building(task_id, build_tag_name):
             )
 
             for b in existing_builds:
+                #print(f"existing_builds: task = {b}")
                 # Filter only builds completed after the task failure
                 if b['task_id'] is None:
                     continue
@@ -193,7 +196,7 @@ def is_already_built_or_building(task_id, build_tag_name):
     # Check active tasks for same source
     task_info = session.getTaskInfo(int(task_id), request=True)
     source = task_info.get('request', [None])[0]
-    print(f"source = {source}")
+    print(f"Check for active tasks with same source, source = {source}")
     source_url = source.split('#')[0]
     active_opts = {
         'method': 'build',
