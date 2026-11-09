@@ -3,8 +3,8 @@
 # rpmfusion-regen-repos
 # regen every rpmfusion repos
 
-FEDORA_STABLES="43 44"
-FEDORA_BRANCH="45"
+FEDORA_STABLES="43 44 45"
+#FEDORA_BRANCH="45"
 FEDORA_RAWHIDE="46"
 ELS="8 9 10"
 NEXT="10"

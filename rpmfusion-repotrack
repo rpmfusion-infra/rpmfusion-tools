@@ -5,8 +5,8 @@
 # best to run as root
 # best to run on el7
 
-FEDORA_STABLES="43 44"
-FEDORA_BRANCH="45"
+FEDORA_STABLES="43 44 45"
+#FEDORA_BRANCH="45"
 FEDORA_RAWHIDE="46"
 
 repotrack_list_gst=" openssl-devel orc-devel gstreamer1-devel gstreamer1-plugins-base-devel gstreamer1-plugins-bad-free-devel nss-sysinit nss-softokn-freebl "
